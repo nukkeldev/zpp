@@ -1,14 +1,6 @@
-//! Generates a Zig bindings via a C wrapper for C++ headers.
+//! Generates a Zig bindings via extern C functions for C++ headers.
 //!
 //! TODO: Bring comments over.
-//!
-//! Element Mapping (C++ -> C -> Zig):
-//! - `namespace` -> Prefixed elements -> `struct` containing `extern fn`s
-//! - `struct` / `class`
-//!   - C-compatible -> `struct` -> `extern struct`
-//!   - Not C-compatible -> `void*` -> `?*anyopaque`
-//! - `typedef` -> `typedef` -> `pub const`
-//! - C/C++ types
 
 // ---
 
@@ -23,13 +15,10 @@ const c = @cImport({
 var allocator: std.mem.Allocator = undefined;
 
 pub fn main() !void {
-    // Initialize the allocator and Program.
     var arena = std.heap.ArenaAllocator.init(std.heap.smp_allocator);
     defer arena.deinit();
-
     allocator = arena.allocator();
 
-    // Parse the C/C++ file.
     const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
 
@@ -49,34 +38,76 @@ pub fn main() !void {
     ) orelse @panic("Unable to parse translation unit.");
     defer c.clang_disposeTranslationUnit(unit);
 
-    // Get the cursor and traverse the TU.
     const cursor = c.clang_getTranslationUnitCursor(unit);
 
-    var global_namespace = Element{
-        .Namespace = .{
-            .name = "<global>",
-            .elements = .init(allocator),
-        },
-    };
-    var client_data = ClientData{
-        .parent_element = &global_namespace,
-    };
+    var ns = Namespace{ .name = "", .elements = .init(allocator) };
+    var client_data = ClientData{ .namespace = &ns };
     _ = c.clang_visitChildren(cursor, visitor, @ptrCast(&client_data));
 
-    // Print the results.
-    std.debug.print("Program:\n", .{});
-    std.debug.print("{f}\n", .{global_namespace});
+    const buf = allocator.alloc(u8, 1024 * 1024) catch @panic("OOM");
+
+    var cpp = std.fs.cwd().createFile("imgui.h.cpp", .{}) catch @panic("File error");
+    var cpp_writer = cpp.writer(buf);
+
+    // std.io.Writer.
+
+    for (ns.elements.items) |*elm| {
+        switch (elm.*) {
+            .FunctionDecl => |*f| formatFunctionDeclToCExternFunction(f, &cpp_writer.interface) catch @panic("bad"),
+            else => {},
+        }
+    }
+}
+
+// -- C-Wrapper -- //
+// TODO: Be idiomatic and use proper writergate stuff for everything.
+
+var linkage_prefix = "";
+
+fn getNamespaceName(namespace: *const Namespace) []const u8 {
+    return std.fmt.allocPrint(allocator, "{s}::{s}", .{ namespace.name, if (namespace.namespace) |ns| getNamespaceName(ns) else "" }) catch @panic("OOM");
+}
+
+// fn formatExternName(fn_decl: *const FunctionDecl) []const u8 {
+//     const ns = switch (namespace.*) {
+//         .Namespace => |*ns| ns,
+//         else => unreachable,
+//     };
+
+//     return std.fmt.allocPrint(allocator, "{s}::{s}", .{ ns.name, if (ns.namespace) |ns2| getNamespaceName(ns2) else "" }) catch @panic("OOM");
+// }
+
+// TODO: Variadic functions.
+fn formatFunctionDeclToCExternFunction(fn_decl: *const FunctionDecl, writer: *std.io.Writer) !void {
+    const template =
+        \\{[linkage_prefix]s}{[return_type]s} {[extern_fn_name]s}({[params]s})
+        \\{{
+        \\  return {[namespace]s}{[fn_name]s}({[args]s});
+        \\}}
+        \\
+    ;
+
+    try writer.print(template, .{
+        .linkage_prefix = linkage_prefix,
+        .return_type = getTypeSpelling(fn_decl.return_type),
+        .extern_fn_name = "FN",
+        .params = "PARAMS",
+        .namespace = getNamespaceName(fn_decl.namespace),
+        .fn_name = fn_decl.name,
+        .args = "HI",
+    });
+    try writer.flush();
 }
 
 // -- AST Traversal -- //
 
-const ClientData = struct { depth: usize = 0, parent_element: ?*Element = null };
+const ClientData = struct { depth: usize = 0, parent_element: ?*Element = null, namespace: *Namespace };
 
 var debug_traversal = false;
 var element_format_indent: []const u8 = "";
 
-pub const Namespace = struct {
-    namespace: ?*Element = null,
+const Namespace = struct {
+    namespace: ?*Namespace = null,
     name: []const u8,
     elements: std.ArrayList(Element),
 
@@ -93,32 +124,34 @@ pub const Namespace = struct {
     }
 };
 
-pub const Element = union(enum) {
-    FunctionDecl: struct {
-        namespace: *Element,
+const FunctionDecl = struct {
+    namespace: *Namespace,
+    name: []const u8,
+    parameters: std.ArrayList(struct {
         name: []const u8,
-        parameters: std.ArrayList(struct {
-            name: []const u8,
-            type: c.CXType,
-        }),
-        return_type: c.CXType,
+        type: c.CXType,
+    }),
+    return_type: c.CXType,
 
-        pub fn format(f: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
-            try writer.print("fn {s}(", .{f.name});
+    pub fn format(f: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
+        try writer.print("fn {s}(", .{f.name});
 
-            for (f.parameters.items[0..], 0..) |p, i| {
-                try writer.print("{s}: {s}{s}", .{
-                    p.name,
-                    getTypeSpelling(p.type),
-                    if (i == @max(f.parameters.items.len, 1) - 1) "" else ", ",
-                });
-            }
-
-            try writer.print(") {s};", .{getTypeSpelling(f.return_type)});
+        for (f.parameters.items[0..], 0..) |p, i| {
+            try writer.print("{s}: {s}{s}", .{
+                p.name,
+                getTypeSpelling(p.type),
+                if (i == @max(f.parameters.items.len, 1) - 1) "" else ", ",
+            });
         }
-    },
+
+        try writer.print(") {s};", .{getTypeSpelling(f.return_type)});
+    }
+};
+
+pub const Element = union(enum) {
+    FunctionDecl: FunctionDecl,
     TypedefDecl: struct {
-        namespace: *Element,
+        namespace: *Namespace,
         name: []const u8,
         type: c.CXType,
 
@@ -127,7 +160,7 @@ pub const Element = union(enum) {
         }
     },
     EnumDecl: struct {
-        namespace: *Element,
+        namespace: *Namespace,
         name: []const u8,
         type: c.CXType,
         integer_type: c.CXType,
@@ -149,7 +182,7 @@ pub const Element = union(enum) {
         }
     },
     StructDecl: struct {
-        namespace: *Element,
+        namespace: *Namespace,
         name: []const u8,
         type: c.CXType,
         fields: std.ArrayList(struct {
@@ -202,7 +235,7 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             const elm = getNamespaceElements(client_data).addOne() catch @panic("OOM");
             elm.* = .{
                 .FunctionDecl = .{
-                    .namespace = getNamespace(client_data),
+                    .namespace = client_data.namespace,
                     .name = getName(current_cursor),
                     .parameters = .init(allocator),
                     .return_type = c.clang_getCursorResultType(current_cursor),
@@ -228,7 +261,7 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             const @"type" = c.clang_getTypedefDeclUnderlyingType(current_cursor);
             getNamespaceElements(client_data).append(.{
                 .TypedefDecl = .{
-                    .namespace = getNamespace(client_data),
+                    .namespace = client_data.namespace,
                     .name = getName(current_cursor),
                     .type = @"type",
                 },
@@ -240,7 +273,7 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             const elm = getNamespaceElements(client_data).addOne() catch @panic("OOM");
             elm.* = .{
                 .EnumDecl = .{
-                    .namespace = getNamespace(client_data),
+                    .namespace = client_data.namespace,
                     .name = getName(current_cursor),
                     .type = @"type",
                     .integer_type = c.clang_getEnumDeclIntegerType(current_cursor),
@@ -268,7 +301,7 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             const elm = getNamespaceElements(client_data).addOne() catch @panic("OOM");
             elm.* = .{
                 .StructDecl = .{
-                    .namespace = getNamespace(client_data),
+                    .namespace = client_data.namespace,
                     .name = getName(current_cursor),
                     .type = @"type",
                     .fields = .init(allocator),
@@ -293,13 +326,17 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             const elm = getNamespaceElements(client_data).addOne() catch @panic("OOM");
             elm.* = .{
                 .Namespace = .{
-                    .namespace = getNamespace(client_data),
+                    .namespace = client_data.namespace,
                     .name = getName(current_cursor),
                     .elements = .init(allocator),
                 },
             };
+            const ns = switch (elm.*) {
+                .Namespace => |*ns| ns,
+                else => unreachable,
+            };
 
-            next_client_data.parent_element = elm;
+            next_client_data.namespace = ns;
             _ = c.clang_visitChildren(current_cursor, visitor, @ptrCast(&next_client_data));
         },
         else => {},
@@ -325,20 +362,7 @@ fn getTypeSpelling(@"type": c.CXType) []const u8 {
 }
 
 fn getNamespaceElements(client_data: *ClientData) *std.ArrayList(Element) {
-    return switch (getNamespace(client_data).*) {
-        .Namespace => |*ns| &ns.elements,
-        else => unreachable,
-    };
-}
-
-fn getNamespace(client_data: *ClientData) *Element {
-    return switch (client_data.parent_element.?.*) {
-        .FunctionDecl => |*t| t.namespace,
-        .TypedefDecl => |*t| t.namespace,
-        .EnumDecl => |*t| t.namespace,
-        .StructDecl => |*t| t.namespace,
-        .Namespace => client_data.parent_element.?,
-    };
+    return &client_data.namespace.elements;
 }
 
 fn formatCursor(cursor: c.CXCursor) []const u8 {
