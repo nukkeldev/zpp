@@ -23,7 +23,7 @@ pub fn main() !void {
     defer c.clang_disposeIndex(index);
 
     const args: []const [*c]const u8 = &.{
-        "-xc++", // Force it to parse C++, otherwise it hates namespaces.
+        "-xc++", // Force it to parse C++.
         "-Iimgui/",
         "-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS",
     };
@@ -40,8 +40,9 @@ pub fn main() !void {
 
     const cursor = c.clang_getTranslationUnitCursor(unit);
 
-    var ns = Namespace{ .name = "", .elements = .init(allocator) };
-    var client_data = ClientData{ .namespace = &ns };
+    const ns = try allocator.create(Namespace);
+    ns.* = Namespace{ .name = "", .elements = .init(allocator) };
+    var client_data = ClientData{ .namespace = ns };
     _ = c.clang_visitChildren(cursor, visitor, @ptrCast(&client_data));
 
     const buf = allocator.alloc(u8, 1024 * 1024) catch @panic("OOM");
@@ -63,6 +64,10 @@ pub fn main() !void {
 // TODO: Be idiomatic and use proper writergate stuff for everything.
 
 var linkage_prefix = "";
+
+fn writeGlobalNamespace(ns: *const Namespace) []const u8 {
+    _ = ns;
+}
 
 fn getNamespaceName(namespace: *const Namespace) []const u8 {
     return std.fmt.allocPrint(allocator, "{s}::{s}", .{ namespace.name, if (namespace.namespace) |ns| getNamespaceName(ns) else "" }) catch @panic("OOM");
@@ -202,8 +207,6 @@ pub const Element = union(enum) {
             try writer.print("{s}}};", .{element_format_indent});
         }
     },
-    // TODO: If multiple blocks, merge.
-    Namespace: Namespace,
 
     pub fn format(elm: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
         switch (elm) {
@@ -211,8 +214,6 @@ pub const Element = union(enum) {
             .TypedefDecl => |ty| try ty.format(writer),
             .EnumDecl => |e| try e.format(writer),
             .StructDecl => |s| try s.format(writer),
-            .Namespace => |ns| try ns.format(writer),
-            // else => {},
         }
     }
 };
@@ -323,17 +324,11 @@ fn visitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXCl
             }
         },
         c.CXCursor_Namespace => {
-            const elm = getNamespaceElements(client_data).addOne() catch @panic("OOM");
-            elm.* = .{
-                .Namespace = .{
-                    .namespace = client_data.namespace,
-                    .name = getName(current_cursor),
-                    .elements = .init(allocator),
-                },
-            };
-            const ns = switch (elm.*) {
-                .Namespace => |*ns| ns,
-                else => unreachable,
+            const ns = allocator.create(Namespace) catch @panic("OOM");
+            ns.* = .{
+                .namespace = client_data.namespace,
+                .name = getName(current_cursor),
+                .elements = .init(allocator),
             };
 
             next_client_data.namespace = ns;
