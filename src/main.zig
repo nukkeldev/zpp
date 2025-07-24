@@ -53,6 +53,11 @@ pub fn main() !void {
 
     written_functions = .init(allocator);
     try writeGlobalNamespace(ns, &cpp_writer.interface);
+
+    cpp.close();
+
+    var comp = std.process.Child.init(&.{"zig", "c++", "imgui.h.cpp"}, allocator);
+    _ = try comp.spawnAndWait();
 }
 
 // -- C-Wrapper -- //
@@ -60,11 +65,13 @@ pub fn main() !void {
 
 var linkage_prefix = "";
 var source_namespace = "NS";
+var elm_prefix = "Better_";
 // TODO: var indent = "";
 
 var written_functions: std.StringHashMap(usize) = undefined;
 
 fn writeGlobalNamespace(ns: *const Namespace, writer: *std.io.Writer) !void {
+    try writer.print("#include <bit>\n#include <cstdarg>\n\n", .{});
     try writer.print("namespace {s} {{\n#include \"{s}\"\n}}\n\n", .{ source_namespace, "imgui/imgui.h" });
     try writer.print("extern \"C\" {{\n", .{});
     try writeNamespace(ns, writer);
@@ -77,19 +84,8 @@ fn writeNamespace(ns: *const Namespace, writer: *std.io.Writer) !void {
             .Namespace => |ns_| try writeNamespace(ns_, writer),
             .FunctionDecl => |*f| try writeFunctionDeclToCExternFunction(f, writer),
             .StructDecl => |*s| try writeStructDecl(s, writer),
-            .TypedefDecl => |*t| {
-                try writer.print("typedef ", .{});
-                switch (t.type.kind) {
-                    c.CXType_Pointer => try writer.print("{s}", .{try formatPointerTypeWithName(t.type, t.name)}),
-                    else => {
-                        try writer.print("{s}", .{getTypeSpelling(t.type)});
-                        try writer.print(" ", .{});
-                        try writer.print("{s}", .{t.name});
-                    },
-                }
-                try writer.print(";\n", .{});
-            },
-            else => {},
+            .TypedefDecl => |*t| try writeTypedef(t, writer),
+            .EnumDecl => |*e| try writeEnumDecl(e, writer),
         }
     }
 }
@@ -124,6 +120,11 @@ fn formatParams(params: *const std.ArrayList(Param), seperator: []const u8, trai
 
         // TODO: Need to handle arrays and function pointers.
         switch (p.type.kind) {
+            c.CXType_Unexposed => {
+                try out.appendSlice("void * ");
+                try out.appendSlice(p.name);
+                try out.appendSlice(seperator);
+            },
             // foo[N]
             c.CXType_ConstantArray => {
                 try out.appendSlice(getTypeSpelling(c.clang_getArrayElementType(p.type)));
@@ -141,8 +142,14 @@ fn formatParams(params: *const std.ArrayList(Param), seperator: []const u8, trai
                 try out.appendSlice(seperator);
             },
             c.CXType_Pointer => {
-                try out.appendSlice(try formatPointerTypeWithName(p.type, p.name));
-                try out.appendSlice(seperator);
+                if (c.clang_getPointeeType(p.type).kind == c.CXType_Unexposed) {
+                    try out.appendSlice("void **");
+                    try out.appendSlice(p.name);
+                    try out.appendSlice(seperator);
+                } else {
+                    try out.appendSlice(try formatPointerTypeWithName(p.type, p.name));
+                    try out.appendSlice(seperator);
+                }
             },
             else => {
                 try out.appendSlice(getTypeSpelling(p.type));
@@ -160,17 +167,58 @@ fn formatArgs(fn_decl: *const FunctionDecl) ![]const u8 {
 
     var out = std.ArrayList(u8).init(allocator);
     for (fn_decl.parameters.items) |*p| {
-        try out.appendSlice(p.name);
-        try out.appendSlice(", ");
+        outer: switch (p.type.kind) {
+            c.CXType_Pointer => {
+                if (c.clang_getPointeeType(p.type).kind != c.CXType_Record) continue :outer c.CXType_Invalid;
+
+                try out.appendSlice("reinterpret_cast<");
+                try out.appendSlice(try getTypeSpellingEx(p.type, "::NS::"));
+                try out.appendSlice(">(");
+                try out.appendSlice(p.name);
+                try out.appendSlice("), ");
+            },
+            c.CXType_Record, c.CXType_Enum => {
+                try out.appendSlice("std::bit_cast<");
+                try out.appendSlice(try getTypeSpellingEx(p.type, "::NS::"));
+                try out.appendSlice(">(");
+                try out.appendSlice(p.name);
+                try out.appendSlice("), ");
+            },
+            else => {
+                try out.appendSlice(p.name);
+                try out.appendSlice(", ");
+            },
+        }
     }
     return out.items[0 .. out.items.len - 2];
+}
+
+fn wrapExpression(ty: c.CXType, expression: []const u8) ![]const u8 {
+    var out = std.ArrayList(u8).init(allocator);
+    if (ty.kind == c.CXType_Pointer or ty.kind == c.CXType_LValueReference) {
+        try out.appendSlice("reinterpret_cast<");
+        try out.appendSlice(try getTypeSpellingEx(ty, null));
+        try out.appendSlice(">(");
+        if (ty.kind == c.CXType_LValueReference) try out.append('&');
+        try out.appendSlice(expression);
+        try out.appendSlice(")");
+    } else if (ty.kind == c.CXType_Record or ty.kind == c.CXType_Enum) {
+        try out.appendSlice("std::bit_cast<");
+        try out.appendSlice(getTypeSpelling(ty));
+        try out.appendSlice(">(");
+        try out.appendSlice(expression);
+        try out.appendSlice(")");
+    } else {
+        try out.appendSlice(expression);
+    }
+    return out.items;
 }
 
 // TODO: Variadic functions.
 // TODO: Cast argument and return types (pointers with reinterp and non with bit_cast (c++20)).
 fn writeFunctionDeclToCExternFunction(fn_decl: *const FunctionDecl, writer: *std.io.Writer) !void {
     const template =
-        \\{[linkage_prefix]s}{[return_type]s} {[extern_fn_name]s}({[params]s}) {{ return {[namespace]s}{[fn_name]s}({[args]s});}}
+        \\{[linkage_prefix]s}{[return_type]s} {[extern_fn_name]s}({[params]s}) {{ return {[expr]s};}}
         \\
     ;
 
@@ -179,14 +227,19 @@ fn writeFunctionDeclToCExternFunction(fn_decl: *const FunctionDecl, writer: *std
     if (wf.value_ptr.* > 0) function_name = try std.fmt.allocPrint(allocator, "{s}{}", .{ function_name, wf.value_ptr.* });
     wf.value_ptr.* += 1;
 
-    try writer.print(template, .{
-        .linkage_prefix = linkage_prefix,
-        .return_type = getTypeSpelling(fn_decl.return_type),
-        .extern_fn_name = function_name,
-        .params = try formatParams(&fn_decl.parameters, ", ", false),
+    var expr: []const u8 = try std.fmt.allocPrint(allocator, "{[namespace]s}{[fn_name]s}({[args]s})", .{
         .namespace = try getNamespaceQualifier(fn_decl.namespace, "::", true),
         .fn_name = fn_decl.name,
         .args = try formatArgs(fn_decl),
+    });
+    expr = try wrapExpression(fn_decl.return_type, expr);
+
+    try writer.print(template, .{
+        .linkage_prefix = linkage_prefix,
+        .return_type = try getTypeSpellingEx(fn_decl.return_type, null),
+        .extern_fn_name = function_name,
+        .params = try formatParams(&fn_decl.parameters, ", ", false),
+        .expr = expr,
     });
 }
 
@@ -207,6 +260,41 @@ fn writeStructDecl(struct_decl: *const StructDecl, writer: *std.io.Writer) !void
             },
         );
     }
+}
+
+fn writeEnumDecl(enum_decl: *const EnumDecl, writer: *std.io.Writer) !void {
+    try writer.print("enum {s} {{\n", .{enum_decl.name});
+    try writer.print("}};\n", .{});
+}
+
+fn writeTypedef(t: *const TypedefDecl, writer: *std.io.Writer) !void {
+    try writer.print("typedef ", .{});
+    switch (t.type.kind) {
+        c.CXType_Pointer => {
+            // TODO: Write wrappers.
+            if (c.clang_getPointeeType(t.type).kind == c.CXType_FunctionProto) {
+                try writer.print("::NS::{s} {s}", .{ t.name, t.name });
+            } else {
+                try writer.print("{s}", .{try formatPointerTypeWithName(t.type, t.name)});
+            }
+        },
+        else => {
+            try writer.print("{s} {s}{s}", .{getTypeSpelling(t.type), elm_prefix, t.name});
+        },
+    }
+    try writer.print(";\n", .{});
+    // const pointee = c.clang_getPointeeType(t.type);
+    // if (t.type.kind == c.CXType_Pointer and pointee.kind == c.CXType_FunctionProto) {
+    //     const args = c.clang_getNumArgTypes(pointee);
+    //     const res = c.clang_getResultType(pointee);
+    //     try writer.print(("{s} wrapper_{s}("), .{getTypeSpelling(res), t.name});
+    //     for (0..@intCast(args)) |i| {
+    //         const argt = c.clang_getArgType(pointee, @intCast(i));
+    //         try writer.print("{s} arg{}", .{getTypeSpelling(argt), i});
+    //         if (i != args-1) try writer.print(", ", .{});
+    //     }
+    //     try writer.print(") {{\n", .{});
+    // }
 }
 
 // -- AST Traversal -- //
@@ -279,39 +367,43 @@ const StructDecl = struct {
     }
 };
 
+const TypedefDecl = struct {
+    namespace: *Namespace,
+    name: []const u8,
+    type: c.CXType,
+
+    pub fn format(ty: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
+        try writer.print("typedef {s} {s};", .{ getTypeSpelling(ty.type), ty.name });
+    }
+};
+
+const EnumDecl = struct {
+    namespace: *Namespace,
+    name: []const u8,
+    type: c.CXType,
+    integer_type: c.CXType,
+    fields: std.ArrayList(struct {
+        name: []const u8,
+        value: c_longlong,
+    }),
+
+    pub fn format(s: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
+        try writer.print("enum({s}) {s} {{\n", .{ getTypeSpelling(s.integer_type), s.name });
+        for (s.fields.items[0..]) |p| {
+            try writer.print("{s}  {s} = {},\n", .{
+                element_format_indent,
+                p.name,
+                p.value,
+            });
+        }
+        try writer.print("{s}}};", .{element_format_indent});
+    }
+};
+
 pub const Element = union(enum) {
     FunctionDecl: FunctionDecl,
-    TypedefDecl: struct {
-        namespace: *Namespace,
-        name: []const u8,
-        type: c.CXType,
-
-        pub fn format(ty: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
-            try writer.print("typedef {s} {s};", .{ getTypeSpelling(ty.type), ty.name });
-        }
-    },
-    EnumDecl: struct {
-        namespace: *Namespace,
-        name: []const u8,
-        type: c.CXType,
-        integer_type: c.CXType,
-        fields: std.ArrayList(struct {
-            name: []const u8,
-            value: c_longlong,
-        }),
-
-        pub fn format(s: @This(), writer: *std.io.Writer) std.io.Writer.Error!void {
-            try writer.print("enum({s}) {s} {{\n", .{ getTypeSpelling(s.integer_type), s.name });
-            for (s.fields.items[0..]) |p| {
-                try writer.print("{s}  {s} = {},\n", .{
-                    element_format_indent,
-                    p.name,
-                    p.value,
-                });
-            }
-            try writer.print("{s}}};", .{element_format_indent});
-        }
-    },
+    TypedefDecl: TypedefDecl,
+    EnumDecl: EnumDecl,
     StructDecl: StructDecl,
     Namespace: *Namespace,
 
@@ -467,6 +559,26 @@ fn getTypeSpelling(@"type": c.CXType) []const u8 {
     defer c.clang_disposeString(spelling);
 
     return allocator.dupe(u8, std.mem.span(c.clang_getCString(spelling))) catch @panic("OOM");
+}
+
+fn getTypeSpellingEx(@"type": c.CXType, namespace: ?[]const u8) ![]const u8 {
+    var out = std.ArrayList(u8).init(allocator);
+    const spelling = getTypeSpelling(@"type");
+    var toks = std.mem.tokenizeScalar(u8, spelling, ' ');
+
+    while (toks.next()) |t| {
+        if (std.mem.eql(u8, t, "&")) {
+            try out.appendSlice("*");
+        } else if (!(std.mem.eql(u8, t, "const") or std.mem.eql(u8, t, "*"))) {
+            if (namespace) |ns| try out.appendSlice(ns);
+            try out.appendSlice(t);
+        } else {
+            try out.appendSlice(t);
+        }
+        try out.appendSlice(" ");
+    }
+
+    return out.items;
 }
 
 fn getNamespaceElements(client_data: *ClientData) *std.ArrayList(Element) {
