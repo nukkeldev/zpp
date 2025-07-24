@@ -46,22 +46,25 @@ pub fn main() !void {
     var client_data = ClientData{ .namespace = ns };
     _ = c.clang_visitChildren(cursor, visitor, @ptrCast(&client_data));
 
-    const buf = allocator.alloc(u8, 0) catch @panic("OOM");
+    {
+        var cpp = std.fs.cwd().createFile("imgui.h.cpp", .{}) catch @panic("File error");
+        defer cpp.close();
 
-    var cpp = std.fs.cwd().createFile("imgui.h.cpp", .{}) catch @panic("File error");
-    var cpp_writer = cpp.writer(buf);
+        var cpp_writer = cpp.writer(try allocator.alloc(u8, 0));
+        written_functions = .init(allocator);
+        try writeGlobalNamespace(ns, &cpp_writer.interface);
 
-    written_functions = .init(allocator);
-    try writeGlobalNamespace(ns, &cpp_writer.interface);
+        std.log.info("Successfully wrote output!", .{});
+    }
 
-    cpp.close();
-
-    var comp = std.process.Child.init(&.{"zig", "c++", "imgui.h.cpp"}, allocator);
+    var comp = std.process.Child.init(&.{ "zig", "c++", "imgui.h.cpp", "-std=c++20" }, allocator);
     _ = try comp.spawnAndWait();
 }
 
 // -- C-Wrapper -- //
 // TODO: Be idiomatic and use proper writergate stuff for everything.
+
+const ANNOTATE_OUTPUT = true;
 
 var linkage_prefix = "";
 var source_namespace = "NS";
@@ -114,9 +117,11 @@ fn formatParams(params: *const std.ArrayList(Param), seperator: []const u8, trai
 
     var out = std.ArrayList(u8).init(allocator);
     for (params.items) |*p| {
-        // const tks = c.clang_getTypeKindSpelling(p.type.kind);
-        // defer c.clang_disposeString(tks);
-        // try out.appendSlice(try std.fmt.allocPrint(allocator, "/* {s} */ ", .{c.clang_getCString(tks)}));
+        if (ANNOTATE_OUTPUT) {
+            const spelling = c.clang_getTypeKindSpelling(p.type.kind);
+            defer c.clang_disposeString(spelling);
+            try out.appendSlice(try std.fmt.allocPrint(allocator, "/* {s} */ ", .{c.clang_getCString(spelling)}));
+        }
 
         // TODO: Need to handle arrays and function pointers.
         switch (p.type.kind) {
@@ -243,12 +248,17 @@ fn writeFunctionDeclToCExternFunction(fn_decl: *const FunctionDecl, writer: *std
     });
 }
 
+/// Write a struct definition to the output. If no fields, assumed to be a forward refrence.
 fn writeStructDecl(struct_decl: *const StructDecl, writer: *std.io.Writer) !void {
-    if (struct_decl.fields.items.len > 0) {
+    const prefixed_name = try std.mem.concat(allocator, u8, &.{elm_prefix, struct_decl.name});
+    
+    const is_forward_decl = struct_decl.fields.items.len > 0;
+
+    if (is_forward_decl) {
         try writer.print(
             "struct {[name]s} {{\n{[params]s}}};\n",
             .{
-                .name = struct_decl.name,
+                .name = prefixed_name,
                 .params = try formatParams(&struct_decl.fields, ";\n", true),
             },
         );
@@ -256,7 +266,7 @@ fn writeStructDecl(struct_decl: *const StructDecl, writer: *std.io.Writer) !void
         try writer.print(
             "typedef struct {[name]s} {[name]s};\n",
             .{
-                .name = struct_decl.name,
+                .name = prefixed_name,
             },
         );
     }
@@ -268,18 +278,20 @@ fn writeEnumDecl(enum_decl: *const EnumDecl, writer: *std.io.Writer) !void {
 }
 
 fn writeTypedef(t: *const TypedefDecl, writer: *std.io.Writer) !void {
+    const prefixed_name = try std.mem.concat(allocator, u8, &.{ elm_prefix, t.name });
+
     try writer.print("typedef ", .{});
     switch (t.type.kind) {
         c.CXType_Pointer => {
             // TODO: Write wrappers.
             if (c.clang_getPointeeType(t.type).kind == c.CXType_FunctionProto) {
-                try writer.print("::NS::{s} {s}", .{ t.name, t.name });
+                try writer.print("::NS::{s} {s}", .{ t.name, prefixed_name });
             } else {
-                try writer.print("{s}", .{try formatPointerTypeWithName(t.type, t.name)});
+                try writer.print("{s}", .{try formatPointerTypeWithName(t.type, prefixed_name)});
             }
         },
         else => {
-            try writer.print("{s} {s}{s}", .{getTypeSpelling(t.type), elm_prefix, t.name});
+            try writer.print("{s} {s}", .{ getTypeSpelling(t.type), prefixed_name });
         },
     }
     try writer.print(";\n", .{});
