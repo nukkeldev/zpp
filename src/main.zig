@@ -1,21 +1,11 @@
-//! Generates a Zig bindings via extern C functions for C++ headers.
-//!
-//! TODO: Bring comments over.
-//! TODO: Struct Methods.
-
-// ---
+// -- Imports -- //
 
 const std = @import("std");
 
 const Reader = @import("Reader.zig");
+const Writer = @import("Writer.zig");
 
-// const c = @cImport({
-//     @cInclude("clang-c/Index.h");
-// });
-
-// ---
-
-var allocator: std.mem.Allocator = undefined;
+// -- Main -- //
 
 pub fn main() !void {
     const args: []const [:0]const u8 = &.{"-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS"};
