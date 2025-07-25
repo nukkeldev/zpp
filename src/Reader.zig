@@ -51,8 +51,9 @@ fn init(allocator: Allocator, opts: ParsingOptions) !Reader {
     return .{
         .arena = arena,
         .ast = .{
-            .namespaces = .init(arena.allocator()),
-            .symbols = .init(arena.allocator()),
+            .functions = .init(arena.allocator()),
+            .structs = .init(arena.allocator()),
+            .enums = .init(arena.allocator()),
         },
         .opts = opts,
     };
@@ -64,9 +65,7 @@ pub fn deinit(reader: *const Reader) void {
 
 // -- Functions -- //
 
-fn addSymbol(reader: *Reader, symbol: CppSymbol) !void {
-    try reader.ast.symbols.append(symbol);
-}
+
 
 // -- Parsing -- //
 
@@ -143,19 +142,18 @@ fn outerVisitor(current_cursor: CXCursor, _: CXCursor, client_data_opaque: c.CXC
 }
 
 fn visitor(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
-    const inner = switch (cursor.kind) {
+    switch (cursor.kind) {
         c.CXCursor_StructDecl => try visitStructDecl(allocator, cursor, reader),
         c.CXCursor_FunctionDecl => try visitFunctionDecl(allocator, cursor, reader),
         c.CXCursor_EnumDecl => try visitEnumDecl(allocator, cursor, reader),
         c.CXCursor_TypedefDecl => try visitTypedefDecl(allocator, cursor, reader),
-        c.CXCursor_Namespace => return try visitNamespace(allocator, cursor, reader),
+        c.CXCursor_Namespace => try visitNamespace(allocator, cursor, reader),
         else => return,
-    };
-
-    const name = try getCursorSpelling(allocator, cursor);
-    const location = getCursorLocation(cursor);
+    }
 
     if (reader.opts.verbose) {
+        const name = try getCursorSpelling(allocator, cursor);
+        const location = getCursorLocation(cursor);
         const kind = try getCursorKindSpelling(allocator, cursor.kind);
         defer allocator.free(kind);
 
@@ -166,56 +164,45 @@ fn visitor(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !voi
             location.column,
         });
     }
-
-    const symbol = CppSymbol{
-        .loc = location,
-        .name = name,
-        .ns_idx = reader.current_ns_idx,
-        .inner = inner,
-    };
-
-    try reader.addSymbol(symbol);
 }
 
-fn visitStructDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !CppSymbol.Inner {
+fn visitStructDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
     std.debug.assert(cursor.kind == c.CXCursor_StructDecl);
 
     _ = allocator;
     _ = reader;
-
-    return undefined;
 }
 
-fn visitFunctionDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !CppSymbol.Inner {
+fn visitFunctionDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
     std.debug.assert(cursor.kind == c.CXCursor_FunctionDecl);
 
     _ = allocator;
     _ = reader;
 
-    return undefined;
 }
 
-fn visitEnumDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !CppSymbol.Inner {
+fn visitEnumDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
     std.debug.assert(cursor.kind == c.CXCursor_EnumDecl);
 
     _ = allocator;
     _ = reader;
 
-    return .{
-        .en_decl = .{
-            .int = undefined, // TODO
-            .decls = undefined,
-        },
-    };
+    // const int = c.clang_getEnumDeclIntegerType(cursor);
+
+    // return .{
+    //     .en_decl = .{
+    //         .int = .from(int), // TODO
+    //         .decls = undefined,
+    //     },
+    // };
 }
 
-fn visitTypedefDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !CppSymbol.Inner {
+fn visitTypedefDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
     std.debug.assert(cursor.kind == c.CXCursor_TypedefDecl);
 
     _ = allocator;
     _ = reader;
 
-    return undefined;
 }
 
 fn visitNamespace(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !void {
@@ -226,6 +213,8 @@ fn visitNamespace(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reade
 }
 
 // -- Helpers -- //
+
+// Location
 
 fn getCursorLocation(cursor: CXCursor) Location {
     const location = c.clang_getCursorLocation(cursor);
@@ -267,6 +256,14 @@ fn getSafeCXStringFn(
     }.f;
 }
 
+// Debug
+
+fn debugType(@"type": CXType) void {
+    const ty_spelling = getTypeSpelling(std.heap.smp_allocator, @"type") catch @panic("OOM");
+    const kind_spelling = getTypeKindSpelling(std.heap.smp_allocator, @"type".kind) catch @panic("OOM");
+    std.debug.print("'{s}' ({}#{s})", .{ ty_spelling, @"type".kind, kind_spelling });
+}
+
 // -- Result -- //
 
 pub const Location = struct {
@@ -275,58 +272,81 @@ pub const Location = struct {
     offset: usize,
 };
 
-// NOTE: Contains a subset of those in CXTypeKind along with better structured information
-// NOTE: about each one.
-pub const CppType = union(enum) {
-    void,
-    int,
+/// NOTE: Each usage of the type is it's own instance.
+pub const CppType = struct {
+    // TODO: usage_location: Location,
+
+    inner: Inner,
+    is_const: bool,
+
+    pub const Inner = union(enum) {
+        void,
+        int,
+        u8,
+
+        fn from(@"type": CXType) CppType {
+            var resolved_type = @"type";
+
+            return outer: switch (resolved_type.kind) {
+                c.CXType_Void => .void,
+                c.CXType_Int => .int,
+                c.CXType_UChar => .u8,
+
+                c.CXType_Typedef => {
+                    // TODO: This seems convoluted, there has to be an easier way to do this.
+                    const type_cursor = c.clang_getTypeDeclaration(resolved_type);
+                    resolved_type = c.clang_getTypedefDeclUnderlyingType(type_cursor);
+
+                    continue :outer resolved_type.kind;
+                },
+
+                else => {
+                    std.debug.print("Type ", .{});
+                    debugType(resolved_type);
+                    std.debug.print(" not yet implemented!\n", .{});
+
+                    std.process.exit(1);
+                },
+            };
+        }
+    };
 };
 
-pub const CppTypeNamePair = struct { []const u8, CppType };
-
-pub const CppFunctionDeclaration = struct {
-    params: std.ArrayList(CppTypeNamePair),
-    ret: CppType,
+/// A pair of a C++ type and name, either a function parameter or struct field.
+pub const CppTypeNamePair = struct {
+    name: []const u8,
+    type: CppType,
 };
 
-pub const CppStructDeclaration = struct {
+/// A C++ struct declaration.
+pub const CppStruct = struct {
+    // TODO: location,
+    name: []const u8,
     fields: std.ArrayList(CppTypeNamePair),
 };
 
-pub const CppEnumDeclaration = struct {
+/// A C++ enum declaration.
+pub const CppEnum = struct {
+    // TODO: location,
+    name: []const u8,
     int: CppType,
     decls: std.ArrayList(Decl),
 
     pub const Decl = struct { []const u8, usize };
 };
 
-pub const TypedefDeclaration = struct {
-    ref: CppType,
-};
-
-pub const CppSymbol = struct {
-    loc: Location,
+/// A C++ function declaration.
+pub const CppFunctionDeclaration = struct {    
+    // TODO: location,
     name: []const u8,
-    ns_idx: usize,
-    inner: Inner,
-
-    pub const Inner = union(enum) {
-        fn_decl: CppFunctionDeclaration,
-        st_decl: CppStructDeclaration,
-        en_decl: CppEnumDeclaration,
-        td_decl: TypedefDeclaration,
-    };
-};
-
-pub const CppNamespace = struct {
-    name: []const u8,
-    parent_idx: usize,
+    params: std.ArrayList(CppTypeNamePair),
+    ret: CppType,
 };
 
 /// Frankly, AST is not a proper name for this in a conventional sense but I don't really care.
 /// This struct does not respect a symbol's location in the source file.
 pub const AST = struct {
-    /// NOTE: The first index is _always_ empty.
-    namespaces: std.ArrayList(CppNamespace),
-    symbols: std.ArrayList(CppSymbol),
+    functions: std.ArrayList(CppFunctionDeclaration),
+    structs: std.StringHashMap(CppStruct),
+    enums: std.StringHashMap(CppEnum),
 };
