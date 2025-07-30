@@ -41,7 +41,7 @@ ast: AST,
 opts: ParsingOptions,
 err: ?anyerror = null,
 
-ns_prefix_stack: std.ArrayList([]const u8),
+current_namespace: ?usize = null,
 
 // -- (De)initialization -- //
 
@@ -52,13 +52,13 @@ fn init(allocator: Allocator, opts: ParsingOptions) !Reader {
     return .{
         .arena = arena,
         .ast = .{
+            .namespaces = .init(arena.allocator()),
             .functions = .init(arena.allocator()),
             .structs = .init(arena.allocator()),
             .enums = .init(arena.allocator()),
             .closures = .init(arena.allocator()),
         },
         .opts = opts,
-        .ns_prefix_stack = .init(arena.allocator()),
     };
 }
 
@@ -152,9 +152,9 @@ pub fn parseFile(
 
     var err_where_the_type_go = false;
     for (reader.ast.functions.items) |func| {
-        for (func.params.items, 0..) |param, i| {
+        for (func.parameters.items, 0..) |param, i| {
             if (!param.type.exists(&reader.ast)) {
-                log.err("Unknown type for argument #{} {f} of function '{s}'!", .{i, param, func.name});
+                log.err("Unknown type for argument #{} {f} of function '{s}'!", .{ i, param, func.name });
                 err_where_the_type_go = true;
             }
         }
@@ -184,10 +184,13 @@ fn visitor(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader) !voi
 
     switch (cursor.kind) {
         c.CXCursor_Namespace => {
-            try reader.ns_prefix_stack.append(name);
-            defer _ = reader.ns_prefix_stack.pop();
+            const parent = reader.current_namespace;
 
-            log.debug("In namespace: {s}", .{try getNamespacePrefix(allocator, reader.ns_prefix_stack.items)});
+            try reader.ast.namespaces.append(.{ .name = name, .parent = parent });
+            reader.current_namespace = reader.ast.namespaces.items.len - 1;
+            defer reader.current_namespace = parent;
+
+            log.debug("In namespace: {s}", .{try getNamespacePrefix(allocator, reader.current_namespace, &reader.ast)});
             _ = c.clang_visitChildren(cursor, outerVisitor, @ptrCast(reader));
         },
         c.CXCursor_FunctionDecl => try processFnDecl(allocator, cursor, reader),
@@ -236,9 +239,10 @@ fn processFnDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader
 
     const fn_decl = CppFunctionDecl{
         .name = name,
-        .ns_prefix = try getNamespacePrefix(allocator, reader.ns_prefix_stack.items),
-        .params = params,
-        .ret = return_type,
+        .namespace = reader.current_namespace,
+        .resolved_namespace_prefix = try getNamespacePrefix(allocator, reader.current_namespace, &reader.ast),
+        .parameters = params,
+        .return_type = return_type,
     };
 
     try reader.ast.functions.append(fn_decl);
@@ -430,17 +434,18 @@ fn getSafeCXStringFn(
 
 // Formatting
 
-pub fn getNamespacePrefix(allocator: Allocator, stack: []const []const u8) ![]const u8 {
-    return getNamespacePrefixWithSeperator(allocator, stack, "_");
+pub fn getNamespacePrefix(allocator: Allocator, namespace: ?usize, ast: *const AST) ![]const u8 {
+    return getNamespacePrefixWithSeperator(allocator, namespace, ast, "_");
 }
 
-pub fn getNamespacePrefixWithSeperator(allocator: Allocator, stack: []const []const u8, sep: []const u8) ![]const u8 {
-    if (stack.len == 0) return "";
+pub fn getNamespacePrefixWithSeperator(allocator: Allocator, namespace: ?usize, ast: *const AST, sep: []const u8) ![]const u8 {
+    if (namespace == null) return "";
 
     var prefix = std.ArrayList(u8).init(allocator);
+    var ns_opt = namespace;
 
-    for (stack) |item| {
-        try prefix.appendSlice(item);
+    while (ns_opt) |ns|: (ns_opt = ast.namespaces.items[ns].parent) {
+        try prefix.appendSlice(ast.namespaces.items[ns].name);
         try prefix.appendSlice(sep);
     }
 
@@ -586,9 +591,10 @@ pub const CppType = struct {
 
                 try reader.ast.closures.append(.{
                     .name = "<closure>",
-                    .ns_prefix = "",
-                    .ret = return_type,
-                    .params = params,
+                    .namespace = null,
+                    .resolved_namespace_prefix = "",
+                    .return_type = return_type,
+                    .parameters = params,
                 });
 
                 break :outer .{ .closure = reader.ast.closures.items.len - 1 };
@@ -675,25 +681,33 @@ pub const CppEnumDecl = struct {
 pub const CppFunctionDecl = struct {
     // TODO: location,
     name: []const u8,
-    ns_prefix: []const u8,
-    params: std.ArrayList(CppTypeNamePair),
-    ret: CppType,
+    namespace: ?usize,
+    parameters: std.ArrayList(CppTypeNamePair),
+    return_type: CppType,
+
+    resolved_namespace_prefix: []const u8,
 
     pub fn format(fn_decl: CppFunctionDecl, writer: *std.io.Writer) std.io.Writer.Error!void {
-        try writer.print("fn {s}{s}(", .{ fn_decl.ns_prefix, fn_decl.name });
+        try writer.print("fn {s}{s}(", .{ fn_decl.resolved_namespace_prefix, fn_decl.name });
 
-        for (fn_decl.params.items, 0..) |param, i| {
+        for (fn_decl.parameters.items, 0..) |param, i| {
             try writer.print("{f}", .{param});
-            if (i < fn_decl.params.items.len - 1) try writer.print(", ", .{});
+            if (i < fn_decl.parameters.items.len - 1) try writer.print(", ", .{});
         }
 
-        try writer.print(") {f}", .{fn_decl.ret});
+        try writer.print(") {f}", .{fn_decl.return_type});
     }
+};
+
+pub const CppNamespaceDecl = struct {
+    name: []const u8,
+    parent: ?usize = null,
 };
 
 /// Frankly, AST is not a proper name for this in a conventional sense but I don't really care.
 /// This struct does not respect a symbol's location in the source file.
 pub const AST = struct {
+    namespaces: std.ArrayList(CppNamespaceDecl),
     functions: std.ArrayList(CppFunctionDecl),
     structs: std.StringHashMap(CppStructDecl),
     enums: std.StringHashMap(CppEnumDecl),
