@@ -1,2 +1,6 @@
 .zig-cache/
 zig-out/
+
+*.lib
+imgui.h.cpp
+imgui.h.zig
