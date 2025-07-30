@@ -92,7 +92,7 @@ pub fn parseFile(
     file_path: [:0]const u8,
     clang_args: []const [:0]const u8,
     opts: ParsingOptions,
-) !AST {
+) !Reader {
     try std.fs.cwd().access(file_path, .{});
     log.info("Parsing '{s}'...", .{file_path});
 
@@ -162,7 +162,7 @@ pub fn parseFile(
 
     if (err_where_the_type_go) return error.WhereTheTypeGo;
 
-    return reader.ast;
+    return reader;
 }
 
 // Visiting
@@ -444,7 +444,7 @@ pub fn getNamespacePrefixWithSeperator(allocator: Allocator, namespace: ?usize, 
     var prefix = std.ArrayList(u8).init(allocator);
     var ns_opt = namespace;
 
-    while (ns_opt) |ns|: (ns_opt = ast.namespaces.items[ns].parent) {
+    while (ns_opt) |ns| : (ns_opt = ast.namespaces.items[ns].parent) {
         try prefix.appendSlice(ast.namespaces.items[ns].name);
         try prefix.appendSlice(sep);
     }
@@ -633,7 +633,6 @@ pub const CppType = struct {
 
     pub fn format(cpp_type: CppType, writer: *std.io.Writer) std.io.Writer.Error!void {
         if (cpp_type.is_const) try writer.print("const ", .{});
-        // TODO: Improve
         try writer.print("{s}", .{@tagName(cpp_type.inner)});
     }
 };
