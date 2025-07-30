@@ -1,9 +1,23 @@
 //! Given the results of `read.zig`'s parsing, outputs an `extern "C"` compatible .cpp file for FFI
-//! usage.
-//! 
-//! > Why generate zig code with extern functions instead of a c header via translate-c?
-//! > Ultimately it comes down to not having to re-create the C++ types in the C header,
-//! > having more control over the output (i.e. associated methods), and just an overall
-//! > want to stay as zig-centric as possible. As well as only having to meet an ABI
-//! > requirement for function parameters and return types.
+//! usage as well as a Zig binding.
 
+// -- Imports -- //
+
+const std = @import("std");
+
+const AST = @import("Reader.zig").AST;
+const Allocator = std.mem.Allocator;
+
+// -- C++ -- //
+
+pub fn formatASTAsCppHeader(ast: AST, writer: *std.io.Writer) std.io.Writer.Error!void {
+    _ = ast;
+    _ = writer;
+}
+
+// -- Zig -- //
+
+pub fn formatASTAsZigBindings(ast: AST, writer: *std.io.Writer) std.io.Writer.Error!void {
+    _ = ast;
+    _ = writer;
+}
