@@ -562,12 +562,12 @@ pub const CppType = struct {
             // TODO: Avoid using fatal errors.
             c.CXType_Record => {
                 const name = try getTypeSpelling(allocator, resolved_type) orelse @panic("Cannot have unnamed structs!");
-                break :outer .{ .record = name };
+                break :outer .{ .record = name[if (std.mem.lastIndexOfScalar(u8, name, ' ')) |i| i + 1 else 0..] };
             },
             // TODO: Avoid using fatal errors.
             c.CXType_Enum => {
                 const name = try getTypeSpelling(allocator, resolved_type) orelse @panic("Cannot have unnamed enum!");
-                break :outer .{ .@"enum" = name };
+                break :outer .{ .@"enum" = name[if (std.mem.lastIndexOfScalar(u8, name, ' ')) |i| i + 1 else 0..] };
             },
 
             c.CXType_FunctionProto => {
