@@ -18,14 +18,22 @@ pub fn main() !void {
     defer reader.arena.deinit();
 
     const allocator = reader.arena.allocator();
+    var writer = Writer{
+        .allocator = allocator,
+        .annotate = true,
+        .ast = reader.ast,
+        .source_filename = filename,
+        .target = .Cpp,
+        .written_functions = .init(allocator),
+    };
 
     {
         const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ filename, ".cpp" });
         var cpp_header_file = try std.fs.cwd().createFile(cpp_header_path, .{});
         defer cpp_header_file.close();
 
-        var writer = cpp_header_file.writer(&.{});
-        try Writer.formatASTAsCpp(allocator, filename, reader.ast, &writer.interface);
+        var io_writer = cpp_header_file.writer(&.{});
+        try writer.format(&io_writer.interface);
 
         std.log.info("Wrote C++ header!", .{});
 
@@ -48,13 +56,15 @@ pub fn main() !void {
         }
     }
 
+    writer.target = .Zig;
+
     {
         const zig_bindings_path: []const u8 = "imgui.h.zig";
         var zig_bindings_file = try std.fs.cwd().createFile(zig_bindings_path, .{});
         defer zig_bindings_file.close();
 
-        var writer = zig_bindings_file.writer(&.{});
-        try Writer.formatASTAsZig(allocator, filename, reader.ast, &writer.interface);
+        var io_writer = zig_bindings_file.writer(&.{});
+        try writer.format(&io_writer.interface);
 
         std.log.info("Wrote Zig bindings!", .{});
         if (verify) {
