@@ -90,7 +90,7 @@ const FormatCppFunctions = struct {
             if (overload_idx_ptr.* > 0) log.debug("This is overload #{}.", .{overload_idx_ptr.*});
 
             const how_should_i_handle_the_return_type = howShouldIHandleTheReturnType(&func.return_type);
-            log.debug("Return type of '{s}' means we will use {}.", .{@tagName(func.return_type.inner), how_should_i_handle_the_return_type});
+            log.debug("Return type of '{s}' means we will use {}.", .{ @tagName(func.return_type.inner), how_should_i_handle_the_return_type });
 
             try io_writer.print(CPP_TEMPLATE_FUNCTION, .{
                 .indent = INDENT,
@@ -152,6 +152,7 @@ const FormatCppArguments = struct {
         for (fmt.func.parameters.items, 0..) |param, i| {
             switch (param.type.inner) {
                 .reference => try io_writer.print("*{s}", .{param.name}),
+                .pointer => try io_writer.print("reinterpret_cast<{s}>({s})", .{param.type.raw_type_spelling, param.name}),
                 else => try io_writer.print("{s}", .{param.name}),
             }
             if (i < fmt.func.parameters.items.len - 1) try io_writer.print(", ", .{});
@@ -177,14 +178,19 @@ const FormatCppType = struct {
     ignore_const: bool = false,
 
     pub fn format(fmt: FormatCppType, io_writer: *std.io.Writer) std.io.Writer.Error!void {
-        log.debug("[{}] Formatting type '{s}'.", .{fmt.writer.debug_idx, @tagName(fmt.type.inner)});
+        log.debug("[{}] Formatting type '{s}'.", .{ fmt.writer.debug_idx, @tagName(fmt.type.inner) });
         if (fmt.type.is_const) {
             log.debug("Type is const.", .{});
             if (fmt.ignore_const) log.debug("But we are ignoring that...", .{});
         }
 
         if (fmt.writer.annotate) {
-            try io_writer.print("/* {}:{s}:{} */ ", .{fmt.writer.debug_idx, @tagName(fmt.type.inner), fmt.type.is_const});
+            try io_writer.print("/* {}:{s}:{}:'{s}' */ ", .{
+                fmt.writer.debug_idx,
+                @tagName(fmt.type.inner),
+                fmt.type.is_const,
+                fmt.type.raw_type_spelling,
+            });
             fmt.writer.debug_idx += 1;
         }
         if (!fmt.ignore_const and fmt.type.is_const) try io_writer.print("const ", .{});
