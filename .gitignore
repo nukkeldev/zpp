@@ -6,3 +6,5 @@ zig-out/
 *.pdb
 imgui.h.cpp
 imgui.h.zig
+
+imgui.ini
