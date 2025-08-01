@@ -472,6 +472,7 @@ pub const Location = struct {
 pub const CppType = struct {
     // TODO: usage_location: Location,
 
+    raw_type_spelling: []const u8 = "",
     inner: Inner,
     is_const: bool,
 
@@ -618,6 +619,7 @@ pub const CppType = struct {
         };
 
         return .{
+            .raw_type_spelling = try getTypeSpelling(allocator, @"type") orelse "",
             .is_const = c.clang_isConstQualifiedType(@"type") != 0,
             .inner = inner,
         };
