@@ -237,12 +237,16 @@ fn processFnDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader
         try params.append(.{ .name = arg_name, .type = arg_type });
     }
 
+    const variadic = c.clang_Cursor_isVariadic(cursor) != 0;
+    if (variadic) log.debug("fn is variadic", .{});
+
     const fn_decl = CppFunctionDecl{
         .name = name,
         .namespace = reader.current_namespace,
         .resolved_namespace_prefix = try getNamespacePrefix(allocator, reader.current_namespace, &reader.ast),
         .parameters = params,
         .return_type = return_type,
+        .variadic = variadic,
     };
 
     try reader.ast.functions.append(fn_decl);
@@ -596,6 +600,7 @@ pub const CppType = struct {
                     .resolved_namespace_prefix = "",
                     .return_type = return_type,
                     .parameters = params,
+                    .variadic = c.clang_isFunctionTypeVariadic(resolved_type) != 0,
                 });
 
                 break :outer .{ .closure = reader.ast.closures.items.len - 1 };
@@ -685,6 +690,7 @@ pub const CppFunctionDecl = struct {
     namespace: ?usize,
     parameters: std.ArrayList(CppTypeNamePair),
     return_type: CppType,
+    variadic: bool = false,
 
     resolved_namespace_prefix: []const u8,
 
@@ -693,8 +699,10 @@ pub const CppFunctionDecl = struct {
 
         for (fn_decl.parameters.items, 0..) |param, i| {
             try writer.print("{f}", .{param});
-            if (i < fn_decl.parameters.items.len - 1) try writer.print(", ", .{});
+            if (fn_decl.variadic or i < fn_decl.parameters.items.len - 1) try writer.print(", ", .{});
         }
+
+        if (fn_decl.variadic) try writer.print("...", .{});
 
         try writer.print(") {f}", .{fn_decl.return_type});
     }

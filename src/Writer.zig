@@ -53,6 +53,8 @@ const CPP_TEMPLATE_FILE =
     \\
     \\#include "{[filename]s}"
     \\
+    \\#include <cstdarg>
+    \\
     \\#pragma clang diagnostic push
     \\#pragma clang diagnostic ignored "-Wformat-security"
     \\
@@ -67,6 +69,16 @@ const CPP_TEMPLATE_FILE =
 const CPP_TEMPLATE_FUNCTION =
     \\{[indent]s}{[return_type]f} {[name_namespace_prefix]s}{[name]s}{[overload_idx]s}({[parameters]f}) {{
     \\{[indent]s}{[indent]s}{[might_return]s}{[return_prefix]s}{[namespace_prefix]s}{[name]s}({[arguments]f}){[return_suffix]s};
+    \\{[indent]s}}}
+    \\
+;
+
+const CPP_TEMPLATE_VARIADIC_FUNCTION =
+    \\{[indent]s}{[return_type]f} {[name_namespace_prefix]s}{[name]s}{[overload_idx]s}({[parameters]f}) {{
+    \\{[indent]s}{[indent]s}va_list ZPP_args;
+    \\{[indent]s}{[indent]s}va_start(ZPP_args, {[after_param]s});
+    \\{[indent]s}{[indent]s}{[might_return]s}{[return_prefix]s}{[namespace_prefix]s}{[name]s}({[arguments]f}){[return_suffix]s};
+    \\{[indent]s}{[indent]s}va_end(ZPP_args);
     \\{[indent]s}}}
     \\
 ;
@@ -89,29 +101,54 @@ const FormatCppFunctions = struct {
             const overload_idx_ptr = (fmt.writer.written_functions.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
             if (overload_idx_ptr.* > 0) log.debug("This is overload #{}.", .{overload_idx_ptr.*});
 
+            const overload_idx = if (overload_idx_ptr.* > 0)
+                std.fmt.allocPrint(fmt.writer.allocator, "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
+            else
+                "";
+
             const how_should_i_handle_the_return_type = howShouldIHandleTheReturnType(&func.return_type);
             log.debug("Return type of '{s}' means we will use {}.", .{ @tagName(func.return_type.inner), how_should_i_handle_the_return_type });
 
-            try io_writer.print(CPP_TEMPLATE_FUNCTION, .{
-                .indent = INDENT,
-                .return_type = if (how_should_i_handle_the_return_type == .Primitive)
-                    FormatCppType{ .type = &func.return_type, .writer = fmt.writer }
-                else
-                    FormatCppType{ .type = &CppType{ .is_const = false, .inner = .void }, .writer = fmt.writer },
-                .name_namespace_prefix = func.resolved_namespace_prefix,
-                .name = func.name,
-                .overload_idx = if (overload_idx_ptr.* > 0)
-                    std.fmt.allocPrint(fmt.writer.allocator, "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
-                else
-                    "",
-                .parameters = FormatCppParameters{ .func = func, .writer = fmt.writer },
-                .might_return = if (how_should_i_handle_the_return_type == .Primitive) "return " else "",
-                .return_prefix = if (func.return_type.inner == .reference) "&" else "", // TODO
-                .namespace_prefix = Reader.getNamespacePrefixWithSeperator(fmt.writer.allocator, func.namespace, &fmt.writer.ast, "::") catch |e| fatal(e),
-                .arguments = FormatCppArguments{ .func = func, .writer = fmt.writer },
-                .return_suffix = "", // TODO
-            });
+            const return_type = if (how_should_i_handle_the_return_type == .Primitive)
+                FormatCppType{ .type = &func.return_type, .writer = fmt.writer }
+            else
+                FormatCppType{ .type = &CppType{ .is_const = false, .inner = .void }, .writer = fmt.writer };
 
+            const namespace_prefix = Reader.getNamespacePrefixWithSeperator(fmt.writer.allocator, func.namespace, &fmt.writer.ast, "::") catch |e| fatal(e);
+
+            const might_return = if (how_should_i_handle_the_return_type == .Primitive) "return " else "";
+            const return_prefix = if (func.return_type.inner == .reference) "&" else "";
+
+            if (func.variadic) {
+                try io_writer.print(CPP_TEMPLATE_VARIADIC_FUNCTION, .{
+                    .indent = INDENT,
+                    .return_type = return_type,
+                    .after_param = func.parameters.getLast().name,
+                    .name_namespace_prefix = func.resolved_namespace_prefix,
+                    .name = func.name,
+                    .overload_idx = overload_idx,
+                    .parameters = FormatCppParameters{ .func = func, .writer = fmt.writer },
+                    .might_return = might_return,
+                    .return_prefix = return_prefix, // TODO
+                    .namespace_prefix = namespace_prefix,
+                    .arguments = FormatCppArguments{ .func = func, .writer = fmt.writer },
+                    .return_suffix = "", // TODO
+                });
+            } else {
+                try io_writer.print(CPP_TEMPLATE_FUNCTION, .{
+                    .indent = INDENT,
+                    .return_type = return_type,
+                    .name_namespace_prefix = func.resolved_namespace_prefix,
+                    .name = func.name,
+                    .overload_idx = overload_idx,
+                    .parameters = FormatCppParameters{ .func = func, .writer = fmt.writer },
+                    .might_return = might_return,
+                    .return_prefix = return_prefix, // TODO
+                    .namespace_prefix = namespace_prefix,
+                    .arguments = FormatCppArguments{ .func = func, .writer = fmt.writer },
+                    .return_suffix = "", // TODO
+                });
+            }
             overload_idx_ptr.* += 1;
         }
     }
@@ -139,8 +176,9 @@ const FormatCppParameters = struct {
                 },
                 else => try io_writer.print("{f} {s}", .{ FormatCppType{ .type = &param.type, .writer = fmt.writer }, param.name }),
             }
-            if (i < fmt.func.parameters.items.len - 1) try io_writer.print(", ", .{});
+            if (fmt.func.variadic or i < fmt.func.parameters.items.len - 1) try io_writer.print(", ", .{});
         }
+        if (fmt.func.variadic) try io_writer.print("...", .{});
     }
 };
 
@@ -152,7 +190,7 @@ const FormatCppArguments = struct {
         for (fmt.func.parameters.items, 0..) |param, i| {
             switch (param.type.inner) {
                 .reference => try io_writer.print("*{s}", .{param.name}),
-                .pointer => try io_writer.print("reinterpret_cast<{s}>({s})", .{param.type.raw_type_spelling, param.name}),
+                .pointer => try io_writer.print("reinterpret_cast<{s}>({s})", .{ param.type.raw_type_spelling, param.name }),
                 else => try io_writer.print("{s}", .{param.name}),
             }
             if (i < fmt.func.parameters.items.len - 1) try io_writer.print(", ", .{});
@@ -191,8 +229,8 @@ const FormatCppType = struct {
                 fmt.type.is_const,
                 fmt.type.raw_type_spelling,
             });
-            fmt.writer.debug_idx += 1;
         }
+        fmt.writer.debug_idx += 1;
         if (!fmt.ignore_const and fmt.type.is_const) try io_writer.print("const ", .{});
 
         switch (fmt.type.inner) {

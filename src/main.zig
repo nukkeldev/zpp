@@ -44,7 +44,7 @@ pub fn main() !void {
                 "zig",
                 "build-lib",
                 "-fclang",
-                "-lc",
+                "-lc++",
                 "-cflags",
                 "-std=c++20",
                 "--",
