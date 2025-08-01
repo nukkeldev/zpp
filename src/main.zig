@@ -20,7 +20,7 @@ pub fn main() !void {
     const allocator = reader.arena.allocator();
     var writer = Writer{
         .allocator = allocator,
-        .annotate = true,
+        .annotate = false,
         .ast = reader.ast,
         .source_filename = filename,
         .target = .Cpp,
