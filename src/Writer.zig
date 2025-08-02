@@ -17,29 +17,59 @@ const Allocator = std.mem.Allocator;
 
 const INDENT = "    ";
 
+const VOID_PTR_TYPE: CppType = .{
+    .is_const = false,
+    .inner = .{
+        .pointer = &.{
+            .is_const = false,
+            .inner = .void,
+        },
+    },
+};
+
+const CONST_VOID_PTR_TYPE: CppType = .{
+    .is_const = false,
+    .inner = .{
+        .pointer = &.{
+            .is_const = true,
+            .inner = .void,
+        },
+    },
+};
+
 const log = std.log.scoped(.writer);
 
 // -- State -- //
 
-target: Target,
+/// The language we are writing.
+language: Language,
+/// Whether to annotate the output with comments detailing AST attributes.
 annotate: bool = false,
 
+/// An allocator; nothing is freed.
 allocator: Allocator,
+/// The source filename that the AST came from.
+/// Used, for instance, for including symbols in C++.
 source_filename: []const u8,
+/// The abstract syntax tree.
 ast: AST,
 
+/// An index to correlate log statements to annotations.
 debug_idx: usize = 0,
-written_functions: std.StringHashMap(usize),
+function_overload_counts: std.StringHashMap(usize),
 
-const Target = enum {
+/// The language target for the `Writer`.
+const Language = enum {
+    /// Writes a C++ file that provides extern "C" wrappers for the AST's functions.
     Cpp,
+    /// Writes a Zig file that uses the C++ extern "C" wrappers and re-implements the structs and enums.
     Zig,
 };
 
 // -- Formatting -- //
 
 pub fn format(writer: *Writer, io_writer: *std.io.Writer) !void {
-    switch (writer.target) {
+    switch (writer.language) {
         .Cpp => try formatCpp(writer, io_writer),
         .Zig => try formatZig(writer, io_writer),
     }
@@ -98,7 +128,7 @@ const FormatCppFunctions = struct {
         log.debug("Writing {} functions.", .{fmt.writer.ast.functions.items.len});
         for (fmt.writer.ast.functions.items) |*func| {
             log.debug("Writing function '{s}' in resolved namespace '{s}'.", .{ func.name, func.resolved_namespace_prefix });
-            const overload_idx_ptr = (fmt.writer.written_functions.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
+            const overload_idx_ptr = (fmt.writer.function_overload_counts.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
             if (overload_idx_ptr.* > 0) log.debug("This is overload #{}.", .{overload_idx_ptr.*});
 
             const overload_idx = if (overload_idx_ptr.* > 0)
@@ -109,14 +139,23 @@ const FormatCppFunctions = struct {
             const how_should_i_handle_the_return_type = howShouldIHandleTheReturnType(&func.return_type);
             log.debug("Return type of '{s}' means we will use {}.", .{ @tagName(func.return_type.inner), how_should_i_handle_the_return_type });
 
-            const return_type = if (how_should_i_handle_the_return_type == .Primitive)
-                FormatCppType{ .type = &func.return_type, .writer = fmt.writer }
-            else
-                FormatCppType{ .type = &CppType{ .is_const = false, .inner = .void }, .writer = fmt.writer };
+            const return_type = switch (how_should_i_handle_the_return_type) {
+                .Primitive => FormatCppType{ .type = &func.return_type, .writer = fmt.writer },
+                .Pointer => outer: {
+                    const const_pointee = func.return_type.inner.pointer.is_const;
+                    if (const_pointee) {
+                        log.debug("Return type pointee is const.", .{});
+                        break :outer FormatCppType{ .type = &CONST_VOID_PTR_TYPE, .writer = fmt.writer };
+                    } else {
+                        break :outer FormatCppType{ .type = &VOID_PTR_TYPE, .writer = fmt.writer };
+                    }
+                },
+                else => FormatCppType{ .type = &CppType{ .is_const = false, .inner = .void }, .writer = fmt.writer },
+            };
 
             const namespace_prefix = Reader.getNamespacePrefixWithSeperator(fmt.writer.allocator, func.namespace, &fmt.writer.ast, "::") catch |e| fatal(e);
 
-            const might_return = if (how_should_i_handle_the_return_type == .Primitive) "return " else "";
+            const might_return = if (how_should_i_handle_the_return_type == .Primitive or how_should_i_handle_the_return_type == .Pointer) "return " else "";
             const return_prefix = if (func.return_type.inner == .reference) "&" else "";
 
             if (func.variadic) {
@@ -250,10 +289,10 @@ const FormatCppType = struct {
             .f64 => try io_writer.print("double", .{}),
             .pointer => |pointee| try io_writer.print("{f}*", .{FormatCppType{ .type = pointee, .writer = fmt.writer, .ignore_const = fmt.type.is_const or fmt.ignore_const }}),
             .reference => |ref| try io_writer.print("{f}*", .{FormatCppType{ .type = ref, .writer = fmt.writer, .ignore_const = fmt.type.is_const or fmt.ignore_const }}),
-            .array, .slice => @panic("TODO: I don't think you can do this as a return type?"),
             .record => |name| try io_writer.print("{s}", .{name}),
             .@"enum" => |name| try io_writer.print("{s}", .{name}),
             .closure => |_| try io_writer.print("void*", .{}),
+            else => @panic("TODO: I don't think you can do this as a return type?"),
         }
     }
 };
@@ -261,12 +300,14 @@ const FormatCppType = struct {
 const ReturnTypeBehav = enum {
     Void,
     Primitive,
+    Pointer,
     Record,
 };
 
 fn howShouldIHandleTheReturnType(cpp_type: *const CppType) ReturnTypeBehav {
     return switch (cpp_type.inner) {
-        .void, .pointer => .Void,
+        .void => .Void,
+        .pointer => .Pointer,
         .record => .Record,
         else => .Primitive,
     };
@@ -275,9 +316,166 @@ fn howShouldIHandleTheReturnType(cpp_type: *const CppType) ReturnTypeBehav {
 // -- Zig -- //
 
 pub fn formatZig(writer: *Writer, io_writer: *std.io.Writer) !void {
-    _ = writer;
-    _ = io_writer;
+    log.debug("Writing AST as Zig file.", .{});
+
+    try io_writer.print(
+        \\// This file was auto-generated by github:nukkeldev/zpp.
+        \\// It works with the accompanied auto-generated C++ file.
+        \\
+        \\// -- Structs -- //
+        \\
+        \\
+    , .{});
+
+    var struct_iter = writer.ast.structs.valueIterator();
+    while (struct_iter.next()) |@"struct"| {
+        try FormatZigStruct.format(.{ .@"struct" = @"struct", .writer = writer }, io_writer);
+        try io_writer.print("\n", .{});
+    }
+
+    try io_writer.print("// -- Enums -- //\n\n", .{});
+
+    var enum_iter = writer.ast.enums.valueIterator();
+    while (enum_iter.next()) |@"enum"| {
+        try FormatZigEnum.format(.{ .@"enum" = @"enum", .writer = writer }, io_writer);
+        try io_writer.print("\n", .{});
+    }
+
+    try io_writer.print("// -- Functions -- //\n\n", .{});
+
+    for (writer.ast.functions.items) |func| {
+        const overload_idx_ptr = (writer.function_overload_counts.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
+        defer overload_idx_ptr.* += 1;
+
+        const overload_idx = if (overload_idx_ptr.* > 0)
+            std.fmt.allocPrint(writer.allocator, "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
+        else
+            "";
+
+        try io_writer.print("{[indent]s}pub extern fn {[namespace]s}{[name]s}{[overload_idx]s}(", .{
+            .indent = "",
+            .namespace = func.resolved_namespace_prefix,
+            .name = func.name,
+            .overload_idx = overload_idx,
+        });
+
+        for (func.parameters.items, 0..) |param, i| {
+            try io_writer.print("{[name]s}: {[type]f}", .{ .name = param.name, .type = FormatZigType{ .type = &param.type, .writer = writer } });
+            if (func.variadic or i < func.parameters.items.len - 1) try io_writer.print(", ", .{});
+        }
+        if (func.variadic) try io_writer.print("...", .{});
+
+        try io_writer.print(") {[return_type]f};\n", .{
+            .return_type = FormatZigType{ .type = &func.return_type, .writer = writer },
+        });
+    }
 }
+
+const FormatZigStruct = struct {
+    @"struct": *const Reader.CppStructDecl,
+    writer: *Writer,
+
+    pub fn format(fmt: FormatZigStruct, io_writer: *std.io.Writer) std.io.Writer.Error!void {
+        for (fmt.@"struct".fields.items) |field| {
+            if (field.type.inner == .anon) {
+                try io_writer.print("pub const {[name]s} = ?*anyopaque;\n", .{ .name = fmt.@"struct".name });
+                return;
+            }
+        }
+
+        try io_writer.print("pub const {[name]s} = extern struct {{\n", .{ .name = fmt.@"struct".name });
+        for (fmt.@"struct".fields.items) |field| {
+            try io_writer.print("{[indent]s}{[name]s}: {[type]f},\n", .{
+                .name = field.name,
+                .type = FormatZigType{ .type = &field.type, .writer = fmt.writer },
+                .indent = INDENT,
+            });
+        }
+        try io_writer.print("}};\n", .{});
+    }
+};
+
+const FormatZigEnum = struct {
+    @"enum": *const Reader.CppEnumDecl,
+    writer: *Writer,
+
+    pub fn format(fmt: FormatZigEnum, io_writer: *std.io.Writer) std.io.Writer.Error!void {
+        try io_writer.print("pub const {[name]s} = enum({[int_type]f}) {{\n", .{
+            .name = fmt.@"enum".name,
+            .int_type = FormatZigType{
+                .type = &fmt.@"enum".int,
+                .writer = fmt.writer,
+            },
+        });
+
+        for (fmt.@"enum".decls.items) |decl| {
+            try io_writer.print("{[indent]s}{[name]s} = {[value]},\n", .{ .indent = INDENT, .name = decl.@"0", .value = decl.@"1" });
+        }
+
+        try io_writer.print("}};\n", .{});
+    }
+};
+
+const FormatZigType = struct {
+    type: *const Reader.CppType,
+    writer: *Writer,
+
+    pub fn format(fmt: FormatZigType, io_writer: *std.io.Writer) std.io.Writer.Error!void {
+        if (fmt.writer.annotate) {
+            try io_writer.print("/* {}:{s}:{}:'{s}' */ ", .{
+                fmt.writer.debug_idx,
+                @tagName(fmt.type.inner),
+                fmt.type.is_const,
+                fmt.type.raw_type_spelling,
+            });
+        }
+        fmt.writer.debug_idx += 1;
+
+        switch (fmt.type.inner) {
+            .unexposed, .pointer, .reference, .closure => {
+                try io_writer.print("?*", .{});
+                if (fmt.type.is_const and fmt.type.inner != .reference) {
+                    try io_writer.print("const ", .{});
+                }
+            },
+            else => {},
+        }
+
+        switch (fmt.type.inner) {
+            // TODO: This might be a good use-case for retaining the CXType.
+            .unexposed => try io_writer.print("anyopaque", .{}),
+            .void => try io_writer.print("void", .{}),
+            .bool => try io_writer.print("bool", .{}),
+            .i8 => try io_writer.print("i8", .{}),
+            .u8 => try io_writer.print("u8", .{}),
+            .i16 => try io_writer.print("i16", .{}),
+            .u16 => try io_writer.print("u16", .{}),
+            .i32 => try io_writer.print("i32", .{}),
+            .u32 => try io_writer.print("u32", .{}),
+            .i64 => try io_writer.print("i64", .{}),
+            .u64 => try io_writer.print("u64", .{}),
+            .f32 => try io_writer.print("f32", .{}),
+            .f64 => try io_writer.print("f64", .{}),
+            .pointer => |pointee| try (FormatZigType{ .type = pointee, .writer = fmt.writer }).format(io_writer),
+            .reference => |ref| try (FormatZigType{ .type = ref, .writer = fmt.writer }).format(io_writer),
+            .array => |arr| {
+                try io_writer.print("[{[count]}]{[elm]f}", .{
+                    .count = arr.@"0",
+                    .elm = FormatZigType{ .type = arr.@"1", .writer = fmt.writer },
+                });
+            },
+            .slice => |elm| {
+                try io_writer.print("[]{[elm]f}", .{
+                    .elm = FormatZigType{ .type = elm, .writer = fmt.writer },
+                });
+            },
+            .record => |name| try io_writer.print("{s}", .{name}),
+            .@"enum" => |name| try io_writer.print("{s}", .{name}),
+            .closure => |_| try io_writer.print("anyopaque", .{}),
+            else => unreachable,
+        }
+    }
+};
 
 // -- Helpers -- //
 

@@ -483,6 +483,8 @@ pub const CppType = struct {
     // TODO: We probably want to check the proper type sizing but for now all of these should reach the minimum requirements.
     pub const Inner = union(enum) {
         unexposed,
+        anon,
+
         void,
 
         bool,
@@ -498,11 +500,11 @@ pub const CppType = struct {
         f32,
         f64,
 
-        pointer: *CppType,
-        reference: *CppType,
+        pointer: *const CppType,
+        reference: *const CppType,
 
-        array: struct { i64, *CppType },
-        slice: *CppType,
+        array: struct { i64, *const CppType },
+        slice: *const CppType,
 
         record: []const u8,
         @"enum": []const u8,
@@ -566,6 +568,10 @@ pub const CppType = struct {
 
             // TODO: Avoid using fatal errors.
             c.CXType_Record => {
+                if (c.clang_Cursor_isAnonymousRecordDecl(c.clang_getTypeDeclaration(@"type")) != 0) {
+                    break :outer .anon;
+                }
+
                 const name = try getTypeSpelling(allocator, resolved_type) orelse @panic("Cannot have unnamed structs!");
                 break :outer .{ .record = name[if (std.mem.lastIndexOfScalar(u8, name, ' ')) |i| i + 1 else 0..] };
             },
