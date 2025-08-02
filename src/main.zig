@@ -23,8 +23,8 @@ pub fn main() !void {
         .annotate = false,
         .ast = reader.ast,
         .source_filename = filename,
-        .target = .Cpp,
-        .written_functions = .init(allocator),
+        .language = .Cpp,
+        .function_overload_counts = .init(allocator),
     };
 
     {
@@ -56,7 +56,9 @@ pub fn main() !void {
         }
     }
 
-    writer.target = .Zig;
+    writer.language = .Zig;
+    writer.function_overload_counts.clearAndFree();
+    writer.function_overload_counts = .init(allocator);
 
     {
         const zig_bindings_path: []const u8 = "imgui.h.zig";
