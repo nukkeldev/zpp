@@ -26,7 +26,7 @@ pub fn build(b: *std.Build) void {
     }
 
     const exe = b.addExecutable(.{
-        .name = "generator",
+        .name = "zpp",
         .root_module = mod,
     });
     b.installArtifact(exe);
@@ -36,4 +36,36 @@ pub fn build(b: *std.Build) void {
     run_step.dependOn(&run.step);
 
     if (b.args) |args| run.addArgs(args);
+
+    const test_mod = b.createModule(.{
+        .root_source_file = b.path("test.zig"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = target.result.os.tag != .windows,
+        .link_libcpp = target.result.os.tag == .windows,
+    });
+
+    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h.cpp") });
+    test_mod.addCSourceFiles(.{
+        .root = b.path("imgui"),
+        .files = &.{
+            "imgui.cpp",
+            "imgui_demo.cpp",
+            "imgui_draw.cpp",
+            "imgui_tables.cpp",
+            "imgui_widgets.cpp",
+        },
+        .flags = &.{"-std=c++20"},
+    });
+    test_mod.addIncludePath(b.path("imgui"));
+
+    const test_exe = b.addExecutable(.{
+        .name = "test-zpp",
+        .root_module = test_mod,
+    });
+    b.installArtifact(test_exe);
+
+    const run_test = b.addRunArtifact(test_exe);
+    const run_test_step = b.step("run-test", "Runs test");
+    run_test_step.dependOn(&run_test.step);
 }
