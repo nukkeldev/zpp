@@ -1,10 +1,9 @@
 .zig-cache/
 zig-out/
+zpp-out/
 
 *.lib
 *.exe
 *.pdb
-imgui.h.cpp
-imgui.h.zig
 
 imgui.ini
