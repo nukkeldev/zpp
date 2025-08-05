@@ -10,12 +10,18 @@ const Writer = @import("Writer.zig");
 pub fn main() !void {
     const verify = true;
 
-    const path = "imgui/imgui.h";
+    const cmd_args = try std.process.argsAlloc(std.heap.smp_allocator);
+    defer std.process.argsFree(std.heap.smp_allocator, cmd_args);
+
+    const path = if (cmd_args.len < 2) @panic("requires file path") else cmd_args[1];
     const filename = std.fs.path.basename(path);
-    const args: []const [:0]const u8 = &.{"-DIMGUI_DISABLE_OBSOLETE_FUNCTIONS"};
+    const args: []const [:0]const u8 = if (cmd_args.len > 2) cmd_args[2..] else &.{};
 
     const reader = try Reader.parseFile(std.heap.smp_allocator, path, args, .{ .verbose = true });
     defer reader.arena.deinit();
+
+    try std.fs.cwd().deleteTree("zpp-out");
+    try std.fs.cwd().makePath("zpp-out/lib");
 
     const allocator = reader.arena.allocator();
     var writer = Writer{
@@ -28,7 +34,7 @@ pub fn main() !void {
     };
 
     {
-        const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ filename, ".cpp" });
+        const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/", filename, ".cpp" });
         var cpp_header_file = try std.fs.cwd().createFile(cpp_header_path, .{});
         defer cpp_header_file.close();
 
@@ -49,7 +55,7 @@ pub fn main() !void {
                 "-std=c++20",
                 "--",
                 cpp_header_path,
-                "-femit-bin=imgui.h.cpp.lib",
+                try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/{s}.cpp.lib", .{filename}),
                 try std.fmt.allocPrint(allocator, "-I{s}", .{std.fs.path.dirname(path) orelse ""}),
             }, std.heap.smp_allocator);
             _ = try comp.spawnAndWait();
@@ -61,7 +67,7 @@ pub fn main() !void {
     writer.function_overload_counts = .init(allocator);
 
     {
-        const zig_bindings_path: []const u8 = "imgui.h.zig";
+        const zig_bindings_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/", filename, ".zig" });
         var zig_bindings_file = try std.fs.cwd().createFile(zig_bindings_path, .{});
         defer zig_bindings_file.close();
 
@@ -72,7 +78,12 @@ pub fn main() !void {
         if (verify) {
             std.log.info("Verifying Zig bindings compile...", .{});
 
-            var comp = std.process.Child.init(&.{ "zig", "build-lib", "imgui.h.zig", "-femit-bin=imgui.h.zig.lib" }, std.heap.smp_allocator);
+            var comp = std.process.Child.init(&.{
+                "zig",
+                "build-lib",
+                zig_bindings_path,
+                try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/{s}.zig.lib", .{filename}),
+            }, std.heap.smp_allocator);
             _ = try comp.spawnAndWait();
         }
     }

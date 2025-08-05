@@ -1,7 +1,7 @@
-// Compiles with `zig build-exe test.zig -limgui.h.cpp -L. imgui/*.cpp -lc++`
+// Compiles with `zig build-exe test.zig -limgui.h.cpp -Lzpp-out/lib imgui/*.cpp -lc++`
 
 const std = @import("std");
-const imgui = @import("imgui.h.zig");
+const imgui = @import("zpp-out/imgui.h.zig");
 
 const print = std.debug.print;
 
