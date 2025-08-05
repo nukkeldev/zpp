@@ -265,7 +265,7 @@ fn processStructDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Re
         location.column,
     });
 
-    var fields = std.ArrayList(CppTypeNamePair).init(allocator);
+    var fields = std.ArrayList(CppStructDecl.Field).init(allocator);
     var client_data = StructFieldVisitClientData{
         .allocator = allocator,
         .reader = reader,
@@ -276,6 +276,7 @@ fn processStructDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Re
     if (reader.err) |e| return e;
 
     const struct_decl = CppStructDecl{
+        .size = @intCast(c.clang_Type_getSizeOf(c.clang_getCursorType(cursor))),
         .name = name,
         .location = location,
         .fields = fields,
@@ -287,7 +288,7 @@ fn processStructDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Re
 const StructFieldVisitClientData = struct {
     allocator: Allocator,
     reader: *Reader,
-    out_fields: *std.ArrayList(CppTypeNamePair),
+    out_fields: *std.ArrayList(CppStructDecl.Field),
 };
 
 fn outerVisitStructField(cursor: CXCursor, client_data_opaque: c.CXClientData) callconv(.c) c.CXVisitorResult {
@@ -306,7 +307,7 @@ fn outerVisitStructField(cursor: CXCursor, client_data_opaque: c.CXClientData) c
     return c.CXVisit_Continue;
 }
 
-fn visitStructField(allocator: Allocator, cursor: CXCursor, reader: *Reader) !CppTypeNamePair {
+fn visitStructField(allocator: Allocator, cursor: CXCursor, reader: *Reader) !CppStructDecl.Field {
     const name = try getCursorSpelling(allocator, cursor) orelse return error.InvalidCursorSpelling;
     const raw_type = c.clang_getCursorType(cursor);
     const @"type" = try CppType.from(allocator, reader, raw_type);
@@ -316,7 +317,15 @@ fn visitStructField(allocator: Allocator, cursor: CXCursor, reader: *Reader) !Cp
         try getTypeSpelling(allocator, raw_type) orelse "Unknown",
     });
 
+    const bitfield = c.clang_Cursor_isBitField(cursor) != 0;
+    const bit_width: i32 = @intCast(c.clang_getFieldDeclBitWidth(cursor));
+    if (bitfield) {
+        log.debug("Field is a bitfield of {} bits!", .{bit_width});
+    }
+
     return .{
+        .bitfield = bitfield,
+        .bit_width = bit_width,
         .name = name,
         .type = @"type",
     };
@@ -479,6 +488,8 @@ pub const CppType = struct {
     raw_type_spelling: []const u8 = "",
     inner: Inner,
     is_const: bool,
+    size: i64,
+    align_: i64,
 
     // TODO: We probably want to check the proper type sizing but for now all of these should reach the minimum requirements.
     pub const Inner = union(enum) {
@@ -506,13 +517,16 @@ pub const CppType = struct {
         array: struct { i64, *const CppType },
         slice: *const CppType,
 
-        record: []const u8,
+        record: struct { i64, []const u8 },
         @"enum": []const u8,
 
         closure: usize,
     };
 
     fn from(allocator: Allocator, reader: *Reader, @"type": CXType) Allocator.Error!CppType {
+        const size_: i64 = @intCast(c.clang_Type_getSizeOf(@"type"));
+        const align_: i64 = @intCast(c.clang_Type_getAlignOf(@"type"));
+
         var resolved_type = @"type";
         const inner: Inner = outer: switch (resolved_type.kind) {
             c.CXType_Unexposed => .unexposed,
@@ -572,8 +586,10 @@ pub const CppType = struct {
                     break :outer .anon;
                 }
 
+                const size: i64 = @intCast(c.clang_Type_getSizeOf(@"type"));
+                log.debug("Unexposed type has size {}!", .{size});
                 const name = try getTypeSpelling(allocator, resolved_type) orelse @panic("Cannot have unnamed structs!");
-                break :outer .{ .record = name[if (std.mem.lastIndexOfScalar(u8, name, ' ')) |i| i + 1 else 0..] };
+                break :outer .{ .record = .{ size, name[if (std.mem.lastIndexOfScalar(u8, name, ' ')) |i| i + 1 else 0..] } };
             },
             // TODO: Avoid using fatal errors.
             c.CXType_Enum => {
@@ -633,12 +649,14 @@ pub const CppType = struct {
             .raw_type_spelling = try getTypeSpelling(allocator, @"type") orelse "",
             .is_const = c.clang_isConstQualifiedType(@"type") != 0,
             .inner = inner,
+            .size = size_,
+            .align_ = align_,
         };
     }
 
     pub fn exists(cpp_type: *const CppType, ast: *const AST) bool {
         switch (cpp_type.inner) {
-            .record => |name| return ast.structs.contains(name),
+            .record => |st| return ast.structs.contains(st.@"1"),
             .@"enum" => |name| return ast.enums.contains(name),
             else => return true,
         }
@@ -662,9 +680,21 @@ pub const CppTypeNamePair = struct {
 
 /// A C++ struct declaration.
 pub const CppStructDecl = struct {
+    size: i64,
     name: []const u8,
     location: Location,
-    fields: std.ArrayList(CppTypeNamePair),
+    fields: std.ArrayList(Field),
+
+    pub const Field = struct {
+        bitfield: bool,
+        bit_width: ?i32 = null,
+        name: []const u8,
+        type: CppType,
+
+        pub fn format(pear: Field, writer: *std.io.Writer) std.io.Writer.Error!void {
+            try writer.print("{s}: {f}", .{ pear.name, pear.type });
+        }
+    };
 
     pub fn format(struct_decl: CppStructDecl, writer: *std.io.Writer) std.io.Writer.Error!void {
         try writer.print("struct {s} {{ ", .{struct_decl.name});

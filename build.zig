@@ -46,6 +46,7 @@ pub fn build(b: *std.Build) void {
     });
 
     test_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h.cpp") });
+    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/verify_imgui.h.cpp") });
     test_mod.addCSourceFiles(.{
         .root = b.path("imgui"),
         .files = &.{
@@ -57,6 +58,7 @@ pub fn build(b: *std.Build) void {
         },
         .flags = &.{"-std=c++20"},
     });
+    test_mod.addCMacro("IMGUI_DISABLE_OBSOLETE_FUNCTIONS", "");
     test_mod.addIncludePath(b.path("imgui"));
 
     const test_exe = b.addExecutable(.{
