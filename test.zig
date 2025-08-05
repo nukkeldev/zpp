@@ -1,5 +1,3 @@
-// Compiles with `zig build-exe test.zig -limgui.h.cpp -Lzpp-out/lib imgui/*.cpp -lc++`
-
 const std = @import("std");
 const imgui = @import("zpp-out/imgui.h.zig");
 
@@ -7,8 +5,6 @@ const print = std.debug.print;
 
 pub fn main() void {
     _ = imgui.ImGui_CreateContext(null) orelse @panic("Failed to create an ImGuiContext!");
-
-    print("{}\n", .{@sizeOf(imgui.ImGuiIO)});
 
     const io = imgui.ImGui_GetIO() orelse @panic("Failed to get IO!");
     io.DisplaySize.x = 1920;
