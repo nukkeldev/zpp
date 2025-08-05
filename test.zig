@@ -1,15 +1,21 @@
 const std = @import("std");
 const imgui = @import("zpp-out/imgui.h.zig");
+const verify = @import("zpp-out/verify_imgui.h.zig");
 
 const print = std.debug.print;
 
 pub fn main() void {
+    if (!verify.verifyABI()) {
+        print("\n", .{});
+        _ = verify.verifyAll();
+    }
+
     _ = imgui.ImGui_CreateContext(null) orelse @panic("Failed to create an ImGuiContext!");
 
     const io = imgui.ImGui_GetIO() orelse @panic("Failed to get IO!");
     io.DisplaySize.x = 1920;
     io.DisplaySize.y = 1080;
-    io.BackendFlags |= @intFromEnum(imgui.ImGuiBackendFlags_.ImGuiBackendFlags_RendererHasTextures);
+    io.BackendFlags |= imgui.ImGuiBackendFlags_.ImGuiBackendFlags_RendererHasTextures;
 
     // var f: f32 = 0;
     for (0..20) |n| {
