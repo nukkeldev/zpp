@@ -168,6 +168,9 @@ pub fn parseFile(
 // Visiting
 
 fn outerVisitor(current_cursor: CXCursor, _: CXCursor, client_data_opaque: c.CXClientData) callconv(.c) c.CXVisitorResult {
+    const location = c.clang_getCursorLocation(current_cursor);
+    if (c.clang_Location_isFromMainFile(location) == 0) return c.CXChildVisit_Continue;
+
     const reader: *Reader = @alignCast(@ptrCast(client_data_opaque));
 
     visitor(reader.arena.allocator(), current_cursor, reader) catch |e| {
@@ -448,7 +451,10 @@ fn getSafeCXStringFn(
 // Formatting
 
 pub fn getNamespacePrefix(allocator: Allocator, namespace: ?usize, ast: *const AST) ![]const u8 {
-    return getNamespacePrefixWithSeperator(allocator, namespace, ast, "_");
+    var prefix = std.ArrayList(u8).init(allocator);
+    try prefix.appendSlice("ZPP_");
+    try prefix.appendSlice(try getNamespacePrefixWithSeperator(allocator, namespace, ast, "_"));
+    return prefix.items;
 }
 
 pub fn getNamespacePrefixWithSeperator(allocator: Allocator, namespace: ?usize, ast: *const AST, sep: []const u8) ![]const u8 {

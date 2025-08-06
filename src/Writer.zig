@@ -420,7 +420,7 @@ const FormatZigEnum = struct {
             .name = fmt.@"enum".name,
             .int = FormatZigType{ .type = &fmt.@"enum".int },
         });
-        try io_writer.print("{[indent]s}value: {[int]f},", .{
+        try io_writer.print("{[indent]s}value: {[int]f},\n", .{
             .indent = INDENT,
             .int = FormatZigType{ .type = &fmt.@"enum".int },
         });

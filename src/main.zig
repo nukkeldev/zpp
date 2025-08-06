@@ -25,10 +25,14 @@ pub fn main() !void {
     const reader = try Reader.parseFile(std.heap.smp_allocator, path, args, .{ .verbose = true });
     defer reader.arena.deinit();
 
-    try std.fs.cwd().deleteTree("zpp-out");
-    try std.fs.cwd().makePath("zpp-out/lib");
-
     const allocator = reader.arena.allocator();
+
+    const out_path = try std.fmt.allocPrint(allocator, "zpp-out/{s}/", .{filename});
+    const out_lib_path = try std.fs.path.join(allocator, &.{out_path, "lib/"});
+
+    std.fs.cwd().deleteTree(out_path) catch {};
+    try std.fs.cwd().makePath(out_lib_path);
+
     var writer = Writer{
         .allocator = allocator,
         .annotate = false,
@@ -39,7 +43,7 @@ pub fn main() !void {
     };
 
     {
-        const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/", filename, ".cpp" });
+        const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, filename, ".cpp" });
         var cpp_header_file = try std.fs.cwd().createFile(cpp_header_path, .{});
         defer cpp_header_file.close();
 
@@ -65,7 +69,7 @@ pub fn main() !void {
                 &.{
                     "--",
                     cpp_header_path,
-                    try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/{s}.cpp.lib", .{filename}),
+                    try std.fmt.allocPrint(allocator, "-femit-bin={s}{s}.cpp.lib", .{out_lib_path, filename}),
                 },
             }), std.heap.smp_allocator);
             
@@ -82,7 +86,7 @@ pub fn main() !void {
     writer.function_overload_counts = .init(allocator);
 
     {
-        const zig_bindings_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/", filename, ".zig" });
+        const zig_bindings_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, filename, ".zig" });
         var zig_bindings_file = try std.fs.cwd().createFile(zig_bindings_path, .{});
         defer zig_bindings_file.close();
 
@@ -97,7 +101,7 @@ pub fn main() !void {
                 "zig",
                 "build-lib",
                 zig_bindings_path,
-                try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/{s}.zig.lib", .{filename}),
+                "-fno-emit-bin",
             }, std.heap.smp_allocator);
             _ = try comp.spawnAndWait();
         }
@@ -113,7 +117,7 @@ pub fn main() !void {
     };
 
     {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/verify_", filename, ".cpp" });
+        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", filename, ".cpp" });
         var file = try std.fs.cwd().createFile(file_path, .{});
         defer file.close();
 
@@ -138,7 +142,7 @@ pub fn main() !void {
                 &.{
                     "--",
                     file_path,
-                    try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/verify_{s}.cpp.lib", .{filename}),
+                    try std.fmt.allocPrint(allocator, "-femit-bin={s}verify_{s}.cpp.lib", .{out_lib_path, filename}),
                 },
             }), std.heap.smp_allocator);
             _ = try comp.spawnAndWait();
@@ -148,7 +152,7 @@ pub fn main() !void {
     verif.language = .Zig;
 
     {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ "zpp-out/verify_", filename, ".zig" });
+        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", filename, ".zig" });
         var file = try std.fs.cwd().createFile(file_path, .{});
         defer file.close();
 
@@ -163,7 +167,7 @@ pub fn main() !void {
                 "zig",
                 "build-lib",
                 file_path,
-                try std.fmt.allocPrint(allocator, "-femit-bin=zpp-out/lib/file_path{s}.zig.lib", .{filename}),
+                "-fno-emit-bin",
             }, std.heap.smp_allocator);
             _ = try comp.spawnAndWait();
         }

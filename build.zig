@@ -45,8 +45,8 @@ pub fn build(b: *std.Build) void {
         .link_libcpp = target.result.os.tag == .windows,
     });
 
-    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h.cpp") });
-    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/verify_imgui.h.cpp") });
+    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h/imgui.h.cpp") });
+    test_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h/verify_imgui.h.cpp") });
     test_mod.addCSourceFiles(.{
         .root = b.path("imgui"),
         .files = &.{

@@ -1,6 +1,6 @@
 const std = @import("std");
-const imgui = @import("zpp-out/imgui.h.zig");
-const verify = @import("zpp-out/verify_imgui.h.zig");
+const imgui = @import("zpp-out/imgui.h/imgui.h.zig");
+const verify = @import("zpp-out/imgui.h/verify_imgui.h.zig");
 
 const print = std.debug.print;
 
@@ -10,9 +10,9 @@ pub fn main() void {
         _ = verify.verifyAll();
     }
 
-    _ = imgui.ImGui_CreateContext(null) orelse @panic("Failed to create an ImGuiContext!");
+    _ = imgui.ZPP_ImGui_CreateContext(null) orelse @panic("Failed to create an ImGuiContext!");
 
-    const io = imgui.ImGui_GetIO() orelse @panic("Failed to get IO!");
+    const io = imgui.ZPP_ImGui_GetIO() orelse @panic("Failed to get IO!");
     io.DisplaySize.x = 1920;
     io.DisplaySize.y = 1080;
     io.BackendFlags |= imgui.ImGuiBackendFlags_.ImGuiBackendFlags_RendererHasTextures;
@@ -20,9 +20,9 @@ pub fn main() void {
     // var f: f32 = 0;
     for (0..20) |n| {
         print("NewFrame() {}\n", .{n});
-        imgui.ImGui_NewFrame();
+        imgui.ZPP_ImGui_NewFrame();
 
-        imgui.ImGui_Text(@ptrCast(@constCast("Hello, World!")));
+        imgui.ZPP_ImGui_Text(@ptrCast(@constCast("Hello, World!")));
         // _ = Raw.ImGui_SliderFloat("float", &f, 0.0, 1.0, null, 0);
         // Raw.ImGui_Text(
         //     "Application average %.3f ms/frame (%.1f FPS)",
@@ -30,9 +30,9 @@ pub fn main() void {
         //     1.0 / io.DeltaTime,
         // );
 
-        imgui.ImGui_Render();
+        imgui.ZPP_ImGui_Render();
     }
 
     print("DestroyContext()\n", .{});
-    imgui.ImGui_DestroyContext(null);
+    imgui.ZPP_ImGui_DestroyContext(null);
 }
