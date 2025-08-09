@@ -1,3 +1,5 @@
+//! See README for details.
+
 // -- Imports -- //
 
 const std = @import("std");
@@ -8,116 +10,110 @@ const Verification = @import("Verification.zig");
 
 // -- Main -- //
 
+const Args = struct {
+    /// The path to the C++ header.
+    header_path: [:0]const u8,
+    /// Any additional arguments to pass to `clang`.
+    clang_args: []const [:0]const u8 = &.{},
+
+    /// Whether to additionally produce ABI verification files.
+    verify: bool = true,
+    /// Whether to compile each file after producing them.
+    compile: bool = true,
+
+    fn deinit(self: @This(), allocator: std.mem.Allocator) void {
+        allocator.free(self.header_path);
+        for (self.clang_args) |arg| allocator.free(arg);
+        allocator.free(self.clang_args);
+    }
+
+    fn filename(self: *const @This()) []const u8 {
+        return std.fs.path.basename(self.header_path);
+    }
+
+    pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
+        try writer.print("Args {{\n\theader: {s},\n\targs: [", .{self.header_path});
+        if (self.clang_args.len > 0) {
+            try writer.print("\n", .{});
+            for (self.clang_args) |arg| try writer.print("\t\t\"{s}\",\n", .{arg});
+            try writer.print("\t", .{});
+        }
+        try writer.print("],\n", .{});
+        try writer.print("\tverify: {},\n\tcompile: {},\n}}", .{ self.verify, self.compile });
+    }
+};
+
+fn processArgs(allocator: std.mem.Allocator) !Args {
+    const args = try std.process.argsAlloc(allocator);
+    defer std.process.argsFree(allocator, args);
+    if (args.len < 2) printUsageAndExit();
+
+    var out: Args = .{ .header_path = try allocator.dupeZ(u8, args[1]), };
+    std.fs.cwd().access(args[1], .{}) catch |e|
+        printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ args[1], e });
+
+    var clang_args = std.ArrayList([:0]const u8).init(allocator);
+
+    var i: usize = 2;
+    while (i < args.len) : (i += 1) {
+        if (args[i].len < 2 or args[i][0] != '-') continue;
+
+        if (args[i][1] == 'x' or std.mem.eql(u8, args[i], "--clang-arg")) {
+            i += 1;
+            if (i == args.len) printUsageWithErrorAndExit("-x/--clang-arg requires a subsequent argument!", .{});
+            try clang_args.append(try allocator.dupeZ(u8, args[i]));
+        } else if (std.mem.eql(u8, args[i], "-nv") or std.mem.eql(u8, args[i], "--no-verify")) {
+            out.verify = false;
+        } else if (std.mem.eql(u8, args[i], "-nc") or std.mem.eql(u8, args[i], "--no-compile")) {
+            out.compile = false;
+        } else printUsageWithErrorAndExit("Unknown argument '{s}'!", .{args[i]});
+    }
+
+    if (clang_args.items.len > 0) out.clang_args = try clang_args.toOwnedSlice();
+
+    return out;
+}
+
 pub fn main() !void {
-    const verify = true;
-    const compile = true;
+    const allocator = std.heap.smp_allocator;
 
-    const cmd_args = try std.process.argsAlloc(std.heap.smp_allocator);
-    defer std.process.argsFree(std.heap.smp_allocator, cmd_args);
+    const args = try processArgs(allocator);
+    defer args.deinit(allocator);
 
-    const path = if (cmd_args.len < 2) @panic("requires file path") else cmd_args[1];
-    const filename = std.fs.path.basename(path);
-    const args: []const [:0]const u8 = if (cmd_args.len > 2) cmd_args[2..] else &.{};
-
-    std.log.info("Generating bindings for '{s}' with args:", .{path});
-    for (args, 0..) |arg, i| std.debug.print("  #{} - {s}\n", .{ i, arg });
-
-    const reader = try Reader.parseFile(std.heap.smp_allocator, path, args, .{ .verbose = true });
+    std.log.info("Invoking `zpp` with arguments: {f}", .{args});
+    
+    const reader = try Reader.parseFile(allocator, args.header_path, args.clang_args, .{ .verbose = true });
     defer reader.arena.deinit();
 
-    const allocator = reader.arena.allocator();
-
-    const out_path = try std.fmt.allocPrint(allocator, "zpp-out/{s}/", .{filename});
-    const out_lib_path = try std.fs.path.join(allocator, &.{out_path, "lib/"});
+    const out_path = try std.fmt.allocPrint(allocator, "zpp-out/{s}/", .{args.filename()});
+    defer allocator.free(out_path);
 
     std.fs.cwd().deleteTree(out_path) catch {};
-    try std.fs.cwd().makePath(out_lib_path);
+    try std.fs.cwd().makePath(out_path);
 
-    var writer = Writer{
-        .allocator = allocator,
-        .annotate = false,
-        .ast = reader.ast,
-        .source_filename = filename,
-        .language = .Cpp,
-        .function_overload_counts = .init(allocator),
-    };
+    var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
+    defer writer.deinit();
 
-    {
-        const cpp_header_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, filename, ".cpp" });
-        var cpp_header_file = try std.fs.cwd().createFile(cpp_header_path, .{});
-        defer cpp_header_file.close();
+    try writer.writeToFile(out_path);
+    if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
+    
+    writer.resetForLanguage(.Zig);
+    
+    try writer.writeToFile(out_path);
+    if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
 
-        var io_writer = cpp_header_file.writer(&.{});
-        try writer.format(&io_writer.interface);
-
-        std.log.info("Wrote C++ header!", .{});
-
-        if (compile) {
-            std.log.info("Verifying C++ header compiles...", .{});
-
-            var comp = std.process.Child.init(try std.mem.concat(allocator, []const u8, &.{
-                &.{
-                    "zig",
-                    "build-lib",
-                    "-fclang",
-                    "-lc++",
-                    "-cflags",
-                    "-std=c++20",
-                    try std.fmt.allocPrint(allocator, "-I{s}", .{std.fs.path.dirname(path) orelse ""}),
-                },
-                args,
-                &.{
-                    "--",
-                    cpp_header_path,
-                    try std.fmt.allocPrint(allocator, "-femit-bin={s}{s}.cpp.lib", .{out_lib_path, filename}),
-                },
-            }), std.heap.smp_allocator);
-            
-            std.debug.print("COMMAND: ", .{});
-            for (comp.argv) |arg| std.debug.print("{s} ", .{arg});
-            std.debug.print("\n", .{});
-
-            _ = try comp.spawnAndWait();
-        }
-    }
-
-    writer.language = .Zig;
-    writer.function_overload_counts.clearAndFree();
-    writer.function_overload_counts = .init(allocator);
-
-    {
-        const zig_bindings_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, filename, ".zig" });
-        var zig_bindings_file = try std.fs.cwd().createFile(zig_bindings_path, .{});
-        defer zig_bindings_file.close();
-
-        var io_writer = zig_bindings_file.writer(&.{});
-        try writer.format(&io_writer.interface);
-
-        std.log.info("Wrote Zig bindings!", .{});
-        if (compile) {
-            std.log.info("Verifying Zig bindings compile...", .{});
-
-            var comp = std.process.Child.init(&.{
-                "zig",
-                "build-lib",
-                zig_bindings_path,
-                "-fno-emit-bin",
-            }, std.heap.smp_allocator);
-            _ = try comp.spawnAndWait();
-        }
-    }
-
-    if (!verify) return;
+    // TODO: Update this to match Writer above; preferably integrate the two.
+    if (!args.verify) return;
 
     var verif = Verification{
         .allocator = allocator,
         .ast = reader.ast,
         .language = .Cpp,
-        .source_filename = filename,
+        .source_filename = args.filename(),
     };
 
     {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", filename, ".cpp" });
+        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".cpp" });
         var file = try std.fs.cwd().createFile(file_path, .{});
         defer file.close();
 
@@ -125,34 +121,12 @@ pub fn main() !void {
         try verif.format(&io_writer.interface);
 
         std.log.info("Wrote C++ verification!", .{});
-        if (compile) {
-            std.log.info("Verifying C++ verification compiles...", .{});
-
-            var comp = std.process.Child.init(try std.mem.concat(allocator, []const u8, &.{
-                &.{
-                    "zig",
-                    "build-lib",
-                    "-fclang",
-                    "-lc++",
-                    "-cflags",
-                    "-std=c++20",
-                    try std.fmt.allocPrint(allocator, "-I{s}", .{std.fs.path.dirname(path) orelse ""}),
-                },
-                args,
-                &.{
-                    "--",
-                    file_path,
-                    try std.fmt.allocPrint(allocator, "-femit-bin={s}verify_{s}.cpp.lib", .{out_lib_path, filename}),
-                },
-            }), std.heap.smp_allocator);
-            _ = try comp.spawnAndWait();
-        }
     }
 
     verif.language = .Zig;
 
     {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", filename, ".zig" });
+        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".zig" });
         var file = try std.fs.cwd().createFile(file_path, .{});
         defer file.close();
 
@@ -160,16 +134,31 @@ pub fn main() !void {
         try verif.format(&io_writer.interface);
 
         std.log.info("Wrote Zig verification bindings!", .{});
-        if (compile) {
-            std.log.info("Verifying Zig bindings verification compile...", .{});
-
-            var comp = std.process.Child.init(&.{
-                "zig",
-                "build-lib",
-                file_path,
-                "-fno-emit-bin",
-            }, std.heap.smp_allocator);
-            _ = try comp.spawnAndWait();
-        }
     }
+}
+
+// -- Usage -- //
+
+const USAGE =
+    \\Usage: zpp <header-path> [OPTIONS]
+    \\Generates C-compatible header files from (a subset of) C++ headers. 
+    \\
+    \\Required Arguments:
+    \\    <header-path>       The path to the C++ header
+    \\
+    \\Optional Arguments:
+    \\    -x,  --clang-arg    Passes the subsequent argument through to clang.
+    \\    -nv, --no-verify    Disables producing ABI verification files.
+    \\    -nc, --no-compile   Disables compiling each file after producing them.  
+    \\
+;
+
+fn printUsageWithErrorAndExit(comptime err: []const u8, args: anytype) noreturn {
+    std.debug.print("ERROR: " ++ err ++ "\n", args);
+    printUsageAndExit();
+}
+
+fn printUsageAndExit() noreturn {
+    std.debug.print(USAGE, .{});
+    std.process.exit(0);
 }

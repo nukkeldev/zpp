@@ -52,13 +52,13 @@ const log = std.log.scoped(.writer);
 /// The language we are writing.
 language: Language,
 /// Whether to annotate the output with comments detailing AST attributes.
-annotate: bool = false,
+annotate: bool = false, // TODO: Remove
 
-/// An allocator; nothing is freed.
-allocator: Allocator,
+/// An arena for memory allocations.
+arena: *std.heap.ArenaAllocator,
 /// The source filename that the AST came from.
 /// Used, for instance, for including symbols in C++.
-source_filename: []const u8,
+filename: []const u8,
 /// The abstract syntax tree.
 ast: AST,
 
@@ -73,6 +73,107 @@ const Language = enum {
     /// Writes a Zig file that uses the C++ extern "C" wrappers and re-implements the structs and enums.
     Zig,
 };
+
+// -- Initialization -- //
+
+pub fn init(allocator: Allocator, ast: AST, filename: []const u8, language: Language) !Writer {
+    const arena = try allocator.create(std.heap.ArenaAllocator);
+    arena.* = .init(allocator);
+
+    return .{
+        .arena = arena,
+        .ast = ast,
+        .filename = filename,
+        .language = language,
+        .function_overload_counts = .init(arena.allocator()),
+    };
+}
+
+pub fn deinit(self: Writer) void {
+    self.arena.deinit();
+}
+
+pub fn resetForLanguage(writer: *Writer, language: Language) void {
+    writer.language = language;
+
+    writer.function_overload_counts.clearAndFree();
+    writer.function_overload_counts = .init(writer.getAllocator());
+}
+
+// ---
+
+fn getAllocator(self: *const Writer) Allocator {
+    return self.arena.allocator();
+}
+
+// -- Writing to File -- //
+
+pub fn writeToFile(writer: *Writer, output_dir: []const u8) !void {
+    std.log.info("Writing {s} file from the AST to '{s}'.", .{ @tagName(writer.language), output_dir });
+    std.debug.assert(output_dir.len > 0 and std.fs.path.isSep(output_dir[output_dir.len - 1]));
+
+    const path: []const u8 = try std.mem.concat(writer.getAllocator(), u8, &.{
+        output_dir,
+        writer.filename,
+        switch (writer.language) {
+            .Cpp => ".cpp",
+            .Zig => ".zig",
+        },
+    });
+
+    var file = try std.fs.cwd().createFile(path, .{});
+    defer file.close();
+
+    var io_writer = file.writer(&.{});
+    try writer.format(&io_writer.interface);
+
+    std.log.info("Wrote '{s}'!", .{path});
+}
+
+pub fn compileLastFile(writer: *const Writer, source_dir: []const u8, output_dir: []const u8, args: []const []const u8) !void {
+    const path: []const u8 = try std.mem.concat(writer.getAllocator(), u8, &.{
+        output_dir,
+        writer.filename,
+        switch (writer.language) {
+            .Cpp => ".cpp",
+            .Zig => ".zig",
+        },
+    });
+
+    std.log.info("Compiling '{s}'...", .{path});
+
+    var comp = switch (writer.language) {
+        .Cpp => std.process.Child.init(try std.mem.concat(writer.getAllocator(), []const u8, &.{
+            &.{
+                "zig",
+                "build-lib",
+                "-fclang",
+                "-lc++",
+                "-cflags",
+                "-std=c++20",
+                try std.fmt.allocPrint(writer.getAllocator(), "-I{s}", .{source_dir}),
+            },
+            args,
+            &.{
+                "--",
+                path,
+                "-fno-emit-bin",
+            },
+        }), std.heap.smp_allocator),
+        .Zig => std.process.Child.init(&.{
+            "zig",
+            "build-lib",
+            path,
+            "-fno-emit-bin",
+        }, std.heap.smp_allocator),
+    };
+
+    std.debug.print("COMMAND: ", .{});
+    for (comp.argv) |arg| std.debug.print("{s} ", .{arg});
+    std.debug.print("\n", .{});
+
+    _ = try comp.spawnAndWait();
+}
 
 // -- Formatting -- //
 
@@ -124,7 +225,7 @@ const CPP_TEMPLATE_VARIADIC_FUNCTION =
 pub fn formatCpp(writer: *Writer, io_writer: *std.io.Writer) !void {
     log.debug("Writing AST as C++ file.", .{});
     try io_writer.print(CPP_TEMPLATE_FILE, .{
-        .filename = writer.source_filename,
+        .filename = writer.filename,
         .functions = FormatCppFunctions{ .writer = writer },
     });
 }
@@ -140,7 +241,7 @@ const FormatCppFunctions = struct {
             if (overload_idx_ptr.* > 0) log.debug("This is overload #{}.", .{overload_idx_ptr.*});
 
             const overload_idx = if (overload_idx_ptr.* > 0)
-                std.fmt.allocPrint(fmt.writer.allocator, "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
+                std.fmt.allocPrint(fmt.writer.getAllocator(), "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
             else
                 "";
 
@@ -161,7 +262,7 @@ const FormatCppFunctions = struct {
                 else => FormatCppType{ .type = &CppType{ .is_const = false, .inner = .void, .align_ = -1, .size = -1 }, .writer = fmt.writer },
             };
 
-            const namespace_prefix = Reader.getNamespacePrefixWithSeperator(fmt.writer.allocator, func.namespace, &fmt.writer.ast, "::") catch |e| fatal(e);
+            const namespace_prefix = Reader.getNamespacePrefixWithSeperator(fmt.writer.getAllocator(), func.namespace, &fmt.writer.ast, "::") catch |e| fatal(e);
 
             const might_return = if (how_should_i_handle_the_return_type == .Primitive or how_should_i_handle_the_return_type == .Pointer) "return " else "";
             const return_prefix = if (func.return_type.inner == .reference) "&" else "";
@@ -356,7 +457,7 @@ pub fn formatZig(writer: *Writer, io_writer: *std.io.Writer) !void {
         defer overload_idx_ptr.* += 1;
 
         const overload_idx = if (overload_idx_ptr.* > 0)
-            std.fmt.allocPrint(writer.allocator, "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
+            std.fmt.allocPrint(writer.getAllocator(), "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
         else
             "";
 
@@ -493,7 +594,7 @@ pub const FormatZigType = struct {
             .record => |st| try io_writer.print("{s}", .{st.@"1"}),
             .@"enum" => |name| try io_writer.print("{s}", .{name}),
             .closure => |_| try io_writer.print("anyopaque", .{}),
-            .anon => try io_writer.print("[{[size]}]u8", .{.size = fmt.type.size}),
+            .anon => try io_writer.print("[{[size]}]u8", .{ .size = fmt.type.size }),
         }
     }
 };
