@@ -51,13 +51,16 @@ pub fn build(b: *std.Build) void {
 
     // Unit Tests
 
-    // TODO
+    const unit_tests = b.addTest(.{.root_module = mod});
+    const run_unit_tests = b.addRunArtifact(unit_tests);
+    const unit_tests_step = b.step("test", "Run unit tests");
+    unit_tests_step.dependOn(&run_unit_tests.step);
 
     // Integration Test(s)
 
     const integ_run = b.addRunArtifact(exe);
-    integ_run.addFileArg(b.path("testing/supported.hpp"));
+    integ_run.addFileArg(b.path("src/testing/supported.hpp"));
 
-    const integ_run_step = b.step("run-integration-test", "Runs the integration test.");
+    const integ_run_step = b.step("run-integration-test", "Runs the integration test");
     integ_run_step.dependOn(&integ_run.step);
 }
