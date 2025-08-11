@@ -14,9 +14,7 @@ const std = @import("std");
 
 const Allocator = std.mem.Allocator;
 
-const c = @cImport({
-    @cInclude("clang-c/Index.h");
-});
+const c = @import("ffi.zig").c;
 
 const CXCursor = c.CXCursor;
 const CXType = c.CXType;
@@ -37,20 +35,24 @@ const TU_FLAGS: c.CXTranslationUnit_Flags =
 // -- State -- //
 
 arena: *std.heap.ArenaAllocator,
+
+source: []const u8,
 ast: AST,
-opts: ParsingOptions,
+
+options: ParsingOptions,
 err: ?anyerror = null,
 
 current_namespace: ?usize = null,
 
 // -- (De)initialization -- //
 
-fn init(allocator: Allocator, opts: ParsingOptions) !Reader {
+fn init(allocator: Allocator, file_path: [:0]const u8, opts: ParsingOptions) !Reader {
     const arena = try allocator.create(std.heap.ArenaAllocator);
     arena.* = .init(allocator);
 
     return .{
         .arena = arena,
+        .source = try std.fs.cwd().readFileAlloc(arena.allocator(), file_path, std.math.maxInt(usize)),
         .ast = .{
             .namespaces = .init(arena.allocator()),
             .functions = .init(arena.allocator()),
@@ -58,7 +60,7 @@ fn init(allocator: Allocator, opts: ParsingOptions) !Reader {
             .enums = .init(arena.allocator()),
             .closures = .init(arena.allocator()),
         },
-        .opts = opts,
+        .options = opts,
     };
 }
 
@@ -119,7 +121,7 @@ pub fn parseFile(
 
     // ---
 
-    var reader: Reader = try .init(allocator, opts);
+    var reader: Reader = try .init(allocator, file_path, opts);
 
     _ = c.clang_visitChildren(cursor, outerVisitor, @ptrCast(&reader));
     if (reader.err) |err| return err;
@@ -243,14 +245,16 @@ fn processFnDecl(allocator: std.mem.Allocator, cursor: CXCursor, reader: *Reader
     const variadic = c.clang_Cursor_isVariadic(cursor) != 0;
     if (variadic) log.debug("fn is variadic", .{});
 
-    const fn_decl = CppFunctionDecl{
-        .name = name,
-        .namespace = reader.current_namespace,
-        .resolved_namespace_prefix = try getNamespacePrefix(allocator, reader.current_namespace, &reader.ast),
-        .parameters = params,
-        .return_type = return_type,
-        .variadic = variadic,
-    };
+    var fn_decl = try CppFunctionDecl.init(
+        allocator,
+        name,
+        try getCursorSource(cursor, reader),
+        reader.current_namespace,
+        params,
+        return_type,
+        try getNamespacePrefix(allocator, reader.current_namespace, &reader.ast),
+    );
+    fn_decl.variadic = variadic;
 
     try reader.ast.functions.append(fn_decl);
 }
@@ -405,18 +409,14 @@ fn visitEnumDecl(allocator: Allocator, cursor: CXCursor) !CppEnumDecl.Decl {
 // Location
 
 fn getCursorLocation(cursor: CXCursor) Location {
-    const location = c.clang_getCursorLocation(cursor);
+    return .fromClangSourceLocation(c.clang_getCursorLocation(cursor));
+}
 
-    var line: c_uint = 0;
-    var column: c_uint = 0;
-    var offset: c_uint = 0;
-    c.clang_getExpansionLocation(location, null, &line, &column, &offset);
-
-    return .{
-        .line = @intCast(line),
-        .column = @intCast(column),
-        .offset = @intCast(offset),
-    };
+fn getCursorSource(cursor: CXCursor, reader: *const Reader) ![]const u8 {
+    const extent = c.clang_getCursorExtent(cursor);
+    const ext_start = Location.fromClangSourceLocation(c.clang_getRangeStart(extent));
+    const ext_end = Location.fromClangSourceLocation(c.clang_getRangeEnd(extent));
+    return reader.source[ext_start.offset..ext_end.offset];
 }
 
 // Spellings
@@ -451,10 +451,7 @@ fn getSafeCXStringFn(
 // Formatting
 
 pub fn getNamespacePrefix(allocator: Allocator, namespace: ?usize, ast: *const AST) ![]const u8 {
-    var prefix = std.ArrayList(u8).init(allocator);
-    try prefix.appendSlice("ZPP_");
-    try prefix.appendSlice(try getNamespacePrefixWithSeperator(allocator, namespace, ast, "_"));
-    return prefix.items;
+    return getNamespacePrefixWithSeperator(allocator, namespace, ast, "_");
 }
 
 pub fn getNamespacePrefixWithSeperator(allocator: Allocator, namespace: ?usize, ast: *const AST, sep: []const u8) ![]const u8 {
@@ -485,6 +482,19 @@ pub const Location = struct {
     line: usize,
     column: usize,
     offset: usize,
+
+    pub fn fromClangSourceLocation(location: c.CXSourceLocation) @This() {
+        var line: c_uint = 0;
+        var column: c_uint = 0;
+        var offset: c_uint = 0;
+        c.clang_getExpansionLocation(location, null, &line, &column, &offset);
+
+        return .{
+            .line = @intCast(line),
+            .column = @intCast(column),
+            .offset = @intCast(offset),
+        };
+    }
 };
 
 /// NOTE: Each usage of the type is it's own instance.
@@ -623,6 +633,7 @@ pub const CppType = struct {
                 }
 
                 try reader.ast.closures.append(.{
+                    .signature = "<idk dont use this for these>",
                     .name = "<closure>",
                     .namespace = null,
                     .resolved_namespace_prefix = "",
@@ -729,12 +740,41 @@ pub const CppEnumDecl = struct {
 pub const CppFunctionDecl = struct {
     // TODO: location,
     name: []const u8,
+    signature: []const u8,
+    unique_name: []const u8 = "", // TODO: This is to avoid closures; fix later.
     namespace: ?usize,
+    resolved_namespace_prefix: []const u8,
+
     parameters: std.ArrayList(CppTypeNamePair),
     return_type: CppType,
+
     variadic: bool = false,
 
-    resolved_namespace_prefix: []const u8,
+    pub fn init(
+        allocator: Allocator,
+        name: []const u8,
+        signature: []const u8,
+        namespace: ?usize,
+        parameters: std.ArrayList(CppTypeNamePair),
+        return_type: CppType,
+        resolved_namespace_prefix: []const u8,
+    ) !@This() {
+        const hash = std.hash.Wyhash.hash(0xBEEF, signature);
+
+        return CppFunctionDecl{
+            .name = name,
+            .signature = signature,
+            .unique_name = try std.fmt.allocPrint(allocator, "{s}{s}_{x}", .{
+                resolved_namespace_prefix,
+                name,
+                hash,
+            }),
+            .namespace = namespace,
+            .parameters = parameters,
+            .return_type = return_type,
+            .resolved_namespace_prefix = resolved_namespace_prefix,
+        };
+    }
 
     pub fn format(fn_decl: CppFunctionDecl, writer: *std.io.Writer) std.io.Writer.Error!void {
         try writer.print("fn {s}{s}(", .{ fn_decl.resolved_namespace_prefix, fn_decl.name });

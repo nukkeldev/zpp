@@ -206,14 +206,14 @@ const CPP_TEMPLATE_FILE =
 ;
 
 const CPP_TEMPLATE_FUNCTION =
-    \\{[indent]s}{[return_type]f} {[name_namespace_prefix]s}{[name]s}{[overload_idx]s}({[parameters]f}) {{
+    \\{[indent]s}{[return_type]f} {[unique_name]s}{[overload_idx]s}({[parameters]f}) {{
     \\{[indent]s}{[indent]s}{[might_return]s}{[return_prefix]s}{[namespace_prefix]s}{[name]s}({[arguments]f}){[return_suffix]s};
     \\{[indent]s}}}
     \\
 ;
 
 const CPP_TEMPLATE_VARIADIC_FUNCTION =
-    \\{[indent]s}{[return_type]f} {[name_namespace_prefix]s}{[name]s}{[overload_idx]s}({[parameters]f}) {{
+    \\{[indent]s}{[return_type]f} {[unique_name]s}{[overload_idx]s}({[parameters]f}) {{
     \\{[indent]s}{[indent]s}va_list ZPP_args;
     \\{[indent]s}{[indent]s}va_start(ZPP_args, {[after_param]s});
     \\{[indent]s}{[indent]s}{[might_return]s}{[return_prefix]s}{[namespace_prefix]s}{[name]s}({[arguments]f}){[return_suffix]s};
@@ -236,12 +236,12 @@ const FormatCppFunctions = struct {
     pub fn format(fmt: FormatCppFunctions, io_writer: *std.io.Writer) std.io.Writer.Error!void {
         log.debug("Writing {} functions.", .{fmt.writer.ast.functions.items.len});
         for (fmt.writer.ast.functions.items) |*func| {
-            log.debug("Writing function '{s}' in resolved namespace '{s}'.", .{ func.name, func.resolved_namespace_prefix });
-            const overload_idx_ptr = (fmt.writer.function_overload_counts.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
+            log.debug("Writing function '{s}' in resolved namespace '{s}'.", .{ func.unique_name, func.resolved_namespace_prefix });
+            const overload_idx_ptr = (fmt.writer.function_overload_counts.getOrPutValue(func.unique_name, 0) catch |e| fatal(e)).value_ptr;
             if (overload_idx_ptr.* > 0) log.debug("This is overload #{}.", .{overload_idx_ptr.*});
 
             const overload_idx = if (overload_idx_ptr.* > 0)
-                std.fmt.allocPrint(fmt.writer.getAllocator(), "{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
+                std.fmt.allocPrint(fmt.writer.getAllocator(), "_{}", .{overload_idx_ptr.*}) catch |e| fatal(e)
             else
                 "";
 
@@ -272,7 +272,7 @@ const FormatCppFunctions = struct {
                     .indent = INDENT,
                     .return_type = return_type,
                     .after_param = func.parameters.getLast().name,
-                    .name_namespace_prefix = func.resolved_namespace_prefix,
+                    .unique_name = func.unique_name,
                     .name = func.name,
                     .overload_idx = overload_idx,
                     .parameters = FormatCppParameters{ .func = func, .writer = fmt.writer },
@@ -286,7 +286,7 @@ const FormatCppFunctions = struct {
                 try io_writer.print(CPP_TEMPLATE_FUNCTION, .{
                     .indent = INDENT,
                     .return_type = return_type,
-                    .name_namespace_prefix = func.resolved_namespace_prefix,
+                    .unique_name = func.unique_name,
                     .name = func.name,
                     .overload_idx = overload_idx,
                     .parameters = FormatCppParameters{ .func = func, .writer = fmt.writer },
@@ -453,7 +453,7 @@ pub fn formatZig(writer: *Writer, io_writer: *std.io.Writer) !void {
     try io_writer.print("// -- Functions -- //\n\n", .{});
 
     for (writer.ast.functions.items) |func| {
-        const overload_idx_ptr = (writer.function_overload_counts.getOrPutValue(func.name, 0) catch |e| fatal(e)).value_ptr;
+        const overload_idx_ptr = (writer.function_overload_counts.getOrPutValue(func.unique_name, 0) catch |e| fatal(e)).value_ptr;
         defer overload_idx_ptr.* += 1;
 
         const overload_idx = if (overload_idx_ptr.* > 0)
@@ -464,7 +464,7 @@ pub fn formatZig(writer: *Writer, io_writer: *std.io.Writer) !void {
         try io_writer.print("{[indent]s}pub extern fn {[namespace]s}{[name]s}{[overload_idx]s}(", .{
             .indent = "",
             .namespace = func.resolved_namespace_prefix,
-            .name = func.name,
+            .name = func.unique_name,
             .overload_idx = overload_idx,
         });
 
