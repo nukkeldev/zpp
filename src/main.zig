@@ -7,6 +7,7 @@ const std = @import("std");
 const Reader = @import("Reader.zig");
 const Writer = @import("Writer.zig");
 const Verification = @import("Verification.zig");
+const IR = @import("ir/IR.zig");
 
 // -- Main -- //
 
@@ -161,4 +162,10 @@ fn printUsageWithErrorAndExit(comptime err: []const u8, args: anytype) noreturn 
 fn printUsageAndExit() noreturn {
     std.debug.print(USAGE, .{});
     std.process.exit(0);
+}
+
+// -- Tests -- //
+
+comptime {
+    std.testing.refAllDecls(IR);
 }
