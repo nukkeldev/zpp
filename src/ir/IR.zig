@@ -278,6 +278,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         switch (instr.inner) {
             .Function => |f| try writer.print("- Return Type: {f}\n", .{f.return_type}),
             .Value => |v| try writer.print("- Type: {f}\n- Value: {f}\n", .{ v.type, v }),
+            .Member => |m| try writer.print("- Type: {f}\n", .{m}),
             else => {},
         }
     }
@@ -290,6 +291,4 @@ test "fromTU" {
 
     const ir = try processBytes(std.testing.allocator, "supported.hpp", file, &.{});
     defer ir.deinit();
-
-    log.warn("IR:\n{f}", .{ir});
 }

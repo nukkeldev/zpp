@@ -3,10 +3,8 @@
 // -- Imports -- //
 
 const std = @import("std");
+const writers = @import("writers/writers.zig");
 
-const Reader = @import("Reader.zig");
-const Writer = @import("Writer.zig");
-const Verification = @import("Verification.zig");
 const IR = @import("ir/IR.zig");
 
 // -- Main -- //
@@ -49,7 +47,9 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
     defer std.process.argsFree(allocator, args);
     if (args.len < 2) printUsageAndExit();
 
-    var out: Args = .{ .header_path = try allocator.dupeZ(u8, args[1]), };
+    var out: Args = .{
+        .header_path = try allocator.dupeZ(u8, args[1]),
+    };
     std.fs.cwd().access(args[1], .{}) catch |e|
         printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ args[1], e });
 
@@ -76,66 +76,73 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
 }
 
 pub fn main() !void {
-    const allocator = std.heap.smp_allocator;
+    var debug_allocator = std.heap.DebugAllocator(.{}).init;
+    defer _ = debug_allocator.deinit();
 
-    const args = try processArgs(allocator);
-    defer args.deinit(allocator);
+    const allocator = if (@import("builtin").mode == .Debug) debug_allocator.allocator() else std.heap.smp_allocator;
+    var arena = std.heap.ArenaAllocator.init(allocator);
+    defer arena.deinit();
 
+    const args = try processArgs(arena.allocator());
     std.log.info("Invoking `zpp` with arguments: {f}", .{args});
-    
-    const reader = try Reader.parseFile(allocator, args.header_path, args.clang_args, .{ .verbose = true });
-    defer reader.arena.deinit();
 
-    const out_path = try std.fmt.allocPrint(allocator, "zpp-out/{s}/", .{args.filename()});
-    defer allocator.free(out_path);
+    const ir = try IR.processFile(arena.allocator(), args.header_path, args.clang_args);
+    std.log.debug("IR:\n{f}", .{ir});
+
+    const out_path = try std.fmt.allocPrint(arena.allocator(), "zpp-out/{s}/", .{args.filename()});
 
     std.fs.cwd().deleteTree(out_path) catch {};
     try std.fs.cwd().makePath(out_path);
 
-    var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
-    defer writer.deinit();
+    const out_dir = try std.fs.cwd().openDir(out_path, .{});
+    try out_dir.setAsCwd();
 
-    try writer.writeToFile(out_path);
-    if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
-    
-    writer.resetForLanguage(.Zig);
-    
-    try writer.writeToFile(out_path);
-    if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
+    try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
 
-    // TODO: Update this to match Writer above; preferably integrate the two.
-    if (!args.verify) return;
+    // var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
+    // defer writer.deinit();
 
-    var verif = Verification{
-        .allocator = allocator,
-        .ast = reader.ast,
-        .language = .Cpp,
-        .source_filename = args.filename(),
-    };
+    // try writer.writeToFile(out_path);
+    // if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
 
-    {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".cpp" });
-        var file = try std.fs.cwd().createFile(file_path, .{});
-        defer file.close();
+    // writer.resetForLanguage(.Zig);
 
-        var io_writer = file.writer(&.{});
-        try verif.format(&io_writer.interface);
+    // try writer.writeToFile(out_path);
+    // if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
 
-        std.log.info("Wrote C++ verification!", .{});
-    }
+    // // TODO: Update this to match Writer above; preferably integrate the two.
+    // if (!args.verify) return;
 
-    verif.language = .Zig;
+    // var verif = Verification{
+    //     .allocator = allocator,
+    //     .ast = reader.ast,
+    //     .language = .Cpp,
+    //     .source_filename = args.filename(),
+    // };
 
-    {
-        const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".zig" });
-        var file = try std.fs.cwd().createFile(file_path, .{});
-        defer file.close();
+    // {
+    //     const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".cpp" });
+    //     var file = try std.fs.cwd().createFile(file_path, .{});
+    //     defer file.close();
 
-        var io_writer = file.writer(&.{});
-        try verif.format(&io_writer.interface);
+    //     var io_writer = file.writer(&.{});
+    //     try verif.format(&io_writer.interface);
 
-        std.log.info("Wrote Zig verification bindings!", .{});
-    }
+    //     std.log.info("Wrote C++ verification!", .{});
+    // }
+
+    // verif.language = .Zig;
+
+    // {
+    //     const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".zig" });
+    //     var file = try std.fs.cwd().createFile(file_path, .{});
+    //     defer file.close();
+
+    //     var io_writer = file.writer(&.{});
+    //     try verif.format(&io_writer.interface);
+
+    //     std.log.info("Wrote Zig verification bindings!", .{});
+    // }
 }
 
 // -- Usage -- //

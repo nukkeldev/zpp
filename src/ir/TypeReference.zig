@@ -21,16 +21,29 @@ cx_type: c.CXType,
 pub const Inner = union(enum) {
     unexposed,
     void,
+
     integer: Integral,
+    float: Float,
+
     record: ?[]const u8,
     enumeration: ?[]const u8,
+
     pointer: *TypeReference,
     reference: *TypeReference,
+
+    array: Array,
 
     not_yet_implemented,
 };
 
+pub const Float = std.builtin.Type.Float;
 pub const Integral = std.builtin.Type.Int;
+
+pub const Array = struct {
+    element_type: *TypeReference,
+    /// -1 = slice
+    count: i128,
+};
 
 // -- Error -- //
 
@@ -79,6 +92,31 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType) (TypeReferenceError |
                 },
             },
 
+            // -- Floats -- //
+
+            c.CXType_Float,
+            c.CXType_Double,
+            c.CXType_LongDouble,
+            => .{
+                .float = .{
+                    .bits = @intCast(c.clang_Type_getSizeOf(cx_type) * 8),
+                },
+            },
+
+            // -- Arrays & Slices -- //
+
+            c.CXType_ConstantArray, c.CXType_IncompleteArray => outer: {
+                const element_type = try allocator.create(TypeReference);
+                element_type.* = try fromCXType(allocator, c.clang_getArrayElementType(cx_type));
+
+                break :outer .{
+                    .array = .{
+                        .element_type = element_type,
+                        .count = c.clang_getArraySize(cx_type),
+                    },
+                };
+            },
+
             // -- Pointers & References -- //
 
             c.CXType_Pointer => outer: {
@@ -119,8 +157,10 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
             if (int.signedness == .signed) try writer.writeByte('i') else try writer.writeByte('u');
             try writer.print("{}", .{int.bits});
         },
+        .float => |float| try writer.print("f{}", .{float.bits}),
         .record => |name| try writer.print("record '{?s}'", .{name}),
         .enumeration => |name| try writer.print("enum '{?s}'", .{name}),
+        .array => |arr| try writer.print("{f}[{}]", .{arr.element_type, arr.count}),
         .pointer => |pointee| try writer.print("pointer to '{f}'", .{pointee}),
         .reference => |pointee| try writer.print("reference to '{f}'", .{pointee}),
         else => try writer.writeAll(@tagName(self.inner)),
