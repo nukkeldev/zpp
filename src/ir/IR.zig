@@ -16,22 +16,25 @@ const ffi = @import("../ffi.zig");
 const c = ffi.c;
 const Allocator = std.mem.Allocator;
 
-const TypeReference = @import("TypeReference.zig");
+pub const TypeReference = @import("TypeReference.zig");
 const IR = @This();
 
 const log = std.log.scoped(.ir);
 
 // -- Fields -- //
 
+path: []const u8,
+source: []const u8,
+
 arena: *std.heap.ArenaAllocator,
 instrs: std.ArrayList(Instruction),
 
 // -- (De)initialization -- //
 
-pub fn init(allocator: Allocator) !IR {
+pub fn init(allocator: Allocator, path: []const u8, source: []const u8) !IR {
     const arena = try allocator.create(std.heap.ArenaAllocator);
     arena.* = .init(allocator);
-    return .{ .arena = arena, .instrs = .init(arena.allocator()) };
+    return .{ .path = path, .source = source, .arena = arena, .instrs = .init(arena.allocator()) };
 }
 
 pub fn deinit(ir: IR) void {
@@ -57,6 +60,10 @@ pub const Instruction = struct {
         Value: Value,
         Typedef: TypeReference,
     };
+
+    pub fn getUniqueName(instr: *const Instruction, allocator: Allocator) ![]const u8 {
+        return std.fmt.allocPrint(allocator, "{s}__{x}", .{ instr.name, std.hash.Wyhash.hash(0xBEEF, instr.name) });
+    }
 };
 
 pub const Function = struct {
@@ -82,8 +89,8 @@ pub const Value = struct {
 
 // -- Processing -- //
 
+pub const REQUIRED_ARGUMENTS: []const [:0]const u8 = &.{"-xc++"};
 const CLANG_DISPLAY_DIAGNOSTICS = true;
-const REQUIRED_ARGUMENTS: []const [:0]const u8 = &.{"-xc++"};
 const TU_FLAGS: c.CXTranslationUnit_Flags =
     c.CXTranslationUnit_SkipFunctionBodies;
 
@@ -108,7 +115,7 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     defer c.clang_disposeIndex(index);
 
     var file = c.CXUnsavedFile{ .Filename = path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
-    const args = try convertArguments(allocator, clang_args);
+    const args = try combineArgs(allocator, &.{REQUIRED_ARGUMENTS, clang_args});
     defer allocator.free(args);
 
     const translation_unit = c.clang_parseTranslationUnit(index, path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
@@ -117,7 +124,7 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     if (translation_unit == null) return IRProcessingError.ParseTUFail;
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
-    var state = ProcessingState{ .ir = try .init(allocator) };
+    var state = ProcessingState{ .ir = try .init(allocator, path, contents) };
     const visit_result = c.clang_visitChildren(cursor, outerVisitor, @ptrCast(&state));
 
     if (state.err) |err| {
@@ -254,16 +261,17 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
 // -- Helpers -- //
 
-fn convertArguments(allocator: Allocator, args: []const [:0]const u8) ![]const [*c]const u8 {
-    const out = try allocator.alloc([*c]const u8, REQUIRED_ARGUMENTS.len + args.len);
+pub fn combineArgs(allocator: Allocator, args: []const []const [:0]const u8) ![]const [*c]const u8 {
+    var count: usize = 0;
+    for (args) |arg| count += arg.len;
+    const out = try allocator.alloc([*c]const u8, count);
+
     var i: usize = 0;
-    for (REQUIRED_ARGUMENTS) |arg| {
-        out[i] = arg.ptr;
-        i += 1;
-    }
     for (args) |arg| {
-        out[i] = arg.ptr;
-        i += 1;
+        for (arg) |arg_| {
+            out[i] = arg_.ptr;
+            i += 1;
+        }
     }
     return out;
 }
