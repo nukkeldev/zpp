@@ -17,12 +17,18 @@ void one_const_ptr_ret_void(const int *x);
 
 void one_ref_ret_void(int& x);
 
+void one_arr_ret_void(int color[4]);
+
+void one_slice_ret_void(int color[]);
+
+// TODO: We do not currently handle default function arguments.
+void one_prim_def_val_ret_void(int x = 3);
+
 // -- Return Values -- //
 
 int ret_prim();
 
 struct Struct {
-    // TODO: Default values
     int x = 4;
     int y = 5;
 };
@@ -37,17 +43,17 @@ enum Enum {
 
 Enum ret_enum();
 
-// TODO: Compiles but `Union` not emitted.
-//
-// union Union {
-//     int x;
-//     float y;
-//     char* z;
-// };
-//
-// Union ret_union();
+union Union {
+    int x;
+    float y;
+    char* z;
+};
+
+Union ret_union();
 
 int &ret_ref();
+int *ret_ptr();
+const int *ret_const_ptr();
 
 // -- Namespaces -- //
 
