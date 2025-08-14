@@ -63,5 +63,7 @@ namespace NS1 {
     void bar(int baz);
 }
 
+void after_ns();
+
 // TODO: Classes ((de)constructors, member methods, etc.);
 // TODO: Templates

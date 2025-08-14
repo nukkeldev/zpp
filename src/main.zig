@@ -3,7 +3,7 @@
 // -- Imports -- //
 
 const std = @import("std");
-const writers = @import("writers/writers.zig");
+const writers = @import("writers.zig");
 
 const IR = @import("ir/IR.zig");
 
@@ -28,6 +28,10 @@ const Args = struct {
 
     fn filename(self: *const @This()) []const u8 {
         return std.fs.path.basename(self.header_path);
+    }
+
+    fn dirname(self: *const @This()) []const u8 {
+        return std.fs.path.dirname(self.header_path) orelse "";
     }
 
     pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
@@ -98,6 +102,10 @@ pub fn main() !void {
     try out_dir.setAsCwd();
 
     try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
+    try writers.checkFile(arena.allocator(), writers.CppWrapper, args.filename(), .{
+        .clang_args = args.clang_args,
+        .source_dir = args.dirname(),
+    });
 
     // var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
     // defer writer.deinit();
