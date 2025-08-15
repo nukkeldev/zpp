@@ -33,9 +33,12 @@ pub const FormatType = struct {
                 try (FormatType{ .type_ref = a.element_type.* }).format(writer);
             },
 
-            .record, .enumeration => |name| try writer.writeAll(name orelse "/* TODO: Unnamed ~Record */"),
+            .enumeration, .record => |name| try writer.writeAll(name),
 
-            else => try writer.print("/* TODO: Type not yet formatted: '{s}' */", .{@tagName(t.inner)}),
+            else => {
+                std.log.err("Not yet formatted Zig type: '{s}'!", .{@tagName(t.inner)});
+                try writer.print("?*anyopaque", .{});
+            },
         }
     }
 };

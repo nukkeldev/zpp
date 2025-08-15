@@ -6,9 +6,18 @@ const ffi = @import("../ffi.zig");
 const c = ffi.c;
 const Allocator = std.mem.Allocator;
 
+const IR = @import("IR.zig");
 const TypeReference = @This();
 
 const log = std.log.scoped(.type);
+
+// -- Constants -- //
+
+pub const VOID: TypeReference = .{
+    .is_const = false,
+    .inner = .void,
+    .cx_type = undefined, // TODO: This ain't pretty
+};
 
 // -- Fields -- //
 
@@ -25,8 +34,9 @@ pub const Inner = union(enum) {
     integer: Integral,
     float: Float,
 
-    record: ?[]const u8,
-    enumeration: ?[]const u8,
+    /// NOTE: We can get if the struct is a POD with clang_isPODBlahBlahBlah
+    record: []const u8,
+    enumeration: []const u8,
 
     pointer: *TypeReference,
     reference: *TypeReference,
@@ -51,10 +61,14 @@ pub const TypeReferenceError = error{};
 
 // -- Functions -- //
 
-pub fn fromCXType(allocator: Allocator, cx_type: c.CXType) (TypeReferenceError || Allocator.Error)!@This() {
+pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeReferenceError || Allocator.Error)!@This() {
     return TypeReference{
         .is_const = c.clang_isConstQualifiedType(cx_type) != 0,
         .inner = switch (cx_type.kind) {
+            // -- Elaborated -- //
+
+            c.CXType_Elaborated => return fromCXType(allocator, c.clang_getCanonicalType(cx_type), ir),
+
             // -- Unexposed & Void -- //
 
             c.CXType_Unexposed => .unexposed,
@@ -107,7 +121,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType) (TypeReferenceError |
 
             c.CXType_ConstantArray, c.CXType_IncompleteArray => outer: {
                 const element_type = try allocator.create(TypeReference);
-                element_type.* = try fromCXType(allocator, c.clang_getArrayElementType(cx_type));
+                element_type.* = try fromCXType(allocator, c.clang_getArrayElementType(cx_type), ir);
 
                 break :outer .{
                     .array = .{
@@ -121,21 +135,35 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType) (TypeReferenceError |
 
             c.CXType_Pointer => outer: {
                 const pointee = try allocator.create(TypeReference);
-                pointee.* = try fromCXType(allocator, c.clang_getPointeeType(cx_type));
+                pointee.* = try fromCXType(allocator, c.clang_getPointeeType(cx_type), ir);
 
                 break :outer .{ .pointer = pointee };
             },
             c.CXType_LValueReference => outer: {
                 const pointee = try allocator.create(TypeReference);
-                pointee.* = try fromCXType(allocator, c.clang_getPointeeType(cx_type));
+                pointee.* = try fromCXType(allocator, c.clang_getPointeeType(cx_type), ir);
 
                 break :outer .{ .reference = pointee };
             },
 
             // -- Records & Enums -- //
 
-            c.CXType_Record => .{ .record = try ffi.getTypeSpelling(allocator, cx_type) },
-            c.CXType_Enum => .{ .enumeration = try ffi.getTypeSpelling(allocator, cx_type) },
+            c.CXType_Record => outer: {
+                if (try ffi.getTypeSpelling(allocator, cx_type)) |name| {
+                    break :outer .{ .record = name };
+                } else {
+                    std.log.err("TODO: Unnamed Struct", .{});
+                    break :outer .not_yet_implemented;
+                }
+            },
+            c.CXType_Enum => outer: {
+                if (try ffi.getTypeSpelling(allocator, cx_type)) |name| {
+                    break :outer .{ .enumeration = name };
+                } else {
+                    std.log.err("TODO: Unnamed Enum", .{});
+                    break :outer .not_yet_implemented;
+                }
+            },
 
             // -- Fallback --//
 
@@ -160,7 +188,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         .float => |float| try writer.print("f{}", .{float.bits}),
         .record => |name| try writer.print("record '{?s}'", .{name}),
         .enumeration => |name| try writer.print("enum '{?s}'", .{name}),
-        .array => |arr| try writer.print("{f}[{}]", .{arr.element_type, arr.count}),
+        .array => |arr| try writer.print("{f}[{}]", .{ arr.element_type, arr.count }),
         .pointer => |pointee| try writer.print("pointer to '{f}'", .{pointee}),
         .reference => |pointee| try writer.print("reference to '{f}'", .{pointee}),
         else => try writer.writeAll(@tagName(self.inner)),

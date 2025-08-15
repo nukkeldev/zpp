@@ -2,6 +2,9 @@
 // - typedefs are resolved at usage site currently.
 
 #include <stdio.h>
+#include <vector>
+
+using namespace std;
 
 // -- Parameters -- //
 
@@ -56,6 +59,12 @@ void one_prim_def_val_ret_void(int x = 3)
     printf("one_prim_def_val_ret_void");
 }
 
+// NOTE: Not POD; non-goal.
+// TODO: Filter functions like these out.
+// void one_unexposed_ret_void(vector<int> vec) {
+//     printf("one_unexposed_ret_void");
+// }
+
 // -- Return Values -- //
 
 int ret_prim()
@@ -63,6 +72,21 @@ int ret_prim()
     printf("ret_prim");
 
     return 42;
+}
+
+struct POD
+{
+    int x, y;
+};
+
+POD ret_pod()
+{
+    printf("ret_pod");
+
+    POD s;
+    s.x = 3;
+    s.y = 3;
+    return s;
 }
 
 struct Struct
@@ -131,6 +155,7 @@ namespace NS1
     int foo()
     {
         printf("NS1::foo");
+        return 52;
     }
     void bar(int baz) {
         printf("NS1::bar");
@@ -141,5 +166,10 @@ void after_ns() {
     printf("after_ns");
 }
 
-// TODO: Classes ((de)constructors, member methods, etc.);
+// -- Classes -- //
+
+// TODO:
+// class Class {
+// };
+
 // TODO: Templates

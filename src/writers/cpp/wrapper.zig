@@ -34,7 +34,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 .Namespace => ns_stack.append(instr.name) catch @panic("OOM"),
                 .Function => |f| {
                     try writer.print("extern \"C\" {f} {s}(", .{
-                        util.FormatMember{ .type_ref = f.return_type },
+                        util.FormatMember{
+                            .type_ref = switch (f.return_type.inner) {
+                                .record => .VOID,
+                                else => f.return_type,
+                            },
+                        },
                         uname,
                     });
                     ignore_members = false;
@@ -54,9 +59,16 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
             switch (instr.inner) {
                 .Namespace => _ = ns_stack.pop(),
                 .Function => |f| {
-                    try writer.print(") {{\n", .{});
-                    
-                    try writer.writeAll("\treturn ");
+                    if (f.return_type.inner == .record) {
+                        // TODO: Avoid name collisions.
+                        if (fn_params.items.len > 0) try writer.writeAll(", ");
+                        try writer.print("{f} *zpp_out) {{\n\t*zpp_out = ", .{
+                            util.FormatMember{ .type_ref = f.return_type },
+                        });
+                    } else {
+                        try writer.writeAll(") {\n\treturn ");
+                    }
+
                     switch (f.return_type.inner) {
                         .reference => try writer.writeAll("&"),
                         else => {},
@@ -75,12 +87,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         try writer.writeAll(m.name);
                         if (j < fn_params.items.len - 1) try writer.writeAll(", ");
                     }
-                    fn_params.clearAndFree();
-                    fn_params = .init(ir.arena.allocator());
 
                     try writer.writeAll(");\n}\n");
+                    fn_params.clearAndFree();
                 },
-                .Struct, .Enum, .Union, .Value => {},
+                .Struct, .Enum, .Union, .Value => {
+                    fn_params.clearAndFree();
+                },
                 else => {
                     log.warn("Close instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
                 },

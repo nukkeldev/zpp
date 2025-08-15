@@ -7,8 +7,12 @@ pub const FormatMember = struct {
     name: ?[]const u8 = null,
     type_ref: TypeReference,
 
+    const DEBUG = false;
+
     pub fn format(self: FormatMember, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         const t = self.type_ref;
+
+        if (DEBUG) try writer.print("/* kind: {s} */ ", .{@tagName(t.inner)});
 
         // References are implictly const which doesn't work with our pointer conversions.
         if (t.is_const and t.inner != .reference) {
@@ -49,7 +53,8 @@ pub const FormatMember = struct {
                 return;
             },
 
-            .record, .enumeration => |name| try writer.writeAll(name orelse "/* TODO: Unnamed ~Record */"),
+            .enumeration => |name| try writer.writeAll(name),
+            .record => |name| try writer.writeAll(name),
 
             else => try writer.print("/* TODO: Type not yet formatted: '{s}' */", .{@tagName(t.inner)}),
         }

@@ -6,7 +6,6 @@
 //!
 //! Structure:
 //! - The IR is flat (i.e. namespace scopes are it's own "instruction")
-//! - Processing can be linear; required declarations are included in a jump table as well.
 
 // -- Imports -- //
 
@@ -34,7 +33,12 @@ instrs: std.ArrayList(Instruction),
 pub fn init(allocator: Allocator, path: []const u8, source: []const u8) !IR {
     const arena = try allocator.create(std.heap.ArenaAllocator);
     arena.* = .init(allocator);
-    return .{ .path = path, .source = source, .arena = arena, .instrs = .init(arena.allocator()) };
+    return .{
+        .path = path,
+        .source = source,
+        .arena = arena,
+        .instrs = .init(arena.allocator()),
+    };
 }
 
 pub fn deinit(ir: IR) void {
@@ -111,11 +115,16 @@ pub fn processFile(allocator: Allocator, path: [:0]const u8, clang_args: []const
 }
 
 pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const u8, clang_args: []const [:0]const u8) !IR {
+    const clang_version = c.clang_getClangVersion();
+    defer c.clang_disposeString(clang_version);
+
+    log.info("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
+
     const index = c.clang_createIndex(0, if (CLANG_DISPLAY_DIAGNOSTICS) 1 else 0);
     defer c.clang_disposeIndex(index);
 
     var file = c.CXUnsavedFile{ .Filename = path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
-    const args = try combineArgs(allocator, &.{REQUIRED_ARGUMENTS, clang_args});
+    const args = try combineArgs(allocator, &.{ REQUIRED_ARGUMENTS, clang_args });
     defer allocator.free(args);
 
     const translation_unit = c.clang_parseTranslationUnit(index, path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
@@ -139,9 +148,9 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     const location = c.clang_getCursorLocation(current_cursor);
     if (c.clang_Location_isFromMainFile(location) == 0) return c.CXChildVisit_Continue;
 
-    const state: *ProcessingState = @alignCast(@ptrCast(client_data_opaque));
+    var state: *ProcessingState = @alignCast(@ptrCast(client_data_opaque));
 
-    const instr_opt = visitor(state.ir.arena.allocator(), current_cursor) catch |e| {
+    const instr_opt = visitor(state.ir.arena.allocator(), current_cursor, &state.ir) catch |e| {
         state.err = e;
         return c.CXChildVisit_Break;
     };
@@ -170,7 +179,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     return c.CXChildVisit_Continue;
 }
 
-fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
+fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
     const location = ffi.SourceLocation.fromCursor(cursor);
     const name = try ffi.getCursorSpelling(allocator, cursor) orelse {
         log.err("Unnamed declaration on line {}!", .{location.line});
@@ -188,7 +197,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
             c.CXCursor_FieldDecl,
             c.CXCursor_ParmDecl,
-            => .{ .Member = try .fromCXType(allocator, c.clang_getCursorType(cursor)) },
+            => .{ .Member = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir) },
 
             // -- Values -- //
 
@@ -199,7 +208,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
                 break :outer .{
                     .Value = .{
-                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor)),
+                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
                         .value = @ptrCast(value),
                     },
                 };
@@ -211,7 +220,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
                 break :outer .{
                     .Value = .{
-                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor)),
+                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
                         .value = @ptrCast(value),
                     },
                 };
@@ -219,7 +228,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
             // -- Functions -- //
 
-            c.CXCursor_FunctionDecl => .{ .Function = .{ .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor)) } },
+            c.CXCursor_FunctionDecl => .{ .Function = .{ .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir) } },
 
             // -- Structs & Unions -- //
 
@@ -230,7 +239,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
 
             c.CXCursor_EnumDecl => .{
                 .Enum = .{
-                    .backing = switch ((try TypeReference.fromCXType(allocator, c.clang_getEnumDeclIntegerType(cursor))).inner) {
+                    .backing = switch ((try TypeReference.fromCXType(allocator, c.clang_getEnumDeclIntegerType(cursor), ir)).inner) {
                         .integer => |int| int,
                         else => @panic("How did you back an enum with a non-integer type..."),
                     },
@@ -240,12 +249,13 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
             // -- Type Defintions -- //
 
             c.CXCursor_TypedefDecl => .{
-                .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor)),
+                .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
             },
 
             // -- Ignored -- //
 
-            c.CXCursor_TypeRef,
+            c.CXCursor_TypeRef, // Any time a non-primitive type is used; we get this info other ways.
+            c.CXCursor_UsingDirective, // `using namespace ...`
             => return null,
 
             // -- Fallback -- //

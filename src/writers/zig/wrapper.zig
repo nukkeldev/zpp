@@ -76,13 +76,27 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     _ = ns_stack.pop();
                 },
                 .Function => |f| {
+                    if (f.return_type.inner == .record) {
+                        // TODO: Avoid name collisions.
+                        if (fn_params.items.len > 0) try writer.writeAll(", ");
+                        try writer.print("zpp_out: *{f}", .{
+                            util.FormatType{ .type_ref = f.return_type },
+                        });
+                    }
+
                     try writer.print(") callconv(.c) {f};\n\n", .{
-                        util.FormatType{ .type_ref = f.return_type },
+                        util.FormatType{
+                            .type_ref = switch (f.return_type.inner) {
+                                .record => .VOID,
+                                else => f.return_type,
+                            },
+                        },
                     });
                     fn_params.clearAndFree();
                 },
                 .Struct, .Enum, .Union => {
                     try writer.writeAll("};\n\n");
+                    fn_params.clearAndFree();
                 },
                 else => {
                     log.warn("Close instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
