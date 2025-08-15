@@ -15,11 +15,6 @@ const Args = struct {
     /// Any additional arguments to pass to `clang`.
     clang_args: []const [:0]const u8 = &.{},
 
-    /// Whether to additionally produce ABI verification files.
-    verify: bool = true,
-    /// Whether to compile each file after producing them.
-    compile: bool = true,
-
     fn deinit(self: @This(), allocator: std.mem.Allocator) void {
         allocator.free(self.header_path);
         for (self.clang_args) |arg| allocator.free(arg);
@@ -41,8 +36,7 @@ const Args = struct {
             for (self.clang_args) |arg| try writer.print("\t\t\"{s}\",\n", .{arg});
             try writer.print("\t", .{});
         }
-        try writer.print("],\n", .{});
-        try writer.print("\tverify: {},\n\tcompile: {},\n}}", .{ self.verify, self.compile });
+        try writer.print("],\n}}", .{});
     }
 };
 
@@ -67,10 +61,6 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
             i += 1;
             if (i == args.len) printUsageWithErrorAndExit("-x/--clang-arg requires a subsequent argument!", .{});
             try clang_args.append(try allocator.dupeZ(u8, args[i]));
-        } else if (std.mem.eql(u8, args[i], "-nv") or std.mem.eql(u8, args[i], "--no-verify")) {
-            out.verify = false;
-        } else if (std.mem.eql(u8, args[i], "-nc") or std.mem.eql(u8, args[i], "--no-compile")) {
-            out.compile = false;
         } else printUsageWithErrorAndExit("Unknown argument '{s}'!", .{args[i]});
     }
 
@@ -90,8 +80,12 @@ pub fn main() !void {
     const args = try processArgs(arena.allocator());
     std.log.info("Invoking `zpp` with arguments: {f}", .{args});
 
+    var time: i64 = getNs();
+
     const ir = try IR.processFile(arena.allocator(), args.header_path, args.clang_args);
-    std.log.debug("IR:\n{f}", .{ir});
+
+    std.log.info("IR: {D}", .{getNs() - time});
+    time = getNs();
 
     const out_path = try std.fmt.allocPrint(arena.allocator(), "zpp-out/{s}/", .{args.filename()});
 
@@ -102,10 +96,27 @@ pub fn main() !void {
     try out_dir.setAsCwd();
 
     try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
+
+    std.log.info("C++ Wrapper: {D}", .{getNs() - time});
+    time = getNs();
+
     try writers.checkFile(arena.allocator(), writers.CppWrapper, args.filename(), .{
         .clang_args = args.clang_args,
         .source_dir = args.dirname(),
     });
+
+    std.log.info("C++ Wrapper Check: {D}", .{getNs() - time});
+    time = getNs();
+
+    try writers.writeToFile(arena.allocator(), ir, writers.ZigWrapper, args.filename());
+
+    std.log.info("Zig Wrapper: {D}", .{getNs() - time});
+    time = getNs();
+
+    try writers.checkFile(arena.allocator(), writers.ZigWrapper, args.filename(), {});
+
+    std.log.info("Zig Wrapper Check: {D}", .{getNs() - time});
+    time = getNs();
 
     // var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
     // defer writer.deinit();
@@ -153,6 +164,10 @@ pub fn main() !void {
     // }
 }
 
+fn getNs() i64 {
+    return @truncate(std.time.nanoTimestamp());
+}
+
 // -- Usage -- //
 
 const USAGE =
@@ -164,8 +179,6 @@ const USAGE =
     \\
     \\Optional Arguments:
     \\    -x,  --clang-arg    Passes the subsequent argument through to clang.
-    \\    -nv, --no-verify    Disables producing ABI verification files.
-    \\    -nc, --no-compile   Disables compiling each file after producing them.  
     \\
 ;
 

@@ -58,9 +58,33 @@ pub fn build(b: *std.Build) void {
 
     // Integration Test(s)
 
-    const integ_run = b.addRunArtifact(exe);
-    integ_run.addFileArg(b.path("src/testing/supported.hpp"));
+    const run_supported_gen = b.addRunArtifact(exe);
+    run_supported_gen.addFileArg(b.path("src/testing/supported.hpp"));
 
-    const integ_run_step = b.step("run-integration-test", "Runs the integration test");
-    integ_run_step.dependOn(&integ_run.step);
+    const supported_test_mod = b.createModule(.{
+        .root_source_file = b.path("src/testing/supported.zig"),
+        .target = target,
+        .optimize = optimize,
+        .link_libc = target.result.os.tag != .windows,
+        .link_libcpp = target.result.os.tag == .windows,
+    });
+
+    supported_test_mod.addIncludePath(b.path("src/testing"));
+    supported_test_mod.addCSourceFile(.{ .file = b.path("zpp-out/supported.hpp/supported.hpp.cpp"), .language = .cpp });
+
+    supported_test_mod.addAnonymousImport("zpp-bindings", .{
+        .root_source_file = b.path("zpp-out/supported.hpp/supported.hpp.zig"),
+        .target = target,
+        .optimize = optimize,
+    });
+
+    const supported_test_exe = b.addExecutable(.{
+        .name = "supported-test",
+        .root_module = supported_test_mod,
+    });
+    supported_test_exe.step.dependOn(&run_supported_gen.step);
+    const run_supported_test = b.addRunArtifact(supported_test_exe);
+
+    const run_supported_test_step = b.step("test-support", "Runs the supported features integration test");
+    run_supported_test_step.dependOn(&run_supported_test.step);
 }

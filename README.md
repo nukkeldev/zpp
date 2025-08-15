@@ -18,6 +18,4 @@ Required Arguments:
 
 Optional Arguments:
     -x,  --clang-arg    Passes the subsequent argument through to clang.
-    -nv, --no-verify    Disables producing ABI verification files.
-    -nc, --no-compile   Disables compiling each file after producing them.  
 ```

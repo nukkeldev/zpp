@@ -1,7 +1,7 @@
 const std = @import("std");
 
-const IR = @import("../ir/IR.zig");
-const TypeReference = @import("../ir/TypeReference.zig");
+const IR = @import("../../ir/IR.zig");
+const TypeReference = IR.TypeReference;
 
 pub const FormatMember = struct {
     name: ?[]const u8 = null,
@@ -59,9 +59,7 @@ pub const FormatMember = struct {
 };
 
 pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) std.mem.Allocator.Error!bool {
-    const c = @import("../ffi.zig").c;
-
-    std.log.debug("Checking C++ file '{s}'...", .{path});
+    const c = @import("../../ffi.zig").c;
 
     const index = c.clang_createIndex(0, 1);
     defer c.clang_disposeIndex(index);
