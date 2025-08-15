@@ -23,13 +23,7 @@ pub fn build(b: *std.Build) void {
 
     mod.addLibraryPath(.{ .cwd_relative = b.pathJoin(&.{ path_to_llvm, "lib" }) });
     mod.addIncludePath(.{ .cwd_relative = b.pathJoin(&.{ path_to_llvm, "include" }) });
-
-    if (target.result.os.tag == .windows) {
-        mod.addObjectFile(.{ .cwd_relative = b.pathJoin(&.{ path_to_llvm, "bin/libclang.dll" }) });
-    } else {
-        // TODO: Why doesn't this look for `libclang.dll` or `libclang.lib` on Windows?
-        mod.linkSystemLibrary("clang", .{ .preferred_link_mode = .dynamic });
-    }
+    mod.linkSystemLibrary("libclang", .{});
 
     // -- Executable -- //
 
@@ -60,6 +54,8 @@ pub fn build(b: *std.Build) void {
 
     const run_supported_gen = b.addRunArtifact(exe);
     run_supported_gen.addFileArg(b.path("src/testing/supported.hpp"));
+    run_supported_gen.addArg("-x");
+    run_supported_gen.addArg("-std=c++17");
 
     const supported_test_mod = b.createModule(.{
         .root_source_file = b.path("src/testing/supported.zig"),
