@@ -3,20 +3,26 @@
 const std = @import("std");
 const IR = @import("ir/IR.zig");
 
-const cpp_util = @import("writers/cpp_util.zig");
-
 // -- Writers -- //
 
 pub const IRWriter = struct {
     formatFilename: *const fn (std.mem.Allocator, []const u8) std.mem.Allocator.Error![:0]const u8,
     formatFile: *const fn (IR, *std.Io.Writer) std.Io.Writer.Error!void,
-    checkFile: *const fn (std.mem.Allocator, [:0]const u8, anytype) std.mem.Allocator.Error!bool,
+    postProcessFile: ?*const fn (std.mem.Allocator, []const u8) anyerror!void = null,
+    checkFile: ?*const fn (std.mem.Allocator, [:0]const u8, anytype) std.mem.Allocator.Error!bool = null,
 };
 
 pub const CppWrapper: IRWriter = .{
-    .formatFilename = @import("writers/cpp_wrapper.zig").formatFilename,
-    .formatFile = @import("writers/cpp_wrapper.zig").formatFile,
-    .checkFile = cpp_util.checkFile,
+    .formatFilename = @import("writers/cpp/wrapper.zig").formatFilename,
+    .formatFile = @import("writers/cpp/wrapper.zig").formatFile,
+    .checkFile = @import("writers/cpp/util.zig").checkFile,
+};
+
+pub const ZigWrapper: IRWriter = .{
+    .formatFilename = @import("writers/zig/wrapper.zig").formatFilename,
+    .formatFile = @import("writers/zig/wrapper.zig").formatFile,
+    .postProcessFile = @import("writers/zig/util.zig").postProcessFile,
+    .checkFile = @import("writers/zig/util.zig").checkFile,
 };
 
 // -- Helpers -- //
@@ -32,12 +38,11 @@ pub fn writeToFile(
     const formatted_filename = try ir_writer.formatFilename(allocator, filename);
 
     var file = try std.fs.cwd().createFile(formatted_filename, .{});
-    defer file.close();
-
     var io_writer = file.writer(&.{});
     try ir_writer.formatFile(ir, &io_writer.interface);
+    file.close();
 
-    std.log.info("Wrote '{s}'!", .{formatted_filename});
+    if (ir_writer.postProcessFile) |ppf| try ppf(allocator, formatted_filename);
 }
 
 pub fn checkFile(
@@ -46,17 +51,20 @@ pub fn checkFile(
     filename: []const u8,
     args: anytype,
 ) !void {
+    if (ir_writer.checkFile == null) {
+        std.log.err("Nothing to check the file with for IRWriter!", .{});
+        return;
+    }
+
     const formatted_filename = try ir_writer.formatFilename(allocator, filename);
 
-    const good = try ir_writer.checkFile(
+    const good = try ir_writer.checkFile.?(
         allocator,
         formatted_filename,
         args,
     );
 
-    if (good) {
-        std.log.info("'{s}' passed checks!", .{formatted_filename});
-    } else {
+    if (!good) {
         std.log.err("'{s}' failed checks!", .{formatted_filename});
     }
 }

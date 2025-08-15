@@ -1,7 +1,7 @@
 const std = @import("std");
-const util = @import("cpp_util.zig");
+const util = @import("util.zig");
 
-const IR = @import("../ir/IR.zig");
+const IR = @import("../../ir/IR.zig");
 
 const log = std.log.scoped(.cpp_wrapper);
 
@@ -10,7 +10,7 @@ pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.me
 }
 
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
-    try writer.writeAll(@import("../writers.zig").PREAMBLE);
+    try writer.writeAll(@import("../../writers.zig").PREAMBLE);
     try writer.print("\n\n#include \"{s}\"\n\n", .{std.fs.path.basename(ir.path)});
 
     if (ir.instrs.items.len == 0) {
@@ -33,7 +33,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
             switch (instr.inner) {
                 .Namespace => ns_stack.append(instr.name) catch @panic("OOM"),
                 .Function => |f| {
-                    try writer.print("{f} {s}(", .{
+                    try writer.print("extern \"C\" {f} {s}(", .{
                         util.FormatMember{ .type_ref = f.return_type },
                         uname,
                     });

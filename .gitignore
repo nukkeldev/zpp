@@ -1,9 +1,5 @@
+.vscode/
+
 .zig-cache/
 zig-out/
 zpp-out/
-
-*.lib
-*.exe
-*.pdb
-
-imgui.ini
