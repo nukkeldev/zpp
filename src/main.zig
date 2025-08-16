@@ -45,11 +45,12 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
     defer std.process.argsFree(allocator, args);
     if (args.len < 2) printUsageAndExit();
 
+    const header_path = try std.fs.cwd().realpathAlloc(allocator, args[1]);
     var out: Args = .{
-        .header_path = try allocator.dupeZ(u8, args[1]),
+        .header_path = try allocator.dupeZ(u8, header_path),
     };
-    std.fs.cwd().access(args[1], .{}) catch |e|
-        printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ args[1], e });
+    std.fs.cwd().access(header_path, .{}) catch |e|
+        printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ header_path, e });
 
     var clang_args = std.ArrayList([:0]const u8).init(allocator);
 
@@ -94,6 +95,8 @@ pub fn main() !void {
 
     const out_dir = try std.fs.cwd().openDir(out_path, .{});
     try out_dir.setAsCwd();
+
+    try ir.writeToFile();
 
     try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
 

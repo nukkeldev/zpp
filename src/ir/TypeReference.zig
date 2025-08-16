@@ -31,6 +31,7 @@ pub const Inner = union(enum) {
     unexposed,
     void,
 
+    bool,
     integer: Integral,
     float: Float,
 
@@ -43,6 +44,8 @@ pub const Inner = union(enum) {
 
     array: Array,
 
+    function: Function,
+
     not_yet_implemented,
 };
 
@@ -53,6 +56,12 @@ pub const Array = struct {
     element_type: *TypeReference,
     /// -1 = slice
     count: i128,
+};
+
+pub const Function = struct {
+    variadic: bool,
+    return_type: *TypeReference,
+    params: []TypeReference,
 };
 
 // -- Error -- //
@@ -73,6 +82,10 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
 
             c.CXType_Unexposed => .unexposed,
             c.CXType_Void => .void,
+
+            // -- Booleans -- //
+
+            c.CXType_Bool => .bool,
 
             // -- Integers -- //
 
@@ -149,20 +162,46 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
             // -- Records & Enums -- //
 
             c.CXType_Record => outer: {
-                if (try ffi.getTypeSpelling(allocator, cx_type)) |name| {
-                    break :outer .{ .record = name };
-                } else {
-                    std.log.err("TODO: Unnamed Struct", .{});
+                const name = (try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type))) orelse {
+                    log.err("TODO: Unnamed Struct", .{});
+                    break :outer .not_yet_implemented;
+                };
+                if (c.clang_Type_getNumTemplateArguments(cx_type) > 0) {
+                    log.warn("Templated type '{s}' not yet implemented!", .{name});
                     break :outer .not_yet_implemented;
                 }
+
+                break :outer .{ .record = name };
             },
             c.CXType_Enum => outer: {
-                if (try ffi.getTypeSpelling(allocator, cx_type)) |name| {
-                    break :outer .{ .enumeration = name };
-                } else {
-                    std.log.err("TODO: Unnamed Enum", .{});
+                const name = (try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type))) orelse {
+                    log.err("TODO: Unnamed Enum", .{});
                     break :outer .not_yet_implemented;
+                };
+
+                break :outer .{ .enumeration = name };
+            },
+
+            // -- Closures -- //
+
+            c.CXType_FunctionProto => outer: {
+                const return_type = try allocator.create(TypeReference);
+                return_type.* = try .fromCXType(allocator, c.clang_getResultType(cx_type), ir);
+
+                const params = try allocator.alloc(TypeReference, @intCast(c.clang_getNumArgTypes(cx_type)));
+                const is_variadic = c.clang_isFunctionTypeVariadic(cx_type) != 0;
+
+                for (params, 0..) |*p, i| {
+                    p.* = try .fromCXType(allocator, c.clang_getArgType(cx_type, @intCast(i)), ir);
                 }
+
+                break :outer .{
+                    .function = .{
+                        .variadic = is_variadic,
+                        .return_type = return_type,
+                        .params = params,
+                    },
+                };
             },
 
             // -- Fallback --//
@@ -176,6 +215,18 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
     };
 }
 
+pub fn getPointerDepthAndType(self: *const TypeReference) struct { usize, *const TypeReference } {
+    var i: usize = 0;
+    var ref = self;
+
+    while (ref.inner == .pointer) {
+        ref = ref.inner.pointer;
+        i += 1;
+    }
+
+    return .{ i, ref };
+}
+
 // -- Formatting -- //
 
 pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
@@ -186,8 +237,8 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
             try writer.print("{}", .{int.bits});
         },
         .float => |float| try writer.print("f{}", .{float.bits}),
-        .record => |name| try writer.print("record '{?s}'", .{name}),
-        .enumeration => |name| try writer.print("enum '{?s}'", .{name}),
+        .record => |name| try writer.print("record '{s}'", .{name}),
+        .enumeration => |name| try writer.print("enum '{s}'", .{name}),
         .array => |arr| try writer.print("{f}[{}]", .{ arr.element_type, arr.count }),
         .pointer => |pointee| try writer.print("pointer to '{f}'", .{pointee}),
         .reference => |pointee| try writer.print("reference to '{f}'", .{pointee}),

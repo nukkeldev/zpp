@@ -9,7 +9,7 @@ pub const IRWriter = struct {
     formatFilename: *const fn (std.mem.Allocator, []const u8) std.mem.Allocator.Error![:0]const u8,
     formatFile: *const fn (IR, *std.Io.Writer) std.Io.Writer.Error!void,
     postProcessFile: ?*const fn (std.mem.Allocator, []const u8) anyerror!void = null,
-    checkFile: ?*const fn (std.mem.Allocator, [:0]const u8, anytype) std.mem.Allocator.Error!bool = null,
+    checkFile: ?*const fn (std.mem.Allocator, [:0]const u8, anytype) anyerror!bool = null,
 };
 
 pub const CppWrapper: IRWriter = .{

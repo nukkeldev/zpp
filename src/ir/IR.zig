@@ -128,7 +128,8 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     defer allocator.free(args);
 
     const translation_unit = c.clang_parseTranslationUnit(index, path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
-    defer c.clang_disposeTranslationUnit(translation_unit);
+    // NOTE: Because we store references to cursors and types, we need this for the entire lifetime of the program.
+    // defer c.clang_disposeTranslationUnit(translation_unit);
 
     if (translation_unit == null) return IRProcessingError.ParseTUFail;
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
@@ -228,7 +229,12 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
             // -- Functions -- //
 
-            c.CXCursor_FunctionDecl => .{ .Function = .{ .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir) } },
+            c.CXCursor_FunctionDecl => outer: {
+                // TODO: Convert these into normal methods.
+                if (std.mem.startsWith(u8, name, "operator ")) return null;
+
+                break :outer .{ .Function = .{ .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir) } };
+            },
 
             // -- Structs & Unions -- //
 
@@ -248,9 +254,27 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
             // -- Type Defintions -- //
 
-            c.CXCursor_TypedefDecl => .{
-                .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
-            },
+            c.CXCursor_TypedefDecl => return null,
+            // TODO: While we have serialization for these in place, the usage sites are resolved to the underlying types
+            // TODO: Instead of the type definition and I don't see it being useful currently to undo that.
+            // .{
+            //     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
+            // },
+
+            // -- TODO -- //
+
+            c.CXCursor_CXXMethod,
+            c.CXCursor_Constructor, // CXXConstructor
+            c.CXCursor_Destructor,
+            c.CXCursor_ConversionFunction,
+            => return null,
+
+            c.CXCursor_ClassTemplate,
+            c.CXCursor_FunctionTemplate,
+            => return null,
+
+            c.CXCursor_VarDecl, // i.e. static or global members
+            => return null,
 
             // -- Ignored -- //
 
@@ -288,18 +312,70 @@ pub fn combineArgs(allocator: Allocator, args: []const []const [:0]const u8) ![]
 
 // -- Formatting -- //
 
+var DEBUG_formattingIndentLevel: usize = 0;
+const DEBUG_INDENTS = "\t" ** 256;
 pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
     for (self.instrs.items) |instr| {
-        try writer.print("[{s}] {s} '{s}'\n", .{ @tagName(instr.state), @tagName(instr.inner), instr.name });
+        if (instr.state == .close and DEBUG_formattingIndentLevel > 0) {
+            DEBUG_formattingIndentLevel -= 1;
+        }
+        const indent = DEBUG_INDENTS[0..DEBUG_formattingIndentLevel];
+
+        try writer.print("{s}[{s}] {s} '{s}' ([{?s}]{?s})\n", .{
+            indent,
+            @tagName(instr.state),
+            @tagName(instr.inner),
+            instr.name,
+            ffi.getCursorKindSpelling(self.arena.allocator(), instr.__cursor.kind) catch @panic("OOM"),
+            ffi.getCursorSpelling(self.arena.allocator(), instr.__cursor) catch @panic("OOM"),
+        });
         if (instr.state == .close) continue;
 
         switch (instr.inner) {
-            .Function => |f| try writer.print("- Return Type: {f}\n", .{f.return_type}),
-            .Value => |v| try writer.print("- Type: {f}\n- Value: {f}\n", .{ v.type, v }),
-            .Member => |m| try writer.print("- Type: {f}\n", .{m}),
+            .Function => |f| try writer.print("{s}- Return Type: {f} ({f})\n", .{
+                indent,
+                f.return_type,
+                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = f.return_type.cx_type },
+            }),
+            .Value => |v| try writer.print("{s}- Type: {f} ({f})\n- Value: {f}\n", .{
+                indent,
+                v.type,
+                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = v.type.cx_type },
+                v,
+            }),
+            .Member => |m| try writer.print("{s}- Type: {f} ({f})\n", .{
+                indent,
+                m,
+                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = m.cx_type },
+            }),
             else => {},
         }
+
+        if (instr.state == .open and instr.inner != .Member and instr.inner != .Value) DEBUG_formattingIndentLevel += 1;
     }
+}
+
+const FormatRawType = struct {
+    allocator: std.mem.Allocator,
+    cx_type: c.CXType,
+
+    pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
+        try writer.print("[{?s}]{?s}", .{
+            ffi.getTypeKindSpelling(self.allocator, self.cx_type.kind) catch @panic("OOM"),
+            ffi.getTypeSpelling(self.allocator, self.cx_type) catch @panic("OOM"),
+        });
+    }
+};
+
+/// Only for debugging.
+pub fn writeToFile(self: @This()) !void {
+    const file = try std.fs.cwd().createFile("ir.txt", .{});
+    defer file.close();
+
+    var writer = file.writer(&.{});
+    try self.format(&writer.interface);
+
+    log.debug("Wrote IR to ir.txt!", .{});
 }
 
 // -- Tests -- //
@@ -309,4 +385,6 @@ test "fromTU" {
 
     const ir = try processBytes(std.testing.allocator, "supported.hpp", file, &.{});
     defer ir.deinit();
+
+    log.warn("{f}", .{ir});
 }

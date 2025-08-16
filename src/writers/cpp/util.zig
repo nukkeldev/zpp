@@ -3,8 +3,12 @@ const std = @import("std");
 const IR = @import("../../ir/IR.zig");
 const TypeReference = IR.TypeReference;
 
+const log = std.log.scoped(.cpp_util);
+
 pub const FormatMember = struct {
     name: ?[]const u8 = null,
+    dont_suffix_pointers: ?*bool = null,
+    pointer_lvl: usize = 0,
     type_ref: TypeReference,
 
     const DEBUG = false;
@@ -22,6 +26,14 @@ pub const FormatMember = struct {
         switch (t.inner) {
             .void => try writer.writeAll("void"),
 
+            .bool => try writer.writeAll("bool"),
+            .float => |float| {
+                switch (float.bits) {
+                    32 => try writer.writeAll("float"),
+                    64 => try writer.writeAll("double"),
+                    else => log.warn("Float width '{}' not yet implemented!", .{float.bits}),
+                }
+            },
             .integer => |int| {
                 if (int.signedness == .unsigned) {
                     try writer.writeAll("unsigned ");
@@ -30,15 +42,25 @@ pub const FormatMember = struct {
                 switch (int.bits) {
                     8 => try writer.writeAll("char"),
                     32 => try writer.writeAll("int"),
-                    else => {
-                        std.log.warn("Integer width '{}' not yet implemented!", .{int.bits});
-                    },
+                    64 => try writer.writeAll("long long"),
+                    else => log.warn("Integer width '{}' not yet implemented!", .{int.bits}),
                 }
             },
 
             .pointer => |p| {
-                try (FormatMember{ .type_ref = p.* }).format(writer);
-                try writer.writeByte('*');
+                var tmp = false;
+                const ptr = self.dont_suffix_pointers orelse &tmp;
+                try (FormatMember{
+                    .name = self.name,
+                    .type_ref = p.*,
+                    .pointer_lvl = self.pointer_lvl + 1,
+                    .dont_suffix_pointers = ptr,
+                }).format(writer);
+                if (!ptr.*) {
+                    try writer.writeByte('*');
+                } else {
+                    return;
+                }
             },
             .reference => |r| {
                 try (FormatMember{ .type_ref = r.* }).format(writer);
@@ -56,10 +78,31 @@ pub const FormatMember = struct {
             .enumeration => |name| try writer.writeAll(name),
             .record => |name| try writer.writeAll(name),
 
-            else => try writer.print("/* TODO: Type not yet formatted: '{s}' */", .{@tagName(t.inner)}),
+            .function => |f| {
+                // TODO: handle pointer return types
+                try writer.print("{f} (", .{FormatMember{ .type_ref = f.return_type.* }});
+                for (0..self.pointer_lvl) |_| try writer.writeByte('*');
+                try writer.print("{s})(", .{
+                    self.name orelse "",
+                });
+                for (f.params, 0..) |p, i| {
+                    try (FormatMember{ .type_ref = p }).format(writer);
+                    if (i < f.params.len - 1 or f.variadic) try writer.writeAll(", ");
+                }
+                if (f.variadic) try writer.writeAll("...");
+                try writer.writeByte(')');
+
+                self.dont_suffix_pointers.?.* = true;
+                return;
+            },
+
+            else => {
+                log.err("Not yet formatted type: '{s}'!", .{@tagName(t.inner)});
+                try writer.print("void*", .{});
+            },
         }
 
-        if (self.name) |name| try writer.print(" {s}", .{name});
+        if (self.pointer_lvl == 0) if (self.name) |name| try writer.print(" {s}", .{name});
     }
 };
 
@@ -78,6 +121,10 @@ pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype
         },
     );
     defer allocator.free(clang_args);
+
+    log.debug("clang args: [", .{});
+    for (clang_args) |a| log.debug("\t{s}", .{a});
+    log.debug("]", .{});
 
     const translation_unit = c.clang_parseTranslationUnit(index, path.ptr, @ptrCast(clang_args), @intCast(clang_args.len), null, 0, 0);
     defer c.clang_disposeTranslationUnit(translation_unit);

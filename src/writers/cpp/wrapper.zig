@@ -11,7 +11,17 @@ pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.me
 
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     try writer.writeAll(@import("../../writers.zig").PREAMBLE);
-    try writer.print("\n\n#include \"{s}\"\n\n", .{std.fs.path.basename(ir.path)});
+    try writer.writeAll(
+        \\
+        \\
+        \\#include <cstdarg>
+        \\
+        \\#pragma clang diagnostic push
+        \\#pragma clang diagnostic ignored "-Wformat-security"
+        \\
+        \\
+    );
+    try writer.print("#include \"{s}\"\n\n", .{std.fs.path.basename(ir.path)});
 
     if (ir.instrs.items.len == 0) {
         try writer.writeAll("// Why are you generating an empty file?\n");
@@ -20,6 +30,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     var i: usize = 0;
 
+    var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
     var ns_stack: std.ArrayList([]const u8) = .init(ir.arena.allocator());
     var fn_params: std.ArrayList(usize) = .init(ir.arena.allocator());
 
@@ -33,7 +44,10 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
             switch (instr.inner) {
                 .Namespace => ns_stack.append(instr.name) catch @panic("OOM"),
                 .Function => |f| {
-                    try writer.print("extern \"C\" {f} {s}(", .{
+                    const overload_ptr = (overload_map.getOrPutValue(uname, 0) catch @panic("OOM")).value_ptr;
+                    defer overload_ptr.* += 1;
+
+                    try writer.print("extern \"C\" {f} {s}", .{
                         util.FormatMember{
                             .type_ref = switch (f.return_type.inner) {
                                 .record => .VOID,
@@ -42,6 +56,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         },
                         uname,
                     });
+                    if (overload_ptr.* > 0) try writer.print("_{}", .{overload_ptr.*});
+                    try writer.writeByte('(');
+
                     ignore_members = false;
                 },
                 .Member => |m| if (!ignore_members) {
@@ -50,10 +67,10 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     fn_params.append(i) catch @panic("OOM");
                 },
-                .Struct, .Enum, .Union, .Value => ignore_members = true,
-                else => {
-                    log.warn("Open instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
-                },
+                .Struct, .Enum, .Union, .Value, .Typedef => ignore_members = true,
+                // else => {
+                //     log.warn("Open instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
+                // },
             }
         } else {
             switch (instr.inner) {
@@ -91,13 +108,16 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     try writer.writeAll(");\n}\n");
                     fn_params.clearAndFree();
                 },
-                .Struct, .Enum, .Union, .Value => {
+                .Struct, .Enum, .Union, .Typedef => {
                     fn_params.clearAndFree();
                 },
-                else => {
-                    log.warn("Close instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
-                },
+                .Member, .Value => unreachable,
+                // else => {
+                //     log.warn("Close instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
+                // },
             }
         }
     }
+
+    try writer.writeAll("#pragma clang diagnostic pop");
 }
