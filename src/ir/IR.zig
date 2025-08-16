@@ -218,7 +218,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
             => outer: {
                 const value = try allocator.create(i128); // TODO: Allocate in accordance to parent cursor backing type?
                 value.* = c.clang_getEnumConstantDeclValue(cursor);
-
+                
                 break :outer .{
                     .Value = .{
                         .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),

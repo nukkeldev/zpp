@@ -1,4 +1,5 @@
 const std = @import("std");
+const c = @import("../../ffi.zig").c;
 
 const IR = @import("../../ir/IR.zig");
 const TypeReference = IR.TypeReference;
@@ -6,10 +7,14 @@ const TypeReference = IR.TypeReference;
 const log = std.log.scoped(.zig_util);
 
 pub const FormatType = struct {
+    erase_array_size: bool = false,
+    annotate_with_alignment: bool = false,
     type_ref: TypeReference,
 
     pub fn format(self: FormatType, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         const t = self.type_ref;
+
+        const alignment = c.clang_Type_getAlignOf(self.type_ref.cx_type);
 
         // TODO: const
 
@@ -31,7 +36,11 @@ pub const FormatType = struct {
 
             .array => |a| {
                 try writer.writeByte('[');
-                if (a.count >= 0) try writer.print("{}", .{a.count});
+                if (a.count >= 0 and !self.erase_array_size) {
+                    try writer.print("{}", .{a.count});
+                } else {
+                    try writer.writeByte('*');
+                }
                 try writer.writeByte(']');
                 try (FormatType{ .type_ref = a.element_type.* }).format(writer);
             },
@@ -51,9 +60,14 @@ pub const FormatType = struct {
             },
 
             else => {
-                log.err("Not yet formatted type: '{s}'!", .{@tagName(t.inner)});
-                try writer.print("?*anyopaque", .{});
+                log.err("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
+                try writer.print("[{}]u8", .{c.clang_Type_getSizeOf(t.cx_type)});
             },
+        }
+
+        // TODO: This is quite excessive, reduce for well-defined types.
+        if (self.annotate_with_alignment and t.inner != .void) {
+            try writer.print(" align({})", .{alignment});
         }
     }
 };
@@ -74,7 +88,8 @@ pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype
     });
 
     const success = res.term == .Exited and res.term.Exited == 0;
-    if (!success) std.debug.print("{s}", .{res.stderr});
+    if (res.stdout.len > 0) std.debug.print("[zig build-lib {s} -fno-emit-bin stdout]:\n{s}", .{ path, res.stdout });
+    if (res.stderr.len > 0) std.debug.print("[zig build-lib {s} -fno-emit-bin stderr]:\n{s}", .{ path, res.stderr });
 
     return success;
 }

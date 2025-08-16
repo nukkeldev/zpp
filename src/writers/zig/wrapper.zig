@@ -1,5 +1,6 @@
 const std = @import("std");
 const util = @import("util.zig");
+const c = @import("../../ffi.zig").c;
 
 const IR = @import("../../ir/IR.zig");
 
@@ -20,6 +21,17 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         return;
     }
 
+    try writer.writeAll(
+        \\
+        \\fn refAllDecls(comptime T: type) void {
+        \\    inline for (comptime @import("std").meta.declarations(T)) |decl| {
+        \\        _ = &@field(T, decl.name);
+        \\    }
+        \\}
+        \\
+        \\
+    );
+
     var i: usize = 0;
 
     var fwd_decls: std.StringHashMap(void) = .init(ir.arena.allocator());
@@ -31,7 +43,6 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     while (i < ir.instrs.items.len) : (i += 1) {
         const instr = ir.instrs.items[i];
-        std.debug.print("{s}\n", .{instr.name});
         const uname = instr.getUniqueName(ir.arena.allocator()) catch @panic("OOM");
 
         if (instr.state == .open) {
@@ -60,8 +71,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 .Member => |m| {
                     try writer.print("{s}: {f}{s}", .{
                         instr.name,
-                        util.FormatType{ .type_ref = m },
-                        if (ctx_stack.getLast() == .func) outer: {
+                        util.FormatType{
+                            .type_ref = m,
+                            .annotate_with_alignment = ctx_stack.getLast() != .func,
+                            .erase_array_size = ctx_stack.getLast() == .func,
+                        },
+                        if (ctx_stack.getLast() == .func)
+                        outer: {
                             break :outer if (ir.instrs.items[i + 1].inner == .Member) ", " else "";
                         } else outer: {
                             break :outer ",\n";
@@ -70,7 +86,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Value => |v| {
-                    try writer.print("pub const {s}: {f} = {f};\n", .{ instr.name, util.FormatType{ .type_ref = v.type }, v });
+                    try writer.print("pub const {s}: {f} = .{{.data={f}}};\n", .{ instr.name, util.FormatType{ .type_ref = v.type }, v });
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Struct => {
@@ -119,10 +135,10 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     switch (ctx_stack.getLast()) {
                         .struc => {
-                            try writer.writeAll("anon: union(enum) {\n");
+                            try writer.writeAll("anon: extern union {\n");
                         },
                         else => {
-                            try writer.print("pub const {s} = union(enum) {{\n", .{instr.name});
+                            try writer.print("pub const {s} = extern union {{\n", .{instr.name});
                         },
                     }
 
@@ -141,7 +157,16 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         } else {
             switch (instr.inner) {
                 .Namespace => {
-                    try writer.writeAll("};\n\n");
+                    try writer.writeAll(
+                        \\
+                        \\
+                        \\comptime {
+                        \\    refAllDecls(@This());
+                        \\}
+                        \\};
+                        \\
+                        \\
+                    );
                     _ = ns_stack.pop();
                     _ = ctx_stack.pop();
                 },
@@ -171,19 +196,41 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (member_stack.getLast().items.len == 0) continue;
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
-
                     _ = ctx_stack.pop();
+
+                    try writeSizeAndAlignmentChecks(
+                        instr.name,
+                        c.clang_getCursorType(instr.__cursor),
+                        member_stack.getLast().items,
+                        ir.instrs.items,
+                        writer,
+                    );
                     try writer.writeAll("}");
                     switch (ctx_stack.getLast()) {
                         .struc => try writer.writeAll(",\n"),
                         else => try writer.writeAll(";\n\n"),
                     }
                 },
-                .Struct, .Enum => {
+                .Struct => {
+                    if (member_stack.getLast().items.len == 0) continue;
+                    _ = ctx_stack.pop();
+
+                    try writeSizeAndAlignmentChecks(
+                        instr.name,
+                        c.clang_getCursorType(instr.__cursor),
+                        member_stack.getLast().items,
+                        ir.instrs.items,
+                        writer,
+                    );
+                    try writer.writeAll("};\n\n");
+
+                    member_stack.getLast().clearAndFree();
+                    _ = member_stack.pop();
+                },
+                .Enum => {
                     if (member_stack.getLast().items.len == 0) continue;
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
-
                     _ = ctx_stack.pop();
                     try writer.writeAll("};\n\n");
                 },
@@ -200,4 +247,82 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     while (opaque_type_decls_iter.next()) |t| {
         try writer.print("pub const {s} = ?*anyopaque;\n", .{t.*});
     }
+
+    try writer.writeAll(
+        \\
+        \\
+        \\comptime {
+        \\    refAllDecls(@This());
+        \\}
+        \\
+    );
+}
+
+fn writeSizeAndAlignmentChecks(
+    name: []const u8,
+    cx_type: c.CXType,
+    members: []const usize,
+    instructions: []const IR.Instruction,
+    writer: *std.Io.Writer,
+) std.Io.Writer.Error!void {
+    const expected_size = c.clang_Type_getSizeOf(cx_type);
+    const expected_alignment = c.clang_Type_getAlignOf(cx_type);
+    try writer.print(
+        \\comptime {{
+        \\if (@sizeOf(@This()) != {} or @alignOf(@This()) != {}) {{
+        \\@compileLog(@import("std").fmt.comptimePrint("Expected type '{s}' to be {} bytes with {} byte alignment, but was {{}} bytes with {{}} byte alignment instead!", .{{
+        \\    @sizeOf(@This()),
+        \\    @alignOf(@This()),
+        \\}}));
+        \\
+        \\
+    , .{
+        expected_size,
+        expected_alignment,
+        if (c.clang_Cursor_isAnonymous(c.clang_getTypeDeclaration(cx_type)) != 0) "Anonymous Type" else name,
+        expected_size,
+        expected_alignment,
+    });
+
+    var check_fields = false;
+    for (members) |m| {
+        if (instructions[m].inner.Member.inner == .not_yet_implemented) continue;
+        check_fields = true;
+    }
+
+    if (check_fields) {
+        try writer.writeAll(
+            \\const this: @This() = undefined;
+            \\
+            \\
+        );
+
+        for (members) |m| {
+            const m_instr = instructions[m];
+            if (m_instr.inner.Member.inner == .not_yet_implemented) continue;
+
+            const m_size = c.clang_Type_getSizeOf(m_instr.inner.Member.cx_type);
+            const m_alignment = c.clang_Type_getAlignOf(m_instr.inner.Member.cx_type);
+
+            try writer.print(
+                \\const T_{[name]s} = @TypeOf(this.{[name]s});
+                \\if (@sizeOf(T_{[name]s}) != {[size]} or @alignOf(T_{[name]s}) != {[alignment]}) {{
+                \\    @compileLog(@import("std").fmt.comptimePrint("Expected field '{[name]s}' to be {[size]} bytes with {[alignment]} byte alignment, but was {{}} bytes with {{}} byte alignment instead!", .{{
+                \\        @sizeOf(T_{[name]s}),
+                \\        @alignOf(T_{[name]s}),
+                \\    }}));
+                \\}}
+                \\
+            , .{
+                .name = if (m_instr.inner == .Union) "anon" else m_instr.name,
+                .size = m_size,
+                .alignment = m_alignment,
+            });
+        }
+    }
+
+    try writer.writeAll(
+        \\}
+        \\}
+    );
 }

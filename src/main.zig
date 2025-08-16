@@ -121,50 +121,28 @@ pub fn main() !void {
     std.log.info("Zig Wrapper Check: {D}", .{getNs() - time});
     time = getNs();
 
-    // var writer = try Writer.init(allocator, reader.ast, args.filename(), .Cpp);
-    // defer writer.deinit();
+    // try writers.writeToFile(arena.allocator(), ir, writers.CppABIVerif, args.filename());
 
-    // try writer.writeToFile(out_path);
-    // if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
+    // std.log.info("C++ ABI Verfication: {D}", .{getNs() - time});
+    // time = getNs();
 
-    // writer.resetForLanguage(.Zig);
+    // try writers.checkFile(arena.allocator(), writers.CppABIVerif, args.filename(), .{
+    //     .clang_args = args.clang_args,
+    //     .source_dir = args.dirname(),
+    // });
 
-    // try writer.writeToFile(out_path);
-    // if (args.compile) try writer.compileLastFile(std.fs.path.dirname(args.header_path) orelse "", out_path, args.clang_args);
+    // std.log.info("C++ ABI Verfication Check: {D}", .{getNs() - time});
+    // time = getNs();
 
-    // // TODO: Update this to match Writer above; preferably integrate the two.
-    // if (!args.verify) return;
+    // try writers.writeToFile(arena.allocator(), ir, writers.ZigABIVerif, args.filename());
 
-    // var verif = Verification{
-    //     .allocator = allocator,
-    //     .ast = reader.ast,
-    //     .language = .Cpp,
-    //     .source_filename = args.filename(),
-    // };
+    // std.log.info("Zig ABI Verfication: {D}", .{getNs() - time});
+    // time = getNs();
 
-    // {
-    //     const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".cpp" });
-    //     var file = try std.fs.cwd().createFile(file_path, .{});
-    //     defer file.close();
+    // try writers.checkFile(arena.allocator(), writers.ZigABIVerif, args.filename(), {});
 
-    //     var io_writer = file.writer(&.{});
-    //     try verif.format(&io_writer.interface);
-
-    //     std.log.info("Wrote C++ verification!", .{});
-    // }
-
-    // verif.language = .Zig;
-
-    // {
-    //     const file_path: []const u8 = try std.mem.concat(allocator, u8, &.{ out_path, "verify_", args.filename(), ".zig" });
-    //     var file = try std.fs.cwd().createFile(file_path, .{});
-    //     defer file.close();
-
-    //     var io_writer = file.writer(&.{});
-    //     try verif.format(&io_writer.interface);
-
-    //     std.log.info("Wrote Zig verification bindings!", .{});
-    // }
+    // std.log.info("Zig ABI Verfication Check: {D}", .{getNs() - time});
+    // time = getNs();
 }
 
 fn getNs() i64 {
