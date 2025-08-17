@@ -16,7 +16,9 @@ pub const FormatType = struct {
 
         const alignment = c.clang_Type_getAlignOf(self.type_ref.cx_type);
 
-        // TODO: const
+        if (t.is_const) {
+            try writer.writeAll("const ");
+        }
 
         switch (t.inner) {
             .void => try writer.writeAll("void"),
@@ -26,7 +28,11 @@ pub const FormatType = struct {
             .float => |float| try writer.print("f{}", .{float.bits}),
 
             .pointer => |p| {
-                try writer.writeAll("?*");
+                if (p.inner == .void) {
+                    try writer.writeAll("*");
+                } else {
+                    try writer.writeAll("[*c]");
+                }
                 try (FormatType{ .type_ref = p.* }).format(writer);
             },
             .reference => |r| {
@@ -62,12 +68,8 @@ pub const FormatType = struct {
             else => {
                 log.err("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
                 try writer.print("[{}]u8", .{c.clang_Type_getSizeOf(t.cx_type)});
+                if (self.annotate_with_alignment) try writer.print(" align({})", .{alignment});
             },
-        }
-
-        // TODO: This is quite excessive, reduce for well-defined types.
-        if (self.annotate_with_alignment and t.inner != .void) {
-            try writer.print(" align({})", .{alignment});
         }
     }
 };

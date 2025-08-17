@@ -30,4 +30,3 @@ Optional Arguments:
     namespace N { void baz(); }
     ```
   - The members of namespaces are not merged, resulting in duplicate Zig struct members. Instead, we could have namespaced declarations go to their own files which would eliminate the issue.
-- [ ] `const`
