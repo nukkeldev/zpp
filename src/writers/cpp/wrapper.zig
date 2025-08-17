@@ -31,8 +31,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var i: usize = 0;
 
     var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
-    var ns_stack: std.ArrayList([]const u8) = .init(ir.arena.allocator());
-    var fn_params: std.ArrayList(usize) = .init(ir.arena.allocator());
+    var ns_stack: std.array_list.Managed([]const u8) = .init(ir.arena.allocator());
+    var fn_params: std.array_list.Managed(usize) = .init(ir.arena.allocator());
 
     var ignore_members: bool = false; // TODO: This won't hold up well...
 

@@ -45,9 +45,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     var fwd_decls: std.StringHashMap(void) = .init(ir.arena.allocator());
     var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
-    var ns_stack: std.ArrayList([]const u8) = .init(ir.arena.allocator());
-    var member_stack: std.ArrayList(*std.ArrayList(usize)) = .init(ir.arena.allocator());
-    var ctx_stack: std.ArrayList(union(enum) {
+    var ns_stack: std.array_list.Managed([]const u8) = .init(ir.arena.allocator());
+    var member_stack: std.array_list.Managed(*std.array_list.Managed(usize)) = .init(ir.arena.allocator());
+    var ctx_stack: std.array_list.Managed(union(enum) {
         func,
         /// The amount of unnamed fields
         struc: usize,
@@ -80,7 +80,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     ctx_stack.append(.func) catch @panic("OOM");
 
-                    const new_stack = ir.arena.allocator().create(std.ArrayList(usize)) catch @panic("OOM");
+                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
                     new_stack.* = .init(ir.arena.allocator());
 
                     member_stack.append(new_stack) catch @panic("OOM");
@@ -134,7 +134,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Struct => {
-                    const new_stack = ir.arena.allocator().create(std.ArrayList(usize)) catch @panic("OOM");
+                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
                     new_stack.* = .init(ir.arena.allocator());
 
                     member_stack.append(new_stack) catch @panic("OOM");
@@ -151,7 +151,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.{ .struc = 0 }) catch @panic("OOM");
                 },
                 .Enum => |e| {
-                    const new_stack = ir.arena.allocator().create(std.ArrayList(usize)) catch @panic("OOM");
+                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
                     new_stack.* = .init(ir.arena.allocator());
 
                     member_stack.append(new_stack) catch @panic("OOM");
@@ -170,7 +170,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.enu) catch @panic("OOM");
                 },
                 .Union => {
-                    const new_stack = ir.arena.allocator().create(std.ArrayList(usize)) catch @panic("OOM");
+                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
                     new_stack.* = .init(ir.arena.allocator());
 
                     member_stack.append(new_stack) catch @panic("OOM");

@@ -52,7 +52,7 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
     std.fs.cwd().access(header_path, .{}) catch |e|
         printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ header_path, e });
 
-    var clang_args = std.ArrayList([:0]const u8).init(allocator);
+    var clang_args = std.array_list.Managed([:0]const u8).init(allocator);
 
     var i: usize = 2;
     while (i < args.len) : (i += 1) {

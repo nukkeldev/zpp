@@ -26,7 +26,7 @@ path: []const u8,
 source: []const u8,
 
 arena: *std.heap.ArenaAllocator,
-instrs: std.ArrayList(Instruction),
+instrs: std.array_list.Managed(Instruction),
 
 // -- (De)initialization -- //
 
