@@ -167,7 +167,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
                     break :outer .not_yet_implemented;
                 };
                 if (c.clang_Type_getNumTemplateArguments(cx_type) > 0) {
-                    log.warn("Templated type '{s}' not yet implemented!", .{name});
+                    if (Logging.WARN_TEMPLATE_TYPE) log.warn("Templated type '{s}' not yet implemented!", .{name});
                     break :outer .not_yet_implemented;
                 }
 
@@ -207,7 +207,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
             // -- Fallback --//
 
             else => outer: {
-                log.warn("Unhandled type '{?s}'!", .{try ffi.getTypeKindSpelling(allocator, cx_type.kind)});
+                log.err("Unhandled type '{?s}'!", .{try ffi.getTypeKindSpelling(allocator, cx_type.kind)});
                 break :outer .not_yet_implemented;
             },
         },
@@ -245,3 +245,9 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         else => try writer.writeAll(@tagName(self.inner)),
     }
 }
+
+// -- Logging -- //
+
+const Logging = struct {
+    pub const WARN_TEMPLATE_TYPE = false;
+};

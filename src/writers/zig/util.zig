@@ -66,7 +66,7 @@ pub const FormatType = struct {
             },
 
             else => {
-                log.err("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
+                if (Logging.WARN_NOT_YET_FORMATTED) log.warn("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
                 try writer.print("[{}]u8", .{c.clang_Type_getSizeOf(t.cx_type)});
                 if (self.annotate_with_alignment) try writer.print(" align({})", .{alignment});
             },
@@ -95,3 +95,9 @@ pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype
 
     return success;
 }
+
+// -- Logging -- //
+
+const Logging = struct {
+    pub const WARN_NOT_YET_FORMATTED = false;
+};
