@@ -198,7 +198,20 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
             c.CXCursor_FieldDecl,
             c.CXCursor_ParmDecl,
-            => .{ .Member = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir) },
+            => outer: {
+                var type_ref = try TypeReference.fromCXType(allocator, c.clang_getCursorType(cursor), ir);
+                if (c.clang_Cursor_isBitField(cursor) != 0) switch (type_ref.inner) {
+                    .integer => {
+                        type_ref.inner.integer.bits = @intCast(c.clang_getFieldDeclBitWidth(cursor));
+                    },
+                    // TODO: Enums?
+                    else => {
+                        std.log.err("Cannot have a non-integral bitfield '{s}'!", .{name});
+                        return null;
+                    },
+                };
+                break :outer .{ .Member = type_ref };
+            },
 
             // -- Values -- //
 
@@ -218,7 +231,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
             => outer: {
                 const value = try allocator.create(i128); // TODO: Allocate in accordance to parent cursor backing type?
                 value.* = c.clang_getEnumConstantDeclValue(cursor);
-                
+
                 break :outer .{
                     .Value = .{
                         .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),

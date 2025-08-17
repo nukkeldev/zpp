@@ -1,3 +1,5 @@
+// -- Imports -- //
+
 const std = @import("std");
 const util = @import("util.zig");
 const c = @import("../../ffi.zig").c;
@@ -6,12 +8,19 @@ const IR = @import("../../ir/IR.zig");
 
 const log = std.log.scoped(.zig_wrapper);
 
+// -- Configuration -- //
+
+const ANONYMOUS_MEMBER_PREFIX = "anon";
+
+// -- Writer -- //
+
 pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.mem.Allocator.Error![:0]const u8 {
     return std.fmt.allocPrintSentinel(allocator, "{s}.zig", .{filename}, 0);
 }
 
 // TODO: This function is horrendous; please:
 // TODO: - Fix the member stack horror.
+// TODO: - Convert this to be a stateful struct, so we can use methods and such.
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     try writer.writeAll(@import("../../writers.zig").PREAMBLE);
     try writer.writeAll("\n\n");
@@ -38,7 +47,15 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
     var ns_stack: std.ArrayList([]const u8) = .init(ir.arena.allocator());
     var member_stack: std.ArrayList(*std.ArrayList(usize)) = .init(ir.arena.allocator());
-    var ctx_stack: std.ArrayList(enum { func, struc, enu, uni, ns }) = .init(ir.arena.allocator());
+    var ctx_stack: std.ArrayList(union(enum) {
+        func,
+        /// The amount of unnamed fields
+        struc: usize,
+        enu,
+        uni,
+        ns,
+        bitfield: usize,
+    }) = .init(ir.arena.allocator());
     ctx_stack.append(.ns) catch @panic("OOM");
 
     while (i < ir.instrs.items.len) : (i += 1) {
@@ -69,20 +86,47 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     member_stack.append(new_stack) catch @panic("OOM");
                 },
                 .Member => |m| {
-                    try writer.print("{s}: {f}{s}", .{
-                        instr.name,
-                        util.FormatType{
-                            .type_ref = m,
-                            .annotate_with_alignment = ctx_stack.getLast() != .func,
-                            .erase_array_size = ctx_stack.getLast() == .func,
-                        },
-                        if (ctx_stack.getLast() == .func)
-                        outer: {
-                            break :outer if (ir.instrs.items[i + 1].inner == .Member) ", " else "";
-                        } else outer: {
-                            break :outer ",\n";
-                        },
-                    });
+                    const in_bitfield = c.clang_Cursor_isBitField(instr.__cursor) != 0;
+                    // TODO: I believe that this implictly verifies us to be "in" a struct.
+                    if (in_bitfield and ctx_stack.getLast() != .bitfield) {
+                        // NOTE: We haven't precomputed the size so we can't annotate the struct decl itself.
+                        try writer.print(ANONYMOUS_MEMBER_PREFIX ++ "{}: packed struct {{\n", .{ctx_stack.getLast().struc});
+                        ctx_stack.append(.{ .bitfield = 0 }) catch @panic("OOM");
+                    } else if (!in_bitfield and ctx_stack.getLast() == .bitfield) {
+                        const container_size = std.math.ceilPowerOfTwo(usize, ctx_stack.getLast().bitfield) catch @panic("Overflow");
+                        const padding = container_size - ctx_stack.getLast().bitfield;
+
+                        if (padding > 0) {
+                            try writer.print("__padding: u{}", .{padding});
+                        }
+                        try writer.writeAll("},");
+
+                        _ = ctx_stack.pop();
+                    }
+
+                    if (in_bitfield) {
+                        const bits = c.clang_getFieldDeclBitWidth(instr.__cursor);
+
+                        try writer.print("{s}: u{},\n", .{ instr.name, bits });
+
+                        ctx_stack.items[ctx_stack.items.len - 1].bitfield += @intCast(bits);
+                    } else {
+                        try writer.print("{s}: {f}{s}", .{
+                            instr.name,
+                            util.FormatType{
+                                .type_ref = m,
+                                .annotate_with_alignment = !in_bitfield and ctx_stack.getLast() != .func,
+                                .erase_array_size = ctx_stack.getLast() == .func,
+                            },
+                            if (ctx_stack.getLast() == .func)
+                            outer: {
+                                break :outer if (ir.instrs.items[i + 1].inner == .Member) ", " else "";
+                            } else outer: {
+                                break :outer ",\n";
+                            },
+                        });
+                    }
+
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Value => |v| {
@@ -104,7 +148,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     try writer.print("pub const {s} = extern struct {{\n", .{instr.name});
 
-                    ctx_stack.append(.struc) catch @panic("OOM");
+                    ctx_stack.append(.{ .struc = 0 }) catch @panic("OOM");
                 },
                 .Enum => |e| {
                     const new_stack = ir.arena.allocator().create(std.ArrayList(usize)) catch @panic("OOM");
@@ -134,8 +178,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (ir.instrs.items[i + 1].state == .close) continue; // Ignore forward definitions, this might hit empty structs tho.
 
                     switch (ctx_stack.getLast()) {
-                        .struc => {
-                            try writer.writeAll("anon: extern union {\n");
+                        .struc => |n| {
+                            try writer.print(ANONYMOUS_MEMBER_PREFIX ++ "{}: extern union {{\n", .{n});
+                            ctx_stack.items[ctx_stack.items.len - 1].struc += 1;
                         },
                         else => {
                             try writer.print("pub const {s} = extern union {{\n", .{instr.name});
