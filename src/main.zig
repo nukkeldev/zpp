@@ -120,29 +120,6 @@ pub fn main() !void {
 
     std.log.info("Zig Wrapper Check: {D}", .{getNs() - time});
     time = getNs();
-
-    // try writers.writeToFile(arena.allocator(), ir, writers.CppABIVerif, args.filename());
-
-    // std.log.info("C++ ABI Verfication: {D}", .{getNs() - time});
-    // time = getNs();
-
-    // try writers.checkFile(arena.allocator(), writers.CppABIVerif, args.filename(), .{
-    //     .clang_args = args.clang_args,
-    //     .source_dir = args.dirname(),
-    // });
-
-    // std.log.info("C++ ABI Verfication Check: {D}", .{getNs() - time});
-    // time = getNs();
-
-    // try writers.writeToFile(arena.allocator(), ir, writers.ZigABIVerif, args.filename());
-
-    // std.log.info("Zig ABI Verfication: {D}", .{getNs() - time});
-    // time = getNs();
-
-    // try writers.checkFile(arena.allocator(), writers.ZigABIVerif, args.filename(), {});
-
-    // std.log.info("Zig ABI Verfication Check: {D}", .{getNs() - time});
-    // time = getNs();
 }
 
 fn getNs() i64 {
