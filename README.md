@@ -30,3 +30,8 @@ Optional Arguments:
     namespace N { void baz(); }
     ```
   - The members of namespaces are not merged, resulting in duplicate Zig struct members. Instead, we could have namespaced declarations go to their own files which would eliminate the issue.
+- Excessive usage of `@panic`
+  - Localize issues to individual declarations and keep them syntactically correct or buffer each one so they can be deleted.
+- Bad C string dx
+  - `const char*` -> `[*c]const i8` which needs a `@ptrCast`, only a slight annoyance though.
+  - Further generate more "zig-like" bindings that can format common patterns more appropriately. 

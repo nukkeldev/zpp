@@ -224,6 +224,11 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         });
                     }
 
+                    if (f.variadic) {
+                        if (member_stack.getLast().items.len > 0 or f.return_type.inner == .record) try writer.writeAll(", ");
+                        try writer.writeAll("...");
+                    }
+
                     try writer.print(") callconv(.c) {f};\n\n", .{
                         util.FormatType{
                             .type_ref = switch (f.return_type.inner) {

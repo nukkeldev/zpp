@@ -48,6 +48,8 @@ pub fn deinit(ir: IR) void {
 
 // -- Instructions -- //
 
+// TODO: A lot of the associated instruction information could be reduced with functions for c.clang_getCursorType(__cursor).
+// TODO: i.e. clang_Cursor_isVariadic, etc.
 pub const Instruction = struct {
     name: []const u8,
     state: enum { open, close } = .open,
@@ -71,6 +73,7 @@ pub const Instruction = struct {
 };
 
 pub const Function = struct {
+    variadic: bool,
     return_type: TypeReference,
 };
 
@@ -149,7 +152,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     const location = c.clang_getCursorLocation(current_cursor);
     if (c.clang_Location_isFromMainFile(location) == 0) return c.CXChildVisit_Continue;
 
-    var state: *ProcessingState = @alignCast(@ptrCast(client_data_opaque));
+    var state: *ProcessingState = @ptrCast(@alignCast(client_data_opaque));
 
     const instr_opt = visitor(state.ir.arena.allocator(), current_cursor, &state.ir) catch |e| {
         state.err = e;
@@ -246,7 +249,12 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 // TODO: Convert these into normal methods.
                 if (std.mem.startsWith(u8, name, "operator ")) return null;
 
-                break :outer .{ .Function = .{ .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir) } };
+                break :outer .{
+                    .Function = .{
+                        .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
+                        .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
+                    },
+                };
             },
 
             // -- Structs & Unions -- //

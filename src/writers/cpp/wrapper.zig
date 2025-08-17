@@ -76,14 +76,35 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
             switch (instr.inner) {
                 .Namespace => _ = ns_stack.pop(),
                 .Function => |f| {
-                    if (f.return_type.inner == .record) {
+                    const use_out_param = f.return_type.inner == .record;
+                    const needs_to_return = f.return_type.inner != .void and f.return_type.inner != .record;
+
+                    if (use_out_param) {
                         // TODO: Avoid name collisions.
                         if (fn_params.items.len > 0) try writer.writeAll(", ");
-                        try writer.print("{f} *zpp_out) {{\n\t*zpp_out = ", .{
-                            util.FormatMember{ .type_ref = f.return_type },
-                        });
+                        try writer.print("{f} *zpp_out", .{util.FormatMember{ .type_ref = f.return_type }});
+                    }
+
+                    if (f.variadic) {
+                        if (fn_params.items.len == 0) @panic("Please see a doctor.");
+                        try writer.writeAll(", ...) {\n");
+                        try writer.print(
+                            "\tva_list __ZPP_args;\n\tva_start(__ZPP_args, {s});\n\t",
+                            .{ir.instrs.items[fn_params.getLast()].name},
+                        );
                     } else {
-                        try writer.writeAll(") {\n\treturn ");
+                        try writer.writeAll(") {\n\t");
+                    }
+
+                    if (needs_to_return) {
+                        if (f.variadic) {
+                            try writer.print(
+                                "{f} __ZPP_result = ",
+                                .{util.FormatMember{ .type_ref = f.return_type }},
+                            );
+                        } else {
+                            try writer.writeAll("return ");
+                        }
                     }
 
                     switch (f.return_type.inner) {
@@ -104,9 +125,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         try writer.writeAll(m.name);
                         if (j < fn_params.items.len - 1) try writer.writeAll(", ");
                     }
-
-                    try writer.writeAll(");\n}\n");
                     fn_params.clearAndFree();
+
+                    try writer.writeAll(");\n");
+                    if (f.variadic) try writer.writeAll("\tva_end(__ZPP_args);\n");
+                    if (needs_to_return and f.variadic) try writer.writeAll("\treturn __ZPP_result;\n");
+                    try writer.writeAll("}\n");
                 },
                 .Struct, .Enum, .Union, .Typedef => {
                     fn_params.clearAndFree();
