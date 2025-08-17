@@ -18,4 +18,16 @@ Required Arguments:
 
 Optional Arguments:
     -x,  --clang-arg    Passes the subsequent argument through to clang.
+    -s,  --sandbox      Enables the generation of a zig project to experiment with the results
 ```
+
+## TODO
+
+- [ ] Disparate sets of namespaced declarations.
+    ```cpp
+    namespace N { void foo(); }
+    void bar();
+    namespace N { void baz(); }
+    ```
+  - The members of namespaces are not merged, resulting in duplicate Zig struct members. Instead, we could have namespaced declarations go to their own files which would eliminate the issue.
+- [ ] `const`

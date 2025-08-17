@@ -239,9 +239,6 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 },
                 .Union => {
                     if (member_stack.getLast().items.len == 0) continue;
-                    member_stack.getLast().clearAndFree();
-                    _ = member_stack.pop();
-                    _ = ctx_stack.pop();
 
                     try writeSizeAndAlignmentChecks(
                         instr.name,
@@ -251,14 +248,18 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         writer,
                     );
                     try writer.writeAll("}");
+
+                    _ = ctx_stack.pop();
                     switch (ctx_stack.getLast()) {
                         .struc => try writer.writeAll(",\n"),
                         else => try writer.writeAll(";\n\n"),
                     }
+
+                    member_stack.getLast().clearAndFree();
+                    _ = member_stack.pop();
                 },
                 .Struct => {
                     if (member_stack.getLast().items.len == 0) continue;
-                    _ = ctx_stack.pop();
 
                     try writeSizeAndAlignmentChecks(
                         instr.name,
@@ -269,6 +270,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     );
                     try writer.writeAll("};\n\n");
 
+                    _ = ctx_stack.pop();
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
                 },

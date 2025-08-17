@@ -53,19 +53,19 @@ pub fn build(b: *std.Build) void {
     // Integration Test(s)
 
     const run_supported_gen = b.addRunArtifact(exe);
-    run_supported_gen.addFileArg(b.path("src/testing/supported.hpp"));
+    run_supported_gen.addFileArg(b.path("src/embed/testing/supported.hpp"));
     run_supported_gen.addArg("-x");
     run_supported_gen.addArg("-std=c++17");
 
     const supported_test_mod = b.createModule(.{
-        .root_source_file = b.path("src/testing/supported.zig"),
+        .root_source_file = b.path("src/embed/testing/supported.zig"),
         .target = target,
         .optimize = optimize,
         .link_libc = target.result.os.tag != .windows,
         .link_libcpp = target.result.os.tag == .windows,
     });
 
-    supported_test_mod.addIncludePath(b.path("src/testing"));
+    supported_test_mod.addIncludePath(b.path("src/embed/testing"));
     supported_test_mod.addCSourceFile(.{ .file = b.path("zpp-out/supported.hpp/supported.hpp.cpp"), .language = .cpp });
 
     supported_test_mod.addAnonymousImport("zpp-bindings", .{

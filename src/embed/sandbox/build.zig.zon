@@ -1,0 +1,11 @@
+.{
+    .name = .sandbox,
+    .version = "0.0.1",
+    .minimum_zig_version = "0.15.0-dev.1572+47e652876",
+    .paths = .{
+        "build.zig",
+        "build.zig.zon",
+        "src",
+    },
+    .fingerprint = 0xe6eaf167c95485b5,
+}

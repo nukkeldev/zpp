@@ -14,6 +14,10 @@ const Args = struct {
     header_path: [:0]const u8,
     /// Any additional arguments to pass to `clang`.
     clang_args: []const [:0]const u8 = &.{},
+    /// Whether to generate a sandbox for debugging purposes.
+    generate_sandbox: bool = false,
+    /// TODO: Whether to generate comptime ABI verification.
+    generate_abi_verification: bool = true,
 
     fn deinit(self: @This(), allocator: std.mem.Allocator) void {
         allocator.free(self.header_path);
@@ -62,6 +66,8 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
             i += 1;
             if (i == args.len) printUsageWithErrorAndExit("-x/--clang-arg requires a subsequent argument!", .{});
             try clang_args.append(try allocator.dupeZ(u8, args[i]));
+        } else if (std.mem.eql(u8, args[i], "-s") or std.mem.eql(u8, args[i], "--sandbox")) {
+            out.generate_sandbox = true;
         } else printUsageWithErrorAndExit("Unknown argument '{s}'!", .{args[i]});
     }
 
@@ -120,6 +126,29 @@ pub fn main() !void {
 
     std.log.info("Zig Wrapper Check: {D}", .{getNs() - time});
     time = getNs();
+
+    if (args.generate_sandbox) {
+        try std.fs.cwd().makePath("sandbox/src");
+
+        var build = try std.mem.replaceOwned(u8, arena.allocator(), @embedFile("embed/sandbox/build.zig"), "FILENAME", args.filename());
+        build = try std.mem.replaceOwned(u8, arena.allocator(), build, "ABSOLUTE_SOURCE_DIR", args.dirname());
+
+        var cflags = std.array_list.Managed(u8).init(arena.allocator());
+        for (args.clang_args) |arg| {
+            try cflags.appendSlice("\n\t\"");
+            try cflags.appendSlice(arg);
+            try cflags.appendSlice("\",");
+        }
+
+        build = try std.mem.replaceOwned(u8, arena.allocator(), build, "\"CFLAGS\"", cflags.items);
+
+        try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/build.zig", .data = build });
+        try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/build.zig.zon", .data = @embedFile("embed/sandbox/build.zig.zon") });
+        try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/src/main.zig", .data = @embedFile("embed/sandbox/src/main.zig") });
+
+        std.log.info("Copy `sandbox`: {D}", .{getNs() - time});
+        time = getNs();
+    }
 }
 
 fn getNs() i64 {
@@ -137,6 +166,7 @@ const USAGE =
     \\
     \\Optional Arguments:
     \\    -x,  --clang-arg    Passes the subsequent argument through to clang.
+    \\    -s,  --sandbox      Enables the generation of a zig project to experiment with the results
     \\
 ;
 
