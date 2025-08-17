@@ -26,11 +26,11 @@ pub const FormatType = struct {
             .float => |float| try writer.print("f{}", .{float.bits}),
 
             .pointer => |p| {
-                try writer.writeByte('*');
+                try writer.writeAll("?*");
                 try (FormatType{ .type_ref = p.* }).format(writer);
             },
             .reference => |r| {
-                try writer.writeByte('*');
+                try writer.writeByte('*'); // TODO: I don't think these can be null?
                 try (FormatType{ .type_ref = r.* }).format(writer);
             },
 
