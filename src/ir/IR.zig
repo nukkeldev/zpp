@@ -435,7 +435,7 @@ pub fn writeToFile(self: @This()) !void {
 // -- Tests -- //
 
 test "fromTU" {
-    const file = @embedFile("../testing/supported.hpp");
+    const file = @embedFile("../embed/testing/supported.hpp");
 
     const ir = try processBytes(std.testing.allocator, "supported.hpp", file, &.{});
     defer ir.deinit();
