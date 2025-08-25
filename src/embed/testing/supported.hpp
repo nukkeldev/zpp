@@ -100,7 +100,8 @@ Struct ret_struct()
     printf("ret_struct");
 
     Struct s;
-    s.x = 3;
+    s.x = 4;
+    s.y = 3;
     return s;
 }
 
@@ -145,6 +146,15 @@ const int *ret_const_ptr()
 {
     printf("ret_const_ptr");
     return nullptr;
+}
+
+// -- Edge Cases -- //
+
+Struct one_prim_vararg_ret_struct(int s, ...) {
+    Struct c;
+    c.x = 45;
+    c.y = 12;
+    return c;
 }
 
 // -- Namespaces -- //

@@ -77,7 +77,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 .Namespace => _ = ns_stack.pop(),
                 .Function => |f| {
                     const use_out_param = f.return_type.inner == .record;
-                    const needs_to_return = f.return_type.inner != .void and f.return_type.inner != .record;
+                    const needs_to_return = f.return_type.inner != .void;
 
                     if (use_out_param) {
                         // TODO: Avoid name collisions.
@@ -90,17 +90,19 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         try writer.writeAll(", ...) {\n");
                         try writer.print(
                             "\tva_list __ZPP_args;\n\tva_start(__ZPP_args, {s});\n\t",
-                            .{ir.instrs.items[fn_params.getLast()].name},
+                            .{if (use_out_param) "zpp_out" else ir.instrs.items[fn_params.getLast()].name},
                         );
                     } else {
                         try writer.writeAll(") {\n\t");
                     }
 
                     if (needs_to_return) {
-                        if (f.variadic) {
+                        if (use_out_param) {
+                            try writer.writeAll("*zpp_out = ");
+                        } else if (f.variadic) {
                             try writer.print(
                                 "{f} __ZPP_result = ",
-                                .{util.FormatMember{ .type_ref = f.return_type }},
+                                .{ util.FormatMember{ .type_ref = f.return_type } },
                             );
                         } else {
                             try writer.writeAll("return ");
@@ -129,7 +131,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     try writer.writeAll(");\n");
                     if (f.variadic) try writer.writeAll("\tva_end(__ZPP_args);\n");
-                    if (needs_to_return and f.variadic) try writer.writeAll("\treturn __ZPP_result;\n");
+                    if (needs_to_return and f.variadic and !use_out_param) try writer.writeAll("\treturn __ZPP_result;\n");
                     try writer.writeAll("}\n");
                 },
                 .Struct, .Enum, .Union, .Typedef => {
