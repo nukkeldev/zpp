@@ -168,7 +168,6 @@ Struct one_prim_vararg_ret_struct(int s, ...) {
 
 // -- Namespaces -- //
 
-// TODO: Namespaces are not reconstructed on the Zig-side yet.
 namespace NS1
 {
     int foo()
@@ -185,12 +184,12 @@ void after_ns() {
     printf("after_ns");
 }
 
-// namespace NS1
-// {
-//     int foo2() {
-//         return 32;
-//     }
-// }
+namespace NS1
+{
+    int foo2() {
+        return 32;
+    }
+}
 
 // -- Classes -- //
 

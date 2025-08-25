@@ -20,13 +20,15 @@ const IR = @This();
 
 const log = std.log.scoped(.ir);
 
+const Instructions = std.array_list.Managed(Instruction);
+
 // -- Fields -- //
 
 path: []const u8,
 source: []const u8,
 
 arena: *std.heap.ArenaAllocator,
-instrs: std.array_list.Managed(Instruction),
+instrs: Instructions,
 
 // -- (De)initialization -- //
 
@@ -102,7 +104,11 @@ const TU_FLAGS: c.CXTranslationUnit_Flags =
     c.CXTranslationUnit_SkipFunctionBodies;
 
 const ProcessingState = struct {
-    ir: IR,
+    allocator: Allocator,
+    ir: *IR,
+    /// "" = root
+    namespaces: *std.StringHashMap(IR),
+
     err: ?anyerror = null,
 };
 
@@ -137,7 +143,14 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     if (translation_unit == null) return IRProcessingError.ParseTUFail;
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
-    var state = ProcessingState{ .ir = try .init(allocator, path, contents) };
+    var ir: IR = try .init(allocator, path, contents);
+    var namespaces: std.StringHashMap(IR) = .init(ir.arena.allocator());
+
+    var state = ProcessingState{
+        .allocator = ir.arena.allocator(),
+        .ir = &ir,
+        .namespaces = &namespaces,
+    };
     const visit_result = c.clang_visitChildren(cursor, outerVisitor, @ptrCast(&state));
 
     if (state.err) |err| {
@@ -145,7 +158,20 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
         if (visit_result == c.CXChildVisit_Break) std.process.exit(1);
     }
 
-    return state.ir;
+    var i: usize = 0;
+    while (i < ir.instrs.items.len) : (i += 1) {
+        if (ir.instrs.items[i].inner == .Namespace) {
+            if (namespaces.fetchRemove(ir.instrs.items[i].name)) |kv| {
+                try ir.instrs.insertSlice(i + 1, kv.value.instrs.items);
+                i += 1 + kv.value.instrs.items.len;
+            } else {
+                _ = ir.instrs.orderedRemove(i);
+                i -= 1;
+            }
+        }
+    }
+
+    return ir;
 }
 
 fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXClientData) callconv(.c) c.CXVisitorResult {
@@ -154,7 +180,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 
     var state: *ProcessingState = @ptrCast(@alignCast(client_data_opaque));
 
-    const instr_opt = visitor(state.ir.arena.allocator(), current_cursor, &state.ir) catch |e| {
+    const instr_opt = visitor(state.allocator, current_cursor, state.ir) catch |e| {
         state.err = e;
         return c.CXChildVisit_Break;
     };
@@ -166,13 +192,26 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 
         switch (instr.inner) {
             .Value, .Member => break :outer,
-            else => {},
-        }
+            .Namespace => {
+                const ns = state.namespaces.getOrPut(instr.name) catch @panic("OOM");
+                if (!ns.found_existing) {
+                    ns.value_ptr.* = IR.init(state.allocator, "", "") catch @panic("OOM");
+                }
 
-        _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
+                const prev = state.ir;
+                state.ir = ns.value_ptr;
+                defer state.ir = prev;
+
+                _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
+            },
+            else => {
+                _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
+            },
+        }
 
         var close_instr = instr;
         close_instr.state = .close;
+
         state.ir.instrs.append(close_instr) catch |e| {
             state.err = e;
             return c.CXChildVisit_Break;
@@ -265,10 +304,16 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 // -- Structs & Unions -- //
 
                 c.CXCursor_StructDecl => inner: {
+                    // NOTE: While this does filter out forward declarations, it also removes order-dependence.
+                    if (c.clang_isCursorDefinition(cursor) == 0) return null;
+
                     break :inner .Struct;
                 },
 
                 c.CXCursor_UnionDecl => inner: {
+                    // NOTE: While this does filter out forward declarations, it also removes order-dependence.
+                    if (c.clang_isCursorDefinition(cursor) == 0) return null;
+
                     break :inner .Union;
                 },
 
@@ -393,6 +438,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
             }),
             else => {},
         }
+        if (c.clang_isCursorDefinition(instr.__cursor) != 0) try writer.print("{s}- Definition: true\n", .{indent});
 
         if (instr.state == .open and instr.inner != .Member and instr.inner != .Value) DEBUG_formattingIndentLevel += 1;
     }
