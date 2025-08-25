@@ -162,10 +162,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
             // -- Records & Enums -- //
 
             c.CXType_Record => outer: {
-                const name = (try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type))) orelse {
-                    log.err("TODO: Unnamed Struct", .{});
-                    break :outer .not_yet_implemented;
-                };
+                const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
                 if (c.clang_Type_getNumTemplateArguments(cx_type) > 0) {
                     if (Logging.WARN_TEMPLATE_TYPE) log.warn("Templated type '{s}' not yet implemented!", .{name});
                     break :outer .not_yet_implemented;
@@ -174,10 +171,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
                 break :outer .{ .record = name };
             },
             c.CXType_Enum => outer: {
-                const name = (try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type))) orelse {
-                    log.err("TODO: Unnamed Enum", .{});
-                    break :outer .not_yet_implemented;
-                };
+                const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
 
                 break :outer .{ .enumeration = name };
             },
@@ -207,7 +201,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
             // -- Fallback --//
 
             else => outer: {
-                log.err("Unhandled type '{?s}'!", .{try ffi.getTypeKindSpelling(allocator, cx_type.kind)});
+                log.err("Unhandled type '{s}'!", .{try ffi.getTypeKindSpelling(allocator, cx_type.kind)});
                 break :outer .not_yet_implemented;
             },
         },

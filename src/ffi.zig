@@ -17,16 +17,13 @@ pub const getTypeKindSpelling = getSafeCXStringFn(c.CXTypeKind, c.clang_getTypeK
 pub fn getSafeCXStringFn(
     comptime T: type,
     comptime func: *const fn (T) callconv(.c) c.CXString,
-) fn (std.mem.Allocator, T) std.mem.Allocator.Error!?[]const u8 {
+) fn (std.mem.Allocator, T) std.mem.Allocator.Error![]const u8 {
     return struct {
-        fn f(allocator: std.mem.Allocator, thing: T) std.mem.Allocator.Error!?[]const u8 {
+        fn f(allocator: std.mem.Allocator, thing: T) std.mem.Allocator.Error![]const u8 {
             const str = func(thing);
             defer c.clang_disposeString(str);
 
-            const cstr = c.clang_getCString(str);
-            if (cstr == null) return null;
-
-            return try allocator.dupe(u8, std.mem.span(cstr));
+            return try allocator.dupe(u8, std.mem.span(c.clang_getCString(str)));
         }
     }.f;
 }

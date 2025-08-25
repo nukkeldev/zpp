@@ -186,21 +186,11 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 }
 
 fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
-    const canonical_cursor = c.clang_getCanonicalCursor(cursor);
-    const hash = c.clang_hashCursor(canonical_cursor);
-    if (Logging.DEBUG_CANONICAL_CURSOR_KIND_AND_HASH) log.debug("Canonical Cursor Kind: {?s} (#{})", .{
-        try ffi.getCursorKindSpelling(allocator, canonical_cursor.kind),
-        hash,
-    });
-
     const location = ffi.SourceLocation.fromCursor(cursor);
-    const name = try ffi.getCursorSpelling(allocator, cursor) orelse {
-        log.err("Unnamed declaration on line {}!", .{location.line});
-        return null;
-    }; // TODO: This will never return null; remove that from `getCursorSpelling`.
+    const name = try ffi.getCursorSpelling(allocator, cursor);
 
     if (Logging.DEBUG_TRACE) |trace| {
-        log.debug("{s}Line {}: {s} [{?s}]", .{ trace.getIndent(), location.line, name, try ffi.getCursorKindSpelling(allocator, cursor.kind) });
+        log.debug("{s}Line {}: {s} [{s}]", .{ trace.getIndent(), location.line, name, try ffi.getCursorKindSpelling(allocator, cursor.kind) });
     }
     if (Logging.PANIC_ON_NAME) |panic_on| if (std.mem.eql(u8, name, panic_on)) @panic("Found name!");
 
@@ -279,7 +269,6 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 },
 
                 c.CXCursor_UnionDecl => inner: {
-
                     break :inner .Union;
                 },
 
@@ -329,7 +318,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 // -- Fallback -- //
 
                 else => {
-                    log.warn("Cursor kind '{?s}' for cursor '{s}' not yet implemented!", .{ try ffi.getCursorKindSpelling(allocator, cursor.kind), name });
+                    log.warn("Cursor kind '{s}' for cursor '{s}' not yet implemented!", .{ try ffi.getCursorKindSpelling(allocator, cursor.kind), name });
                     break :outer null;
                 },
             },
@@ -375,7 +364,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         }
         const indent = DEBUG_INDENTS[0..DEBUG_formattingIndentLevel];
 
-        try writer.print("{s}[{s}] {s} '{s}' ([{?s}]{?s})\n", .{
+        try writer.print("{s}[{s}] {s} '{s}' ([{s}]{s})\n", .{
             indent,
             @tagName(instr.state),
             @tagName(instr.inner),
@@ -414,7 +403,7 @@ const FormatRawType = struct {
     cx_type: c.CXType,
 
     pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-        try writer.print("[{?s}]{?s}", .{
+        try writer.print("[{s}]{s}", .{
             ffi.getTypeKindSpelling(self.allocator, self.cx_type.kind) catch @panic("OOM"),
             ffi.getTypeSpelling(self.allocator, self.cx_type) catch @panic("OOM"),
         });

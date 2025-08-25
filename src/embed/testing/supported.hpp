@@ -6,6 +6,15 @@
 
 using namespace std;
 
+// -- Forward Declarations -- //
+
+struct Struct;
+union Union;
+
+// -- Zero-sized Type -- //
+
+struct ZST {};
+
 // -- Parameters -- //
 
 void ret_void()
@@ -175,6 +184,13 @@ namespace NS1
 void after_ns() {
     printf("after_ns");
 }
+
+// namespace NS1
+// {
+//     int foo2() {
+//         return 32;
+//     }
+// }
 
 // -- Classes -- //
 
