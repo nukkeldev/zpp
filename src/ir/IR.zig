@@ -169,7 +169,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
             else => {},
         }
 
-        _ = c.clang_visitChildren(current_cursor, outerVisitor, @ptrCast(state));
+        _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
 
         var close_instr = instr;
         close_instr.state = .close;
@@ -177,6 +177,8 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
             state.err = e;
             return c.CXChildVisit_Break;
         };
+
+        if (Logging.DEBUG_TRACE) |_| Logging.DEBUG_TRACE.?.indent -= 1;
     }
 
     if (state.err) |_| return c.CXChildVisit_Break;
@@ -185,133 +187,153 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 
 fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
     const location = ffi.SourceLocation.fromCursor(cursor);
-    const name = try ffi.getCursorSpelling(allocator, cursor) orelse {
-        log.err("Unnamed declaration on line {}!", .{location.line});
-        return null;
-    }; // TODO: This will never return null; remove that from `getCursorSpelling`.
+    const name = try ffi.getCursorSpelling(allocator, cursor);
 
-    return Instruction{
-        .name = name,
-        .inner = switch (cursor.kind) {
-            // -- Namespaces -- //
+    if (Logging.DEBUG_TRACE) |trace| {
+        log.debug("{s}Line {}: {s} [{s}]", .{ trace.getIndent(), location.line, name, try ffi.getCursorKindSpelling(allocator, cursor.kind) });
+    }
+    if (Logging.PANIC_ON_NAME) |panic_on| if (std.mem.eql(u8, name, panic_on)) @panic("Found name!");
 
-            c.CXCursor_Namespace => .Namespace,
+    const instruction: ?Instruction = outer: {
+        break :outer Instruction{
+            .name = name,
+            .inner = switch (cursor.kind) {
+                // -- Namespaces -- //
 
-            // -- Members -- //
+                c.CXCursor_Namespace => .Namespace,
 
-            c.CXCursor_FieldDecl,
-            c.CXCursor_ParmDecl,
-            => outer: {
-                var type_ref = try TypeReference.fromCXType(allocator, c.clang_getCursorType(cursor), ir);
-                if (c.clang_Cursor_isBitField(cursor) != 0) switch (type_ref.inner) {
-                    .integer => {
-                        type_ref.inner.integer.bits = @intCast(c.clang_getFieldDeclBitWidth(cursor));
-                    },
-                    // TODO: Enums?
-                    else => {
-                        std.log.err("Cannot have a non-integral bitfield '{s}'!", .{name});
-                        return null;
-                    },
-                };
-                break :outer .{ .Member = type_ref };
-            },
+                // -- Members -- //
 
-            // -- Values -- //
+                c.CXCursor_FieldDecl,
+                c.CXCursor_ParmDecl,
+                => inner: {
+                    var type_ref = try TypeReference.fromCXType(allocator, c.clang_getCursorType(cursor), ir);
+                    if (c.clang_Cursor_isBitField(cursor) != 0) switch (type_ref.inner) {
+                        .integer => {
+                            type_ref.inner.integer.bits = @intCast(c.clang_getFieldDeclBitWidth(cursor));
+                        },
+                        // TODO: Enums?
+                        else => {
+                            std.log.err("Cannot have a non-integral bitfield '{s}'!", .{name});
+                            break :outer null;
+                        },
+                    };
+                    break :inner .{ .Member = type_ref };
+                },
 
-            c.CXCursor_IntegerLiteral,
-            => outer: {
-                const value = try allocator.create(i128);
-                value.* = c.clang_EvalResult_getAsLongLong(c.clang_Cursor_Evaluate(cursor));
+                // -- Values -- //
 
-                break :outer .{
-                    .Value = .{
-                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
-                        .value = @ptrCast(value),
-                    },
-                };
-            },
-            c.CXCursor_EnumConstantDecl,
-            => outer: {
-                const value = try allocator.create(i128); // TODO: Allocate in accordance to parent cursor backing type?
-                value.* = c.clang_getEnumConstantDeclValue(cursor);
+                c.CXCursor_IntegerLiteral,
+                => inner: {
+                    const value = try allocator.create(i128);
+                    value.* = c.clang_EvalResult_getAsLongLong(c.clang_Cursor_Evaluate(cursor));
 
-                break :outer .{
-                    .Value = .{
-                        .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
-                        .value = @ptrCast(value),
-                    },
-                };
-            },
+                    break :inner .{
+                        .Value = .{
+                            .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
+                            .value = @ptrCast(value),
+                        },
+                    };
+                },
+                c.CXCursor_EnumConstantDecl,
+                => inner: {
+                    const value = try allocator.create(i128); // TODO: Allocate in accordance to parent cursor backing type?
+                    value.* = c.clang_getEnumConstantDeclValue(cursor);
 
-            // -- Functions -- //
+                    break :inner .{
+                        .Value = .{
+                            .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
+                            .value = @ptrCast(value),
+                        },
+                    };
+                },
 
-            c.CXCursor_FunctionDecl => outer: {
-                // TODO: Convert these into normal methods.
-                if (std.mem.startsWith(u8, name, "operator ")) return null;
+                // -- Functions -- //
 
-                break :outer .{
-                    .Function = .{
-                        .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
-                        .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
-                    },
-                };
-            },
+                c.CXCursor_FunctionDecl => inner: {
+                    // TODO: Convert these into normal methods.
+                    if (std.mem.startsWith(u8, name, "operator ")) break :outer null;
 
-            // -- Structs & Unions -- //
+                    break :inner .{
+                        .Function = .{
+                            .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
+                            .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
+                        },
+                    };
+                },
 
-            c.CXCursor_StructDecl => .Struct,
-            c.CXCursor_UnionDecl => .Union,
+                // -- Structs & Unions -- //
 
-            // -- Enums -- //
+                c.CXCursor_StructDecl => inner: {
+                    break :inner .Struct;
+                },
 
-            c.CXCursor_EnumDecl => .{
-                .Enum = .{
-                    .backing = switch ((try TypeReference.fromCXType(allocator, c.clang_getEnumDeclIntegerType(cursor), ir)).inner) {
-                        .integer => |int| int,
-                        else => @panic("How did you back an enum with a non-integer type..."),
-                    },
+                c.CXCursor_UnionDecl => inner: {
+                    break :inner .Union;
+                },
+
+                // -- Enums -- //
+
+                c.CXCursor_EnumDecl => inner: {
+                    break :inner .{
+                        .Enum = .{
+                            .backing = switch ((try TypeReference.fromCXType(allocator, c.clang_getEnumDeclIntegerType(cursor), ir)).inner) {
+                                .integer => |int| int,
+                                else => @panic("How did you back an enum with a non-integer type..."),
+                            },
+                        },
+                    };
+                },
+
+                // -- Type Defintions -- //
+
+                c.CXCursor_TypedefDecl => break :outer null,
+                // TODO: While we have serialization for these in place, the usage sites are resolved to the underlying types
+                // TODO: Instead of the type definition and I don't see it being useful currently to undo that.
+                // .{
+                //     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
+                // },
+
+                // -- TODO -- //
+
+                c.CXCursor_CXXMethod,
+                c.CXCursor_Constructor, // CXXConstructor
+                c.CXCursor_Destructor,
+                c.CXCursor_ConversionFunction,
+                => break :outer null,
+
+                c.CXCursor_ClassTemplate,
+                c.CXCursor_FunctionTemplate,
+                => break :outer null,
+
+                c.CXCursor_VarDecl, // i.e. static or global members
+                => break :outer null,
+
+                // -- Ignored -- //
+
+                c.CXCursor_TypeRef, // Any time a non-primitive type is used; we get this info other ways.
+                c.CXCursor_UsingDirective, // `using namespace ...`
+                => break :outer null,
+
+                // -- Fallback -- //
+
+                else => {
+                    log.warn("Cursor kind '{s}' for cursor '{s}' not yet implemented!", .{ try ffi.getCursorKindSpelling(allocator, cursor.kind), name });
+                    break :outer null;
                 },
             },
-
-            // -- Type Defintions -- //
-
-            c.CXCursor_TypedefDecl => return null,
-            // TODO: While we have serialization for these in place, the usage sites are resolved to the underlying types
-            // TODO: Instead of the type definition and I don't see it being useful currently to undo that.
-            // .{
-            //     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
-            // },
-
-            // -- TODO -- //
-
-            c.CXCursor_CXXMethod,
-            c.CXCursor_Constructor, // CXXConstructor
-            c.CXCursor_Destructor,
-            c.CXCursor_ConversionFunction,
-            => return null,
-
-            c.CXCursor_ClassTemplate,
-            c.CXCursor_FunctionTemplate,
-            => return null,
-
-            c.CXCursor_VarDecl, // i.e. static or global members
-            => return null,
-
-            // -- Ignored -- //
-
-            c.CXCursor_TypeRef, // Any time a non-primitive type is used; we get this info other ways.
-            c.CXCursor_UsingDirective, // `using namespace ...`
-            => return null,
-
-            // -- Fallback -- //
-
-            else => {
-                log.warn("Cursor kind '{?s}' for cursor '{s}' not yet implemented!", .{ try ffi.getCursorKindSpelling(allocator, cursor.kind), name });
-                return null;
-            },
-        },
-        .__cursor = cursor,
+            .__cursor = cursor,
+        };
     };
+
+    if (Logging.DEBUG_TRACE) |_| if (instruction) |instr| switch (instr.inner) {
+        .Member,
+        .Value,
+        => {},
+        else => Logging.DEBUG_TRACE.?.indent += 1,
+    };
+
+    return instruction;
 }
 
 // -- Helpers -- //
@@ -342,7 +364,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         }
         const indent = DEBUG_INDENTS[0..DEBUG_formattingIndentLevel];
 
-        try writer.print("{s}[{s}] {s} '{s}' ([{?s}]{?s})\n", .{
+        try writer.print("{s}[{s}] {s} '{s}' ([{s}]{s})\n", .{
             indent,
             @tagName(instr.state),
             @tagName(instr.inner),
@@ -381,7 +403,7 @@ const FormatRawType = struct {
     cx_type: c.CXType,
 
     pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-        try writer.print("[{?s}]{?s}", .{
+        try writer.print("[{s}]{s}", .{
             ffi.getTypeKindSpelling(self.allocator, self.cx_type.kind) catch @panic("OOM"),
             ffi.getTypeSpelling(self.allocator, self.cx_type) catch @panic("OOM"),
         });
@@ -402,10 +424,31 @@ pub fn writeToFile(self: @This()) !void {
 // -- Tests -- //
 
 test "fromTU" {
-    const file = @embedFile("../testing/supported.hpp");
+    const file = @embedFile("../embed/testing/supported.hpp");
 
     const ir = try processBytes(std.testing.allocator, "supported.hpp", file, &.{});
     defer ir.deinit();
 
     log.warn("{f}", .{ir});
 }
+
+// -- Logging -- //
+
+const Logging = struct {
+    // -- Effectful Debug Values -- //
+    // NOTE: Do NOT leave these set.
+
+    pub var PANIC_ON_NAME: ?[]const u8 = null;
+    pub var DEBUG_TRACE: ?struct {
+        indent: usize = 0,
+
+        pub const INDENT: []const u8 = " " ** 256;
+        pub fn getIndent(self: @This()) []const u8 {
+            if (self.indent >= 256) @panic("Too much indentation!");
+            return INDENT[0..self.indent];
+        }
+    } = null;
+
+    pub const DEBUG_CANONICAL_CURSOR_KIND_AND_HASH = false;
+    pub const DEBUG_DUPLICATE_CANONICAL_CURSOR = true;
+};
