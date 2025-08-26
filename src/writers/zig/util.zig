@@ -14,8 +14,6 @@ pub const FormatType = struct {
     pub fn format(self: FormatType, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         const t = self.type_ref;
 
-        const alignment = c.clang_Type_getAlignOf(self.type_ref.cx_type);
-
         if (t.is_const) {
             try writer.writeAll("const ");
         }
@@ -68,7 +66,7 @@ pub const FormatType = struct {
             else => {
                 if (Logging.WARN_NOT_YET_FORMATTED) log.warn("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
                 try writer.print("[{}]u8", .{c.clang_Type_getSizeOf(t.cx_type)});
-                if (self.annotate_with_alignment) try writer.print(" align({})", .{alignment});
+                if (self.annotate_with_alignment) try writer.print(" align({})", .{c.clang_Type_getAlignOf(self.type_ref.cx_type)});
             },
         }
     }
