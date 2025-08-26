@@ -65,7 +65,8 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/embed/testing/supported.zig"),
         .target = target,
         .optimize = optimize,
-        .link_libcpp = true,
+        // .link_libcpp = true,
+        .link_libc = true,
     });
 
     supported_test_mod.addIncludePath(b.path("src/embed/testing"));

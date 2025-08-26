@@ -5,7 +5,7 @@
 
 // EX: Ignored
 #include <stdio.h>
-#include <vector>
+// #include <vector>
 
 // EX: Ignored
 using namespace std;

@@ -14,7 +14,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     try writer.writeAll(
         \\
         \\
-        \\#include <cstdarg>
+        \\#include <stdarg.h>
         \\
         \\#pragma clang diagnostic push
         \\#pragma clang diagnostic ignored "-Wformat-security"
@@ -102,7 +102,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         } else if (f.variadic) {
                             try writer.print(
                                 "{f} __ZPP_result = ",
-                                .{ util.FormatMember{ .type_ref = f.return_type } },
+                                .{util.FormatMember{ .type_ref = f.return_type }},
                             );
                         } else {
                             try writer.writeAll("return ");
