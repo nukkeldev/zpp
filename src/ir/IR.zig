@@ -158,6 +158,9 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
         if (visit_result == c.CXChildVisit_Break) std.process.exit(1);
     }
 
+    // TODO: Filter forward declarations.
+
+    // Merge namespaces
     var i: usize = 0;
     while (i < ir.instrs.items.len) : (i += 1) {
         if (ir.instrs.items[i].inner == .Namespace) {
@@ -304,16 +307,10 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 // -- Structs & Unions -- //
 
                 c.CXCursor_StructDecl => inner: {
-                    // NOTE: While this does filter out forward declarations, it also removes order-dependence.
-                    if (c.clang_isCursorDefinition(cursor) == 0) return null;
-
                     break :inner .Struct;
                 },
 
                 c.CXCursor_UnionDecl => inner: {
-                    // NOTE: While this does filter out forward declarations, it also removes order-dependence.
-                    if (c.clang_isCursorDefinition(cursor) == 0) return null;
-
                     break :inner .Union;
                 },
 
