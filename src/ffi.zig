@@ -22,6 +22,19 @@ pub fn isCursorCanonical(cursor: c.CXCursor) bool {
     return c.clang_equalCursors(cursor, canonical_cursor) != 0;
 }
 
+pub fn getCursorNamespaceStack(allocator: std.mem.Allocator, cursor: c.CXCursor) !std.ArrayList([]const u8) {
+    var ns_stack = std.ArrayList([]const u8).empty;
+    var cur = cursor;
+    while (cur.kind != c.CXCursor_TranslationUnit) {
+        if (cur.kind == c.CXCursor_Namespace) {
+            try ns_stack.append(allocator, try getCursorSpelling(allocator, cursor));
+        }
+
+        cur = c.clang_getCursorSemanticParent(cur);
+    }
+    return ns_stack;
+}
+
 // -- Spelling -- //
 
 pub fn convertStringFn(

@@ -48,8 +48,8 @@ extern fn ImGui_ImplSDL3_SetGamepadMode__188716f97529355a(mode: ImGui_ImplSDL3_G
 
 pub const SDL_Renderer = ?*anyopaque;
 pub const SDL_Window = ?*anyopaque;
+pub const SDL_Event = ?*anyopaque;
 pub const SDL_Gamepad = ?*anyopaque;
-pub const SDL_Event = ?*anyopaque; // NOTE: Patched
 
 comptime {
     refAllDecls(@This());

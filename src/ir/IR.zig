@@ -173,18 +173,67 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
         if (visit_result == c.CXChildVisit_Break) std.process.exit(1);
     }
 
-    // TODO: Filter forward declarations.
+    // Merge namespaced instructions.
+    {
+        var i: usize = 0;
+        while (i < ir.instrs.items.len) : (i += 1) {
+            if (ir.instrs.items[i].inner == .Namespace) {
+                if (namespaces.fetchRemove(ir.instrs.items[i].name)) |kv| {
+                    try ir.instrs.insertSlice(i + 1, kv.value.instrs.items);
+                    i += 1 + kv.value.instrs.items.len;
+                } else {
+                    _ = ir.instrs.orderedRemove(i);
+                    i -= 1;
+                }
+            }
+        }
+    }
 
-    // Merge namespaces
-    var i: usize = 0;
-    while (i < ir.instrs.items.len) : (i += 1) {
-        if (ir.instrs.items[i].inner == .Namespace) {
-            if (namespaces.fetchRemove(ir.instrs.items[i].name)) |kv| {
-                try ir.instrs.insertSlice(i + 1, kv.value.instrs.items);
-                i += 1 + kv.value.instrs.items.len;
-            } else {
-                _ = ir.instrs.orderedRemove(i);
-                i -= 1;
+    // Reorder methods to be after fields.
+    // 1. Iterate through all of the instructions.
+    // 2. If we reach a member AND our immediate parent is a struct or union:
+    //  2.1 If we know the index of the previous member AND it is NOT the current index:
+    //   2.1.1 Move the member there.
+    //  2.2 Store the index of the the subsequent _sibling_.
+    {
+        var i: usize = 0;
+        var ctx_stack: std.array_list.Managed(?usize) = .init(allocator);
+        defer ctx_stack.deinit();
+
+        while (i < ir.instrs.items.len) : (i += 1) {
+            const instr = ir.instrs.items[i];
+            switch (instr.inner) {
+                .Struct => if (instr.state == .open) {
+                    try ctx_stack.append(i + 1);
+                } else {
+                    _ = ctx_stack.pop();
+                },
+                .Union => outer: {
+                    if (c.clang_Cursor_isAnonymous(instr.__cursor) != 0) {
+                        if (ctx_stack.getLast()) |next| {
+                            if (i != next) {
+                                ir.instrs.insertAssumeCapacity(next, ir.instrs.orderedRemove(i));
+                            }
+                            ctx_stack.items[ctx_stack.items.len - 1] = next + 1;
+                            break :outer;
+                        }
+                    }
+                    if (instr.state == .open) {
+                        try ctx_stack.append(i + 1);
+                    } else {
+                        _ = ctx_stack.pop();
+                    }
+                },
+                .Member => if (ctx_stack.getLast()) |next| {
+                    if (i != next) {
+                        ir.instrs.insertAssumeCapacity(next, ir.instrs.orderedRemove(i));
+                    }
+                    ctx_stack.items[ctx_stack.items.len - 1] = next + 1;
+                },
+                .Value, .Typedef => {},
+                else => if (instr.state == .open) try ctx_stack.append(null) else {
+                    _ = ctx_stack.pop();
+                },
             }
         }
     }
@@ -244,6 +293,13 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 
 fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
     const name = try ffi.getCursorSpelling(allocator, cursor);
+
+    // This prevents falsely parsing implementations of declared functions.
+    // This is not particularly robust but I do not currently know how to get, for instance, `Foo` from `Foo::bar` to
+    // correctly identify such function.
+    if (0 == c.clang_equalCursors(c.clang_getCursorSemanticParent(cursor), c.clang_getCursorLexicalParent(cursor))) {
+        return null;
+    }
 
     if (Logging.DEBUG_TRACE) |trace| {
         log.debug("{s} {f}", .{ trace.getIndent(), std.fmt.Alt(c.CXCursor, ffi.formatCXCursorDetailed){ .data = cursor } });
@@ -306,7 +362,9 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 // -- Functions -- //
 
-                c.CXCursor_FunctionDecl => inner: {
+                c.CXCursor_CXXMethod,
+                c.CXCursor_FunctionDecl,
+                => inner: {
                     // TODO: Replace with an explict check for each type of operator overload so as to not mistaken functions.
                     // TODO: Then convert the operator overloads to normal methods.
                     if (std.mem.startsWith(u8, name, "operator")) break :outer null;
@@ -348,24 +406,8 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
                 },
 
-                // -- C++ -- //
-
-                // c.CXCursor_CXXMethod => inner: {
-                //     // TODO: Replace with an explict check for each type of operator overload so as to not mistaken functions.
-                //     // TODO: Then convert the operator overloads to normal methods.
-                //     if (std.mem.startsWith(u8, name, "operator")) break :outer null;
-
-                //     break :inner .{
-                //         .Function = .{
-                //             .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
-                //             .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
-                //         },
-                //     };
-                // },
-
                 // -- TODO -- //
 
-                c.CXCursor_CXXMethod,
                 c.CXCursor_Constructor, // CXXConstructor
                 c.CXCursor_Destructor,
                 c.CXCursor_ConversionFunction,

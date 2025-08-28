@@ -1,4 +1,5 @@
 const std = @import("std");
+const ffi = @import("../../ffi.zig");
 
 const IR = @import("../../ir/IR.zig");
 const TypeReference = IR.TypeReference;
@@ -15,6 +16,9 @@ pub const FormatMember = struct {
 
     pub fn format(self: FormatMember, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         const t = self.type_ref;
+        var arena = std.heap.ArenaAllocator.init(std.heap.page_allocator);
+        defer arena.deinit();
+        const allocator = arena.allocator();
 
         if (DEBUG) try writer.print("/* kind: {s} */ ", .{@tagName(t.inner)});
 
@@ -76,7 +80,11 @@ pub const FormatMember = struct {
                 return;
             },
 
-            .record, .included, .enumeration => |name| try writer.writeAll(name),
+            .record,
+            .included,
+            .enumeration,
+            .unexposed,
+            => try writer.writeAll(ffi.getTypeSpelling(allocator, t.cx_type) catch @panic("OOM")),
 
             .function => |f| {
                 // TODO: handle pointer return types
@@ -97,7 +105,10 @@ pub const FormatMember = struct {
             },
 
             else => {
-                log.err("Not yet formatted type: '{s}'!", .{@tagName(t.inner)});
+                log.err("Not yet formatted type: '{s}' ({s})!", .{
+                    ffi.getTypeSpelling(allocator, t.cx_type) catch @panic("OOM"),
+                    @tagName(t.inner),
+                });
                 try writer.print("void*", .{});
             },
         }

@@ -34,7 +34,7 @@ extern "C" void ImGui_ImplSDL3_Shutdown__2014beadd6c0478c() {
 extern "C" void ImGui_ImplSDL3_NewFrame__37c6d7cd43a25335() {
 	ImGui_ImplSDL3_NewFrame();
 }
-extern "C" bool ImGui_ImplSDL3_ProcessEvent__decfc6687eb97b8e(const SDL_Event* event) {
+extern "C" bool ImGui_ImplSDL3_ProcessEvent__decfc6687eb97b8e(const const SDL_Event* event) {
 	return ImGui_ImplSDL3_ProcessEvent(event);
 }
 extern "C" void ImGui_ImplSDL3_SetGamepadMode__188716f97529355a(ImGui_ImplSDL3_GamepadMode mode, SDL_Gamepad** manual_gamepads_array, int manual_gamepads_count) {

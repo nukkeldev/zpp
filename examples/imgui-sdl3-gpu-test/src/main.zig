@@ -98,8 +98,8 @@ pub fn example_sdl3_sdlgpu3() void {
     ImGui.StyleColorsDark(null);
 
     // Setup scaling
-    // const style = ImGui.GetStyle();
-    // TODO: style.ScaleAllSizes(main_scale);
+    const style = ImGui.GetStyle();
+    style.ScaleAllSizes(main_scale);
 
     // Setup Platform/Renderer backends
     _ = imgui_impl_sdl3.ImGui_ImplSDL3_InitForSDLGPU(@ptrCast(@alignCast(window)));
@@ -107,10 +107,10 @@ pub fn example_sdl3_sdlgpu3() void {
 
     var init_info: include.@"imgui_impl_sdlgpu3.h".ImGui_ImplSDLGPU3_InitInfo = .{
         .Device = @ptrCast(@alignCast(gpu_device)),
-        .ColorTargetFormat = @intCast(c.SDL_GetGPUSwapchainTextureFormat(gpu_device, window)),
-        .MSAASamples = c.SDL_GPU_SAMPLECOUNT_1,
-        .SwapchainComposition = c.SDL_GPU_SWAPCHAINCOMPOSITION_SDR,
-        .PresentMode = c.SDL_GPU_PRESENTMODE_VSYNC,
+        .ColorTargetFormat = @bitCast(c.SDL_GetGPUSwapchainTextureFormat(gpu_device, window)),
+        .MSAASamples = @bitCast(c.SDL_GPU_SAMPLECOUNT_1),
+        .SwapchainComposition = @bitCast(c.SDL_GPU_SWAPCHAINCOMPOSITION_SDR),
+        .PresentMode = @bitCast(c.SDL_GPU_PRESENTMODE_VSYNC),
     };
     _ = imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_Init(&init_info);
     defer imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_Shutdown();

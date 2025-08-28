@@ -71,13 +71,21 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ns_stack.append(instr.name) catch @panic("OOM");
                     ctx_stack.append(.ns) catch @panic("OOM");
                 },
-                .Function => {
+                .Function => |f| {
                     const overload_ptr = (overload_map.getOrPutValue(uname, 0) catch @panic("OOM")).value_ptr;
                     defer overload_ptr.* += 1;
                     const suffix = if (overload_ptr.* == 0) "" else std.fmt.allocPrint(ir.arena.allocator(), "_{}", .{overload_ptr.*}) catch @panic("OOM");
 
                     try writer.print("pub const {s}{s} = {s}{s};\n", .{ instr.name, suffix, uname, suffix });
                     try writer.print("extern fn {s}{s}(", .{ uname, suffix });
+
+                    if (ctx_stack.items.len > 0) switch (ctx_stack.getLast()) {
+                        .struc, .uni => {
+                            try writer.writeAll("self: *@This()");
+                            if (ir.instrs.items[i + 1].inner == .Member or f.return_type.inner == .record) try writer.writeAll(", ");
+                        },
+                        else => {},
+                    };
 
                     ctx_stack.append(.func) catch @panic("OOM");
 
@@ -148,6 +156,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     try writer.print("pub const {s} = extern struct {{\n", .{instr.name});
 
+                    ns_stack.append(instr.name) catch @panic("OOM");
                     ctx_stack.append(.{ .struc = 0 }) catch @panic("OOM");
                 },
                 .Enum => |e| {
@@ -196,6 +205,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         },
                     }
 
+                    ns_stack.append(instr.name) catch @panic("OOM");
                     ctx_stack.append(.uni) catch @panic("OOM");
                 },
                 .Typedef => |t| {
@@ -276,6 +286,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         else => try writer.writeAll(";\n\n"),
                     }
 
+                    _ = ns_stack.pop();
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
                 },
@@ -291,6 +302,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     );
                     try writer.writeAll("};\n\n");
 
+                    _ = ns_stack.pop();
                     _ = ctx_stack.pop();
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
@@ -314,19 +326,16 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var opaque_type_decls_iter = fwd_decls.iterator();
     while (opaque_type_decls_iter.next()) |entry| {
         const instr = ir.instrs.items[entry.value_ptr.*];
-        try writer.print("pub const {s} = {s};\n", .{
-            entry.key_ptr.*,
-            switch (instr.inner) {
-                .Struct, .Union, .Enum => outer: {
-                    if (ffi.isTypeComplete(c.clang_getCursorType(instr.__cursor))) {
-                        break :outer "extern struct {}";
-                    } else {
-                        break :outer "?*anyopaque";
-                    }
-                },
-                else => unreachable,
-            }
-        });
+        try writer.print("pub const {s} = {s};\n", .{ entry.key_ptr.*, switch (instr.inner) {
+            .Struct, .Union, .Enum => outer: {
+                if (ffi.isTypeComplete(c.clang_getCursorType(instr.__cursor))) {
+                    break :outer "extern struct {}";
+                } else {
+                    break :outer "?*anyopaque";
+                }
+            },
+            else => unreachable,
+        } });
     }
 
     try writer.writeAll(

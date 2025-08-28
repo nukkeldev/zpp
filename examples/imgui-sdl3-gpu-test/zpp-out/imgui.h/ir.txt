@@ -1,3 +1,21 @@
+[open] Typedef 'ImGuiID' ([TypedefDecl]ImGuiID)
+- Definition: true
+[open] Typedef 'ImS8' ([TypedefDecl]ImS8)
+- Definition: true
+[open] Typedef 'ImU8' ([TypedefDecl]ImU8)
+- Definition: true
+[open] Typedef 'ImS16' ([TypedefDecl]ImS16)
+- Definition: true
+[open] Typedef 'ImU16' ([TypedefDecl]ImU16)
+- Definition: true
+[open] Typedef 'ImS32' ([TypedefDecl]ImS32)
+- Definition: true
+[open] Typedef 'ImU32' ([TypedefDecl]ImU32)
+- Definition: true
+[open] Typedef 'ImS64' ([TypedefDecl]ImS64)
+- Definition: true
+[open] Typedef 'ImU64' ([TypedefDecl]ImU64)
+- Definition: true
 [open] Struct 'ImDrawChannel' ([StructDecl]ImDrawChannel)
 [close] Struct 'ImDrawChannel' ([StructDecl]ImDrawChannel)
 [open] Struct 'ImDrawCmd' ([StructDecl]ImDrawCmd)
@@ -88,6 +106,96 @@
 [close] Enum 'ImGuiMouseSource' ([EnumDecl]ImGuiMouseSource)
 [open] Enum 'ImGuiSortDirection' ([EnumDecl]ImGuiSortDirection)
 [close] Enum 'ImGuiSortDirection' ([EnumDecl]ImGuiSortDirection)
+[open] Typedef 'ImGuiCol' ([TypedefDecl]ImGuiCol)
+- Definition: true
+[open] Typedef 'ImGuiCond' ([TypedefDecl]ImGuiCond)
+- Definition: true
+[open] Typedef 'ImGuiDataType' ([TypedefDecl]ImGuiDataType)
+- Definition: true
+[open] Typedef 'ImGuiMouseButton' ([TypedefDecl]ImGuiMouseButton)
+- Definition: true
+[open] Typedef 'ImGuiMouseCursor' ([TypedefDecl]ImGuiMouseCursor)
+- Definition: true
+[open] Typedef 'ImGuiStyleVar' ([TypedefDecl]ImGuiStyleVar)
+- Definition: true
+[open] Typedef 'ImGuiTableBgTarget' ([TypedefDecl]ImGuiTableBgTarget)
+- Definition: true
+[open] Typedef 'ImDrawFlags' ([TypedefDecl]ImDrawFlags)
+- Definition: true
+[open] Typedef 'ImDrawListFlags' ([TypedefDecl]ImDrawListFlags)
+- Definition: true
+[open] Typedef 'ImFontFlags' ([TypedefDecl]ImFontFlags)
+- Definition: true
+[open] Typedef 'ImFontAtlasFlags' ([TypedefDecl]ImFontAtlasFlags)
+- Definition: true
+[open] Typedef 'ImGuiBackendFlags' ([TypedefDecl]ImGuiBackendFlags)
+- Definition: true
+[open] Typedef 'ImGuiButtonFlags' ([TypedefDecl]ImGuiButtonFlags)
+- Definition: true
+[open] Typedef 'ImGuiChildFlags' ([TypedefDecl]ImGuiChildFlags)
+- Definition: true
+[open] Typedef 'ImGuiColorEditFlags' ([TypedefDecl]ImGuiColorEditFlags)
+- Definition: true
+[open] Typedef 'ImGuiConfigFlags' ([TypedefDecl]ImGuiConfigFlags)
+- Definition: true
+[open] Typedef 'ImGuiComboFlags' ([TypedefDecl]ImGuiComboFlags)
+- Definition: true
+[open] Typedef 'ImGuiDragDropFlags' ([TypedefDecl]ImGuiDragDropFlags)
+- Definition: true
+[open] Typedef 'ImGuiFocusedFlags' ([TypedefDecl]ImGuiFocusedFlags)
+- Definition: true
+[open] Typedef 'ImGuiHoveredFlags' ([TypedefDecl]ImGuiHoveredFlags)
+- Definition: true
+[open] Typedef 'ImGuiInputFlags' ([TypedefDecl]ImGuiInputFlags)
+- Definition: true
+[open] Typedef 'ImGuiInputTextFlags' ([TypedefDecl]ImGuiInputTextFlags)
+- Definition: true
+[open] Typedef 'ImGuiItemFlags' ([TypedefDecl]ImGuiItemFlags)
+- Definition: true
+[open] Typedef 'ImGuiKeyChord' ([TypedefDecl]ImGuiKeyChord)
+- Definition: true
+[open] Typedef 'ImGuiListClipperFlags' ([TypedefDecl]ImGuiListClipperFlags)
+- Definition: true
+[open] Typedef 'ImGuiPopupFlags' ([TypedefDecl]ImGuiPopupFlags)
+- Definition: true
+[open] Typedef 'ImGuiMultiSelectFlags' ([TypedefDecl]ImGuiMultiSelectFlags)
+- Definition: true
+[open] Typedef 'ImGuiSelectableFlags' ([TypedefDecl]ImGuiSelectableFlags)
+- Definition: true
+[open] Typedef 'ImGuiSliderFlags' ([TypedefDecl]ImGuiSliderFlags)
+- Definition: true
+[open] Typedef 'ImGuiTabBarFlags' ([TypedefDecl]ImGuiTabBarFlags)
+- Definition: true
+[open] Typedef 'ImGuiTabItemFlags' ([TypedefDecl]ImGuiTabItemFlags)
+- Definition: true
+[open] Typedef 'ImGuiTableFlags' ([TypedefDecl]ImGuiTableFlags)
+- Definition: true
+[open] Typedef 'ImGuiTableColumnFlags' ([TypedefDecl]ImGuiTableColumnFlags)
+- Definition: true
+[open] Typedef 'ImGuiTableRowFlags' ([TypedefDecl]ImGuiTableRowFlags)
+- Definition: true
+[open] Typedef 'ImGuiTreeNodeFlags' ([TypedefDecl]ImGuiTreeNodeFlags)
+- Definition: true
+[open] Typedef 'ImGuiViewportFlags' ([TypedefDecl]ImGuiViewportFlags)
+- Definition: true
+[open] Typedef 'ImGuiWindowFlags' ([TypedefDecl]ImGuiWindowFlags)
+- Definition: true
+[open] Typedef 'ImWchar32' ([TypedefDecl]ImWchar32)
+- Definition: true
+[open] Typedef 'ImWchar16' ([TypedefDecl]ImWchar16)
+- Definition: true
+[open] Typedef 'ImWchar' ([TypedefDecl]ImWchar)
+- Definition: true
+[open] Typedef 'ImGuiSelectionUserData' ([TypedefDecl]ImGuiSelectionUserData)
+- Definition: true
+[open] Typedef 'ImGuiInputTextCallback' ([TypedefDecl]ImGuiInputTextCallback)
+- Definition: true
+[open] Typedef 'ImGuiSizeCallback' ([TypedefDecl]ImGuiSizeCallback)
+- Definition: true
+[open] Typedef 'ImGuiMemAllocFunc' ([TypedefDecl]ImGuiMemAllocFunc)
+- Definition: true
+[open] Typedef 'ImGuiMemFreeFunc' ([TypedefDecl]ImGuiMemFreeFunc)
+- Definition: true
 [open] Struct 'ImVec2' ([StructDecl]ImVec2)
 - Definition: true
 	[open] Member 'x' ([FieldDecl]x)
@@ -112,6 +220,8 @@
 	- Type: f32 ([Float]float)
 	- Definition: true
 [close] Struct 'ImVec4' ([StructDecl]ImVec4)
+[open] Typedef 'ImTextureID' ([TypedefDecl]ImTextureID)
+- Definition: true
 [open] Struct 'ImTextureRef' ([StructDecl]ImTextureRef)
 - Definition: true
 	[open] Member '_TexData' ([FieldDecl]_TexData)
@@ -120,6 +230,9 @@
 	[open] Member '_TexID' ([FieldDecl]_TexID)
 	- Type: u64 ([ULongLong]unsigned long long)
 	- Definition: true
+	[open] Function 'GetTexID' ([CXXMethod]GetTexID)
+	- Return Type: u64 ([ULongLong]unsigned long long)
+	[close] Function 'GetTexID' ([CXXMethod]GetTexID)
 [close] Struct 'ImTextureRef' ([StructDecl]ImTextureRef)
 [open] Namespace 'ImGui' ([Namespace]ImGui)
 - Definition: true
@@ -6688,6 +6801,12 @@
 	[open] Member '_NextFrameFontSizeBase' ([FieldDecl]_NextFrameFontSizeBase)
 	- Type: f32 ([Float]float)
 	- Definition: true
+	[open] Function 'ScaleAllSizes' ([CXXMethod]ScaleAllSizes)
+	- Return Type: void ([Void]void)
+		[open] Member 'scale_factor' ([ParmDecl]scale_factor)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'ScaleAllSizes' ([CXXMethod]ScaleAllSizes)
 [close] Struct 'ImGuiStyle' ([StructDecl]ImGuiStyle)
 [open] Struct 'ImGuiKeyData' ([StructDecl]ImGuiKeyData)
 - Definition: true
@@ -6998,7 +7117,7 @@
 	- Type: u16 ([UShort]unsigned short)
 	- Definition: true
 	[open] Member 'InputQueueCharacters' ([FieldDecl]InputQueueCharacters)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned short>)
+	- Type: unexposed ([Record]ImVector<unsigned short>)
 	- Definition: true
 	[open] Member 'FontGlobalScale' ([FieldDecl]FontGlobalScale)
 	- Type: f32 ([Float]float)
@@ -7012,6 +7131,117 @@
 	[open] Member 'ClipboardUserData' ([FieldDecl]ClipboardUserData)
 	- Type: pointer to 'void' ([Pointer]void *)
 	- Definition: true
+	[open] Function 'AddKeyEvent' ([CXXMethod]AddKeyEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: enum 'ImGuiKey' ([Enum]ImGuiKey)
+		- Definition: true
+		[open] Member 'down' ([ParmDecl]down)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'AddKeyEvent' ([CXXMethod]AddKeyEvent)
+	[open] Function 'AddKeyAnalogEvent' ([CXXMethod]AddKeyAnalogEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: enum 'ImGuiKey' ([Enum]ImGuiKey)
+		- Definition: true
+		[open] Member 'down' ([ParmDecl]down)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+		[open] Member 'v' ([ParmDecl]v)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddKeyAnalogEvent' ([CXXMethod]AddKeyAnalogEvent)
+	[open] Function 'AddMousePosEvent' ([CXXMethod]AddMousePosEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'x' ([ParmDecl]x)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'y' ([ParmDecl]y)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddMousePosEvent' ([CXXMethod]AddMousePosEvent)
+	[open] Function 'AddMouseButtonEvent' ([CXXMethod]AddMouseButtonEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'button' ([ParmDecl]button)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'down' ([ParmDecl]down)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'AddMouseButtonEvent' ([CXXMethod]AddMouseButtonEvent)
+	[open] Function 'AddMouseWheelEvent' ([CXXMethod]AddMouseWheelEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'wheel_x' ([ParmDecl]wheel_x)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'wheel_y' ([ParmDecl]wheel_y)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddMouseWheelEvent' ([CXXMethod]AddMouseWheelEvent)
+	[open] Function 'AddMouseSourceEvent' ([CXXMethod]AddMouseSourceEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'source' ([ParmDecl]source)
+		- Type: enum 'ImGuiMouseSource' ([Enum]ImGuiMouseSource)
+		- Definition: true
+	[close] Function 'AddMouseSourceEvent' ([CXXMethod]AddMouseSourceEvent)
+	[open] Function 'AddFocusEvent' ([CXXMethod]AddFocusEvent)
+	- Return Type: void ([Void]void)
+		[open] Member 'focused' ([ParmDecl]focused)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'AddFocusEvent' ([CXXMethod]AddFocusEvent)
+	[open] Function 'AddInputCharacter' ([CXXMethod]AddInputCharacter)
+	- Return Type: void ([Void]void)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddInputCharacter' ([CXXMethod]AddInputCharacter)
+	[open] Function 'AddInputCharacterUTF16' ([CXXMethod]AddInputCharacterUTF16)
+	- Return Type: void ([Void]void)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'AddInputCharacterUTF16' ([CXXMethod]AddInputCharacterUTF16)
+	[open] Function 'AddInputCharactersUTF8' ([CXXMethod]AddInputCharactersUTF8)
+	- Return Type: void ([Void]void)
+		[open] Member 'str' ([ParmDecl]str)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'AddInputCharactersUTF8' ([CXXMethod]AddInputCharactersUTF8)
+	[open] Function 'SetKeyEventNativeData' ([CXXMethod]SetKeyEventNativeData)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: enum 'ImGuiKey' ([Enum]ImGuiKey)
+		- Definition: true
+		[open] Member 'native_keycode' ([ParmDecl]native_keycode)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'native_scancode' ([ParmDecl]native_scancode)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'native_legacy_index' ([ParmDecl]native_legacy_index)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'SetKeyEventNativeData' ([CXXMethod]SetKeyEventNativeData)
+	[open] Function 'SetAppAcceptingEvents' ([CXXMethod]SetAppAcceptingEvents)
+	- Return Type: void ([Void]void)
+		[open] Member 'accepting_events' ([ParmDecl]accepting_events)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'SetAppAcceptingEvents' ([CXXMethod]SetAppAcceptingEvents)
+	[open] Function 'ClearEventsQueue' ([CXXMethod]ClearEventsQueue)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearEventsQueue' ([CXXMethod]ClearEventsQueue)
+	[open] Function 'ClearInputKeys' ([CXXMethod]ClearInputKeys)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearInputKeys' ([CXXMethod]ClearInputKeys)
+	[open] Function 'ClearInputMouse' ([CXXMethod]ClearInputMouse)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearInputMouse' ([CXXMethod]ClearInputMouse)
+	[open] Function 'ClearInputCharacters' ([CXXMethod]ClearInputCharacters)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearInputCharacters' ([CXXMethod]ClearInputCharacters)
 [close] Struct 'ImGuiIO' ([StructDecl]ImGuiIO)
 [open] Struct 'ImGuiInputTextCallbackData' ([StructDecl]ImGuiInputTextCallbackData)
 - Definition: true
@@ -7054,6 +7284,36 @@
 	[open] Member 'SelectionEnd' ([FieldDecl]SelectionEnd)
 	- Type: i32 ([Int]int)
 	- Definition: true
+	[open] Function 'DeleteChars' ([CXXMethod]DeleteChars)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'bytes_count' ([ParmDecl]bytes_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'DeleteChars' ([CXXMethod]DeleteChars)
+	[open] Function 'InsertChars' ([CXXMethod]InsertChars)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'text' ([ParmDecl]text)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'InsertChars' ([CXXMethod]InsertChars)
+	[open] Function 'SelectAll' ([CXXMethod]SelectAll)
+	- Return Type: void ([Void]void)
+	[close] Function 'SelectAll' ([CXXMethod]SelectAll)
+	[open] Function 'ClearSelection' ([CXXMethod]ClearSelection)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearSelection' ([CXXMethod]ClearSelection)
+	[open] Function 'HasSelection' ([CXXMethod]HasSelection)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'HasSelection' ([CXXMethod]HasSelection)
 [close] Struct 'ImGuiInputTextCallbackData' ([StructDecl]ImGuiInputTextCallbackData)
 [open] Struct 'ImGuiSizeCallbackData' ([StructDecl]ImGuiSizeCallbackData)
 - Definition: true
@@ -7096,6 +7356,21 @@
 	[open] Member 'Delivery' ([FieldDecl]Delivery)
 	- Type: bool ([Bool]bool)
 	- Definition: true
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'IsDataType' ([CXXMethod]IsDataType)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'type' ([ParmDecl]type)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'IsDataType' ([CXXMethod]IsDataType)
+	[open] Function 'IsPreview' ([CXXMethod]IsPreview)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'IsPreview' ([CXXMethod]IsPreview)
+	[open] Function 'IsDelivery' ([CXXMethod]IsDelivery)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'IsDelivery' ([CXXMethod]IsDelivery)
 [close] Struct 'ImGuiPayload' ([StructDecl]ImGuiPayload)
 [open] Struct 'ImGuiOnceUponAFrame' ([StructDecl]ImGuiOnceUponAFrame)
 - Definition: true
@@ -7105,6 +7380,42 @@
 [close] Struct 'ImGuiOnceUponAFrame' ([StructDecl]ImGuiOnceUponAFrame)
 [open] Struct 'ImGuiTextFilter' ([StructDecl]ImGuiTextFilter)
 - Definition: true
+	[open] Member 'InputBuf' ([FieldDecl]InputBuf)
+	- Type: i8[256] ([ConstantArray]char[256])
+	- Definition: true
+	[open] Member 'Filters' ([FieldDecl]Filters)
+	- Type: unexposed ([Record]ImVector<ImGuiTextFilter::ImGuiTextRange>)
+	- Definition: true
+	[open] Member 'CountGrep' ([FieldDecl]CountGrep)
+	- Type: i32 ([Int]int)
+	- Definition: true
+	[open] Function 'Draw' ([CXXMethod]Draw)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'label' ([ParmDecl]label)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'width' ([ParmDecl]width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'Draw' ([CXXMethod]Draw)
+	[open] Function 'PassFilter' ([CXXMethod]PassFilter)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'text' ([ParmDecl]text)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'PassFilter' ([CXXMethod]PassFilter)
+	[open] Function 'Build' ([CXXMethod]Build)
+	- Return Type: void ([Void]void)
+	[close] Function 'Build' ([CXXMethod]Build)
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'IsActive' ([CXXMethod]IsActive)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'IsActive' ([CXXMethod]IsActive)
 	[open] Struct 'ImGuiTextRange' ([StructDecl]ImGuiTextRange)
 	- Definition: true
 		[open] Member 'b' ([FieldDecl]b)
@@ -7113,22 +7424,79 @@
 		[open] Member 'e' ([FieldDecl]e)
 		- Type: pointer to 'const i8' ([Pointer]const char *)
 		- Definition: true
+		[open] Function 'empty' ([CXXMethod]empty)
+		- Return Type: bool ([Bool]bool)
+		[close] Function 'empty' ([CXXMethod]empty)
+		[open] Function 'split' ([CXXMethod]split)
+		- Return Type: void ([Void]void)
+			[open] Member 'separator' ([ParmDecl]separator)
+			- Type: i8 ([Char_S]char)
+			- Definition: true
+			[open] Member 'out' ([ParmDecl]out)
+			- Type: pointer to 'unexposed' ([Pointer]ImVector<ImGuiTextRange> *)
+			- Definition: true
+		[close] Function 'split' ([CXXMethod]split)
 	[close] Struct 'ImGuiTextRange' ([StructDecl]ImGuiTextRange)
-	[open] Member 'InputBuf' ([FieldDecl]InputBuf)
-	- Type: i8[256] ([ConstantArray]char[256])
-	- Definition: true
-	[open] Member 'Filters' ([FieldDecl]Filters)
-	- Type: not_yet_implemented ([Record]ImVector<ImGuiTextFilter::ImGuiTextRange>)
-	- Definition: true
-	[open] Member 'CountGrep' ([FieldDecl]CountGrep)
-	- Type: i32 ([Int]int)
-	- Definition: true
 [close] Struct 'ImGuiTextFilter' ([StructDecl]ImGuiTextFilter)
 [open] Struct 'ImGuiTextBuffer' ([StructDecl]ImGuiTextBuffer)
 - Definition: true
 	[open] Member 'Buf' ([FieldDecl]Buf)
-	- Type: not_yet_implemented ([Record]ImVector<char>)
+	- Type: unexposed ([Record]ImVector<char>)
 	- Definition: true
+	[open] Function 'begin' ([CXXMethod]begin)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+	[close] Function 'begin' ([CXXMethod]begin)
+	[open] Function 'end' ([CXXMethod]end)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+	[close] Function 'end' ([CXXMethod]end)
+	[open] Function 'size' ([CXXMethod]size)
+	- Return Type: i32 ([Int]int)
+	[close] Function 'size' ([CXXMethod]size)
+	[open] Function 'empty' ([CXXMethod]empty)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'empty' ([CXXMethod]empty)
+	[open] Function 'clear' ([CXXMethod]clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'clear' ([CXXMethod]clear)
+	[open] Function 'resize' ([CXXMethod]resize)
+	- Return Type: void ([Void]void)
+		[open] Member 'size' ([ParmDecl]size)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'resize' ([CXXMethod]resize)
+	[open] Function 'reserve' ([CXXMethod]reserve)
+	- Return Type: void ([Void]void)
+		[open] Member 'capacity' ([ParmDecl]capacity)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'reserve' ([CXXMethod]reserve)
+	[open] Function 'c_str' ([CXXMethod]c_str)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+	[close] Function 'c_str' ([CXXMethod]c_str)
+	[open] Function 'append' ([CXXMethod]append)
+	- Return Type: void ([Void]void)
+		[open] Member 'str' ([ParmDecl]str)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'str_end' ([ParmDecl]str_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'append' ([CXXMethod]append)
+	[open] Function 'appendf' ([CXXMethod]appendf)
+	- Return Type: void ([Void]void)
+		[open] Member 'fmt' ([ParmDecl]fmt)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'appendf' ([CXXMethod]appendf)
+	[open] Function 'appendfv' ([CXXMethod]appendfv)
+	- Return Type: void ([Void]void)
+		[open] Member 'fmt' ([ParmDecl]fmt)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'args' ([ParmDecl]args)
+		- Type: pointer to 'i8' ([Pointer]char *)
+		- Definition: true
+	[close] Function 'appendfv' ([CXXMethod]appendfv)
 [close] Struct 'ImGuiTextBuffer' ([StructDecl]ImGuiTextBuffer)
 [open] Struct 'ImGuiStoragePair' ([StructDecl]ImGuiStoragePair)
 - Definition: true
@@ -7151,8 +7519,125 @@
 [open] Struct 'ImGuiStorage' ([StructDecl]ImGuiStorage)
 - Definition: true
 	[open] Member 'Data' ([FieldDecl]Data)
-	- Type: not_yet_implemented ([Record]ImVector<ImGuiStoragePair>)
+	- Type: unexposed ([Record]ImVector<ImGuiStoragePair>)
 	- Definition: true
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'GetInt' ([CXXMethod]GetInt)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'GetInt' ([CXXMethod]GetInt)
+	[open] Function 'SetInt' ([CXXMethod]SetInt)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'val' ([ParmDecl]val)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'SetInt' ([CXXMethod]SetInt)
+	[open] Function 'GetBool' ([CXXMethod]GetBool)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'GetBool' ([CXXMethod]GetBool)
+	[open] Function 'SetBool' ([CXXMethod]SetBool)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'val' ([ParmDecl]val)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'SetBool' ([CXXMethod]SetBool)
+	[open] Function 'GetFloat' ([CXXMethod]GetFloat)
+	- Return Type: f32 ([Float]float)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'GetFloat' ([CXXMethod]GetFloat)
+	[open] Function 'SetFloat' ([CXXMethod]SetFloat)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'val' ([ParmDecl]val)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'SetFloat' ([CXXMethod]SetFloat)
+	[open] Function 'GetVoidPtr' ([CXXMethod]GetVoidPtr)
+	- Return Type: pointer to 'void' ([Pointer]void *)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'GetVoidPtr' ([CXXMethod]GetVoidPtr)
+	[open] Function 'SetVoidPtr' ([CXXMethod]SetVoidPtr)
+	- Return Type: void ([Void]void)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'val' ([ParmDecl]val)
+		- Type: pointer to 'void' ([Pointer]void *)
+		- Definition: true
+	[close] Function 'SetVoidPtr' ([CXXMethod]SetVoidPtr)
+	[open] Function 'GetIntRef' ([CXXMethod]GetIntRef)
+	- Return Type: pointer to 'i32' ([Pointer]int *)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'GetIntRef' ([CXXMethod]GetIntRef)
+	[open] Function 'GetBoolRef' ([CXXMethod]GetBoolRef)
+	- Return Type: pointer to 'bool' ([Pointer]bool *)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'GetBoolRef' ([CXXMethod]GetBoolRef)
+	[open] Function 'GetFloatRef' ([CXXMethod]GetFloatRef)
+	- Return Type: pointer to 'f32' ([Pointer]float *)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'GetFloatRef' ([CXXMethod]GetFloatRef)
+	[open] Function 'GetVoidPtrRef' ([CXXMethod]GetVoidPtrRef)
+	- Return Type: pointer to 'pointer to 'void'' ([Pointer]void **)
+		[open] Member 'key' ([ParmDecl]key)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'default_val' ([ParmDecl]default_val)
+		- Type: pointer to 'void' ([Pointer]void *)
+		- Definition: true
+	[close] Function 'GetVoidPtrRef' ([CXXMethod]GetVoidPtrRef)
+	[open] Function 'BuildSortByKey' ([CXXMethod]BuildSortByKey)
+	- Return Type: void ([Void]void)
+	[close] Function 'BuildSortByKey' ([CXXMethod]BuildSortByKey)
+	[open] Function 'SetAllInt' ([CXXMethod]SetAllInt)
+	- Return Type: void ([Void]void)
+		[open] Member 'val' ([ParmDecl]val)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'SetAllInt' ([CXXMethod]SetAllInt)
 [close] Struct 'ImGuiStorage' ([StructDecl]ImGuiStorage)
 [open] Enum 'ImGuiListClipperFlags_' ([EnumDecl]ImGuiListClipperFlags_)
 - Definition: true
@@ -7194,12 +7679,87 @@
 	[open] Member 'Flags' ([FieldDecl]Flags)
 	- Type: i32 ([Int]int)
 	- Definition: true
+	[open] Function 'Begin' ([CXXMethod]Begin)
+	- Return Type: void ([Void]void)
+		[open] Member 'items_count' ([ParmDecl]items_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'items_height' ([ParmDecl]items_height)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'Begin' ([CXXMethod]Begin)
+	[open] Function 'End' ([CXXMethod]End)
+	- Return Type: void ([Void]void)
+	[close] Function 'End' ([CXXMethod]End)
+	[open] Function 'Step' ([CXXMethod]Step)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'Step' ([CXXMethod]Step)
+	[open] Function 'IncludeItemByIndex' ([CXXMethod]IncludeItemByIndex)
+	- Return Type: void ([Void]void)
+		[open] Member 'item_index' ([ParmDecl]item_index)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'IncludeItemByIndex' ([CXXMethod]IncludeItemByIndex)
+	[open] Function 'IncludeItemsByIndex' ([CXXMethod]IncludeItemsByIndex)
+	- Return Type: void ([Void]void)
+		[open] Member 'item_begin' ([ParmDecl]item_begin)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'item_end' ([ParmDecl]item_end)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'IncludeItemsByIndex' ([CXXMethod]IncludeItemsByIndex)
+	[open] Function 'SeekCursorForItem' ([CXXMethod]SeekCursorForItem)
+	- Return Type: void ([Void]void)
+		[open] Member 'item_index' ([ParmDecl]item_index)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'SeekCursorForItem' ([CXXMethod]SeekCursorForItem)
+	[open] Function 'IncludeRangeByIndices' ([CXXMethod]IncludeRangeByIndices)
+	- Return Type: void ([Void]void)
+		[open] Member 'item_begin' ([ParmDecl]item_begin)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'item_end' ([ParmDecl]item_end)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'IncludeRangeByIndices' ([CXXMethod]IncludeRangeByIndices)
 [close] Struct 'ImGuiListClipper' ([StructDecl]ImGuiListClipper)
 [open] Struct 'ImColor' ([StructDecl]ImColor)
 - Definition: true
 	[open] Member 'Value' ([FieldDecl]Value)
 	- Type: record 'ImVec4' ([Record]ImVec4)
 	- Definition: true
+	[open] Function 'SetHSV' ([CXXMethod]SetHSV)
+	- Return Type: void ([Void]void)
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 's' ([ParmDecl]s)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'v' ([ParmDecl]v)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a' ([ParmDecl]a)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'SetHSV' ([CXXMethod]SetHSV)
+	[open] Function 'HSV' ([CXXMethod]HSV)
+	- Return Type: record 'ImColor' ([Record]ImColor)
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 's' ([ParmDecl]s)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'v' ([ParmDecl]v)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a' ([ParmDecl]a)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'HSV' ([CXXMethod]HSV)
 [close] Struct 'ImColor' ([StructDecl]ImColor)
 [open] Enum 'ImGuiMultiSelectFlags_' ([EnumDecl]ImGuiMultiSelectFlags_)
 - Definition: true
@@ -7275,7 +7835,7 @@
 [open] Struct 'ImGuiMultiSelectIO' ([StructDecl]ImGuiMultiSelectIO)
 - Definition: true
 	[open] Member 'Requests' ([FieldDecl]Requests)
-	- Type: not_yet_implemented ([Record]ImVector<ImGuiSelectionRequest>)
+	- Type: unexposed ([Record]ImVector<ImGuiSelectionRequest>)
 	- Definition: true
 	[open] Member 'RangeSrcItem' ([FieldDecl]RangeSrcItem)
 	- Type: i64 ([LongLong]long long)
@@ -7346,6 +7906,51 @@
 	[open] Member '_Storage' ([FieldDecl]_Storage)
 	- Type: record 'ImGuiStorage' ([Record]ImGuiStorage)
 	- Definition: true
+	[open] Function 'ApplyRequests' ([CXXMethod]ApplyRequests)
+	- Return Type: void ([Void]void)
+		[open] Member 'ms_io' ([ParmDecl]ms_io)
+		- Type: pointer to 'record 'ImGuiMultiSelectIO'' ([Pointer]ImGuiMultiSelectIO *)
+		- Definition: true
+	[close] Function 'ApplyRequests' ([CXXMethod]ApplyRequests)
+	[open] Function 'Contains' ([CXXMethod]Contains)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'Contains' ([CXXMethod]Contains)
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'Swap' ([CXXMethod]Swap)
+	- Return Type: void ([Void]void)
+		[open] Member 'r' ([ParmDecl]r)
+		- Type: reference to 'record 'ImGuiSelectionBasicStorage'' ([LValueReference]ImGuiSelectionBasicStorage &)
+		- Definition: true
+	[close] Function 'Swap' ([CXXMethod]Swap)
+	[open] Function 'SetItemSelected' ([CXXMethod]SetItemSelected)
+	- Return Type: void ([Void]void)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'selected' ([ParmDecl]selected)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'SetItemSelected' ([CXXMethod]SetItemSelected)
+	[open] Function 'GetNextSelectedItem' ([CXXMethod]GetNextSelectedItem)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'opaque_it' ([ParmDecl]opaque_it)
+		- Type: pointer to 'pointer to 'void'' ([Pointer]void **)
+		- Definition: true
+		[open] Member 'out_id' ([ParmDecl]out_id)
+		- Type: pointer to 'u32' ([Pointer]ImGuiID *)
+		- Definition: true
+	[close] Function 'GetNextSelectedItem' ([CXXMethod]GetNextSelectedItem)
+	[open] Function 'GetStorageIdFromIndex' ([CXXMethod]GetStorageIdFromIndex)
+	- Return Type: u32 ([UInt]unsigned int)
+		[open] Member 'idx' ([ParmDecl]idx)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'GetStorageIdFromIndex' ([CXXMethod]GetStorageIdFromIndex)
 [close] Struct 'ImGuiSelectionBasicStorage' ([StructDecl]ImGuiSelectionBasicStorage)
 [open] Struct 'ImGuiSelectionExternalStorage' ([StructDecl]ImGuiSelectionExternalStorage)
 - Definition: true
@@ -7355,7 +7960,17 @@
 	[open] Member 'AdapterSetItemSelected' ([FieldDecl]AdapterSetItemSelected)
 	- Type: pointer to 'function' ([Pointer]void (*)(ImGuiSelectionExternalStorage *, int, bool))
 	- Definition: true
+	[open] Function 'ApplyRequests' ([CXXMethod]ApplyRequests)
+	- Return Type: void ([Void]void)
+		[open] Member 'ms_io' ([ParmDecl]ms_io)
+		- Type: pointer to 'record 'ImGuiMultiSelectIO'' ([Pointer]ImGuiMultiSelectIO *)
+		- Definition: true
+	[close] Function 'ApplyRequests' ([CXXMethod]ApplyRequests)
 [close] Struct 'ImGuiSelectionExternalStorage' ([StructDecl]ImGuiSelectionExternalStorage)
+[open] Typedef 'ImDrawIdx' ([TypedefDecl]ImDrawIdx)
+- Definition: true
+[open] Typedef 'ImDrawCallback' ([TypedefDecl]ImDrawCallback)
+- Definition: true
 [open] Struct 'ImDrawCmd' ([StructDecl]ImDrawCmd)
 - Definition: true
 	[open] Member 'ClipRect' ([FieldDecl]ClipRect)
@@ -7385,6 +8000,9 @@
 	[open] Member 'UserCallbackDataOffset' ([FieldDecl]UserCallbackDataOffset)
 	- Type: i32 ([Int]int)
 	- Definition: true
+	[open] Function 'GetTexID' ([CXXMethod]GetTexID)
+	- Return Type: u64 ([ULongLong]unsigned long long)
+	[close] Function 'GetTexID' ([CXXMethod]GetTexID)
 [close] Struct 'ImDrawCmd' ([StructDecl]ImDrawCmd)
 [open] Struct 'ImDrawVert' ([StructDecl]ImDrawVert)
 - Definition: true
@@ -7413,10 +8031,10 @@
 [open] Struct 'ImDrawChannel' ([StructDecl]ImDrawChannel)
 - Definition: true
 	[open] Member '_CmdBuffer' ([FieldDecl]_CmdBuffer)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawCmd>)
+	- Type: unexposed ([Record]ImVector<ImDrawCmd>)
 	- Definition: true
 	[open] Member '_IdxBuffer' ([FieldDecl]_IdxBuffer)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned short>)
+	- Type: unexposed ([Record]ImVector<unsigned short>)
 	- Definition: true
 [close] Struct 'ImDrawChannel' ([StructDecl]ImDrawChannel)
 [open] Struct 'ImDrawListSplitter' ([StructDecl]ImDrawListSplitter)
@@ -7428,8 +8046,38 @@
 	- Type: i32 ([Int]int)
 	- Definition: true
 	[open] Member '_Channels' ([FieldDecl]_Channels)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawChannel>)
+	- Type: unexposed ([Record]ImVector<ImDrawChannel>)
 	- Definition: true
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'ClearFreeMemory' ([CXXMethod]ClearFreeMemory)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearFreeMemory' ([CXXMethod]ClearFreeMemory)
+	[open] Function 'Split' ([CXXMethod]Split)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+		[open] Member 'count' ([ParmDecl]count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'Split' ([CXXMethod]Split)
+	[open] Function 'Merge' ([CXXMethod]Merge)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+	[close] Function 'Merge' ([CXXMethod]Merge)
+	[open] Function 'SetCurrentChannel' ([CXXMethod]SetCurrentChannel)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+		[open] Member 'channel_idx' ([ParmDecl]channel_idx)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'SetCurrentChannel' ([CXXMethod]SetCurrentChannel)
 [close] Struct 'ImDrawListSplitter' ([StructDecl]ImDrawListSplitter)
 [open] Enum 'ImDrawFlags_' ([EnumDecl]ImDrawFlags_)
 - Definition: true
@@ -7516,13 +8164,13 @@
 [open] Struct 'ImDrawList' ([StructDecl]ImDrawList)
 - Definition: true
 	[open] Member 'CmdBuffer' ([FieldDecl]CmdBuffer)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawCmd>)
+	- Type: unexposed ([Record]ImVector<ImDrawCmd>)
 	- Definition: true
 	[open] Member 'IdxBuffer' ([FieldDecl]IdxBuffer)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned short>)
+	- Type: unexposed ([Record]ImVector<unsigned short>)
 	- Definition: true
 	[open] Member 'VtxBuffer' ([FieldDecl]VtxBuffer)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawVert>)
+	- Type: unexposed ([Record]ImVector<ImDrawVert>)
 	- Definition: true
 	[open] Member 'Flags' ([FieldDecl]Flags)
 	- Type: i32 ([Int]int)
@@ -7540,7 +8188,7 @@
 	- Type: pointer to 'u16' ([Pointer]ImDrawIdx *)
 	- Definition: true
 	[open] Member '_Path' ([FieldDecl]_Path)
-	- Type: not_yet_implemented ([Record]ImVector<ImVec2>)
+	- Type: unexposed ([Record]ImVector<ImVec2>)
 	- Definition: true
 	[open] Member '_CmdHeader' ([FieldDecl]_CmdHeader)
 	- Type: record 'ImDrawCmdHeader' ([Record]ImDrawCmdHeader)
@@ -7549,13 +8197,13 @@
 	- Type: record 'ImDrawListSplitter' ([Record]ImDrawListSplitter)
 	- Definition: true
 	[open] Member '_ClipRectStack' ([FieldDecl]_ClipRectStack)
-	- Type: not_yet_implemented ([Record]ImVector<ImVec4>)
+	- Type: unexposed ([Record]ImVector<ImVec4>)
 	- Definition: true
 	[open] Member '_TextureStack' ([FieldDecl]_TextureStack)
-	- Type: not_yet_implemented ([Record]ImVector<ImTextureRef>)
+	- Type: unexposed ([Record]ImVector<ImTextureRef>)
 	- Definition: true
 	[open] Member '_CallbacksDataBuf' ([FieldDecl]_CallbacksDataBuf)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned char>)
+	- Type: unexposed ([Record]ImVector<unsigned char>)
 	- Definition: true
 	[open] Member '_FringeScale' ([FieldDecl]_FringeScale)
 	- Type: f32 ([Float]float)
@@ -7563,6 +8211,861 @@
 	[open] Member '_OwnerName' ([FieldDecl]_OwnerName)
 	- Type: pointer to 'const i8' ([Pointer]const char *)
 	- Definition: true
+	[open] Function 'PushClipRect' ([CXXMethod]PushClipRect)
+	- Return Type: void ([Void]void)
+		[open] Member 'clip_rect_min' ([ParmDecl]clip_rect_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'clip_rect_max' ([ParmDecl]clip_rect_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'intersect_with_current_clip_rect' ([ParmDecl]intersect_with_current_clip_rect)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'PushClipRect' ([CXXMethod]PushClipRect)
+	[open] Function 'PushClipRectFullScreen' ([CXXMethod]PushClipRectFullScreen)
+	- Return Type: void ([Void]void)
+	[close] Function 'PushClipRectFullScreen' ([CXXMethod]PushClipRectFullScreen)
+	[open] Function 'PopClipRect' ([CXXMethod]PopClipRect)
+	- Return Type: void ([Void]void)
+	[close] Function 'PopClipRect' ([CXXMethod]PopClipRect)
+	[open] Function 'PushTexture' ([CXXMethod]PushTexture)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+	[close] Function 'PushTexture' ([CXXMethod]PushTexture)
+	[open] Function 'PopTexture' ([CXXMethod]PopTexture)
+	- Return Type: void ([Void]void)
+	[close] Function 'PopTexture' ([CXXMethod]PopTexture)
+	[open] Function 'GetClipRectMin' ([CXXMethod]GetClipRectMin)
+	- Return Type: record 'ImVec2' ([Record]ImVec2)
+	[close] Function 'GetClipRectMin' ([CXXMethod]GetClipRectMin)
+	[open] Function 'GetClipRectMax' ([CXXMethod]GetClipRectMax)
+	- Return Type: record 'ImVec2' ([Record]ImVec2)
+	[close] Function 'GetClipRectMax' ([CXXMethod]GetClipRectMax)
+	[open] Function 'AddLine' ([CXXMethod]AddLine)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddLine' ([CXXMethod]AddLine)
+	[open] Function 'AddRect' ([CXXMethod]AddRect)
+	- Return Type: void ([Void]void)
+		[open] Member 'p_min' ([ParmDecl]p_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p_max' ([ParmDecl]p_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'rounding' ([ParmDecl]rounding)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddRect' ([CXXMethod]AddRect)
+	[open] Function 'AddRectFilled' ([CXXMethod]AddRectFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'p_min' ([ParmDecl]p_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p_max' ([ParmDecl]p_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'rounding' ([ParmDecl]rounding)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddRectFilled' ([CXXMethod]AddRectFilled)
+	[open] Function 'AddRectFilledMultiColor' ([CXXMethod]AddRectFilledMultiColor)
+	- Return Type: void ([Void]void)
+		[open] Member 'p_min' ([ParmDecl]p_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p_max' ([ParmDecl]p_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col_upr_left' ([ParmDecl]col_upr_left)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'col_upr_right' ([ParmDecl]col_upr_right)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'col_bot_right' ([ParmDecl]col_bot_right)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'col_bot_left' ([ParmDecl]col_bot_left)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddRectFilledMultiColor' ([CXXMethod]AddRectFilledMultiColor)
+	[open] Function 'AddQuad' ([CXXMethod]AddQuad)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p4' ([ParmDecl]p4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddQuad' ([CXXMethod]AddQuad)
+	[open] Function 'AddQuadFilled' ([CXXMethod]AddQuadFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p4' ([ParmDecl]p4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddQuadFilled' ([CXXMethod]AddQuadFilled)
+	[open] Function 'AddTriangle' ([CXXMethod]AddTriangle)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddTriangle' ([CXXMethod]AddTriangle)
+	[open] Function 'AddTriangleFilled' ([CXXMethod]AddTriangleFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddTriangleFilled' ([CXXMethod]AddTriangleFilled)
+	[open] Function 'AddCircle' ([CXXMethod]AddCircle)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddCircle' ([CXXMethod]AddCircle)
+	[open] Function 'AddCircleFilled' ([CXXMethod]AddCircleFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddCircleFilled' ([CXXMethod]AddCircleFilled)
+	[open] Function 'AddNgon' ([CXXMethod]AddNgon)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddNgon' ([CXXMethod]AddNgon)
+	[open] Function 'AddNgonFilled' ([CXXMethod]AddNgonFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddNgonFilled' ([CXXMethod]AddNgonFilled)
+	[open] Function 'AddEllipse' ([CXXMethod]AddEllipse)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'rot' ([ParmDecl]rot)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddEllipse' ([CXXMethod]AddEllipse)
+	[open] Function 'AddEllipseFilled' ([CXXMethod]AddEllipseFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'rot' ([ParmDecl]rot)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddEllipseFilled' ([CXXMethod]AddEllipseFilled)
+	[open] Function 'AddText' ([CXXMethod]AddText)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'text_begin' ([ParmDecl]text_begin)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'AddText' ([CXXMethod]AddText)
+	[open] Function 'AddText' ([CXXMethod]AddText)
+	- Return Type: void ([Void]void)
+		[open] Member 'font' ([ParmDecl]font)
+		- Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		- Definition: true
+		[open] Member 'font_size' ([ParmDecl]font_size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'text_begin' ([ParmDecl]text_begin)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'wrap_width' ([ParmDecl]wrap_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'cpu_fine_clip_rect' ([ParmDecl]cpu_fine_clip_rect)
+		- Type: pointer to 'const record 'ImVec4'' ([Pointer]const ImVec4 *)
+		- Definition: true
+	[close] Function 'AddText' ([CXXMethod]AddText)
+	[open] Function 'AddBezierCubic' ([CXXMethod]AddBezierCubic)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p4' ([ParmDecl]p4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddBezierCubic' ([CXXMethod]AddBezierCubic)
+	[open] Function 'AddBezierQuadratic' ([CXXMethod]AddBezierQuadratic)
+	- Return Type: void ([Void]void)
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddBezierQuadratic' ([CXXMethod]AddBezierQuadratic)
+	[open] Function 'AddPolyline' ([CXXMethod]AddPolyline)
+	- Return Type: void ([Void]void)
+		[open] Member 'points' ([ParmDecl]points)
+		- Type: pointer to 'const record 'ImVec2'' ([Pointer]const ImVec2 *)
+		- Definition: true
+		[open] Member 'num_points' ([ParmDecl]num_points)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'AddPolyline' ([CXXMethod]AddPolyline)
+	[open] Function 'AddConvexPolyFilled' ([CXXMethod]AddConvexPolyFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'points' ([ParmDecl]points)
+		- Type: pointer to 'const record 'ImVec2'' ([Pointer]const ImVec2 *)
+		- Definition: true
+		[open] Member 'num_points' ([ParmDecl]num_points)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddConvexPolyFilled' ([CXXMethod]AddConvexPolyFilled)
+	[open] Function 'AddConcavePolyFilled' ([CXXMethod]AddConcavePolyFilled)
+	- Return Type: void ([Void]void)
+		[open] Member 'points' ([ParmDecl]points)
+		- Type: pointer to 'const record 'ImVec2'' ([Pointer]const ImVec2 *)
+		- Definition: true
+		[open] Member 'num_points' ([ParmDecl]num_points)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddConcavePolyFilled' ([CXXMethod]AddConcavePolyFilled)
+	[open] Function 'AddImage' ([CXXMethod]AddImage)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+		[open] Member 'p_min' ([ParmDecl]p_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p_max' ([ParmDecl]p_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_min' ([ParmDecl]uv_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_max' ([ParmDecl]uv_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddImage' ([CXXMethod]AddImage)
+	[open] Function 'AddImageQuad' ([CXXMethod]AddImageQuad)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+		[open] Member 'p1' ([ParmDecl]p1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p4' ([ParmDecl]p4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv1' ([ParmDecl]uv1)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv2' ([ParmDecl]uv2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv3' ([ParmDecl]uv3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv4' ([ParmDecl]uv4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'AddImageQuad' ([CXXMethod]AddImageQuad)
+	[open] Function 'AddImageRounded' ([CXXMethod]AddImageRounded)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+		[open] Member 'p_min' ([ParmDecl]p_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p_max' ([ParmDecl]p_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_min' ([ParmDecl]uv_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_max' ([ParmDecl]uv_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'rounding' ([ParmDecl]rounding)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddImageRounded' ([CXXMethod]AddImageRounded)
+	[open] Function 'PathClear' ([CXXMethod]PathClear)
+	- Return Type: void ([Void]void)
+	[close] Function 'PathClear' ([CXXMethod]PathClear)
+	[open] Function 'PathLineTo' ([CXXMethod]PathLineTo)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+	[close] Function 'PathLineTo' ([CXXMethod]PathLineTo)
+	[open] Function 'PathLineToMergeDuplicate' ([CXXMethod]PathLineToMergeDuplicate)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+	[close] Function 'PathLineToMergeDuplicate' ([CXXMethod]PathLineToMergeDuplicate)
+	[open] Function 'PathFillConvex' ([CXXMethod]PathFillConvex)
+	- Return Type: void ([Void]void)
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PathFillConvex' ([CXXMethod]PathFillConvex)
+	[open] Function 'PathFillConcave' ([CXXMethod]PathFillConcave)
+	- Return Type: void ([Void]void)
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PathFillConcave' ([CXXMethod]PathFillConcave)
+	[open] Function 'PathStroke' ([CXXMethod]PathStroke)
+	- Return Type: void ([Void]void)
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'thickness' ([ParmDecl]thickness)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'PathStroke' ([CXXMethod]PathStroke)
+	[open] Function 'PathArcTo' ([CXXMethod]PathArcTo)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_min' ([ParmDecl]a_min)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_max' ([ParmDecl]a_max)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathArcTo' ([CXXMethod]PathArcTo)
+	[open] Function 'PathArcToFast' ([CXXMethod]PathArcToFast)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_min_of_12' ([ParmDecl]a_min_of_12)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'a_max_of_12' ([ParmDecl]a_max_of_12)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathArcToFast' ([CXXMethod]PathArcToFast)
+	[open] Function 'PathEllipticalArcTo' ([CXXMethod]PathEllipticalArcTo)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'rot' ([ParmDecl]rot)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_min' ([ParmDecl]a_min)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_max' ([ParmDecl]a_max)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathEllipticalArcTo' ([CXXMethod]PathEllipticalArcTo)
+	[open] Function 'PathBezierCubicCurveTo' ([CXXMethod]PathBezierCubicCurveTo)
+	- Return Type: void ([Void]void)
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p4' ([ParmDecl]p4)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathBezierCubicCurveTo' ([CXXMethod]PathBezierCubicCurveTo)
+	[open] Function 'PathBezierQuadraticCurveTo' ([CXXMethod]PathBezierQuadraticCurveTo)
+	- Return Type: void ([Void]void)
+		[open] Member 'p2' ([ParmDecl]p2)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'p3' ([ParmDecl]p3)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathBezierQuadraticCurveTo' ([CXXMethod]PathBezierQuadraticCurveTo)
+	[open] Function 'PathRect' ([CXXMethod]PathRect)
+	- Return Type: void ([Void]void)
+		[open] Member 'rect_min' ([ParmDecl]rect_min)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'rect_max' ([ParmDecl]rect_max)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'rounding' ([ParmDecl]rounding)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'flags' ([ParmDecl]flags)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PathRect' ([CXXMethod]PathRect)
+	[open] Function 'AddCallback' ([CXXMethod]AddCallback)
+	- Return Type: void ([Void]void)
+		[open] Member 'callback' ([ParmDecl]callback)
+		- Type: pointer to 'function' ([Pointer]void (*)(const ImDrawList *, const ImDrawCmd *))
+		- Definition: true
+		[open] Member 'userdata' ([ParmDecl]userdata)
+		- Type: pointer to 'void' ([Pointer]void *)
+		- Definition: true
+		[open] Member 'userdata_size' ([ParmDecl]userdata_size)
+		- Type: u64 ([ULongLong]unsigned long long)
+		- Definition: true
+	[close] Function 'AddCallback' ([CXXMethod]AddCallback)
+	[open] Function 'AddDrawCmd' ([CXXMethod]AddDrawCmd)
+	- Return Type: void ([Void]void)
+	[close] Function 'AddDrawCmd' ([CXXMethod]AddDrawCmd)
+	[open] Function 'CloneOutput' ([CXXMethod]CloneOutput)
+	- Return Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+	[close] Function 'CloneOutput' ([CXXMethod]CloneOutput)
+	[open] Function 'ChannelsSplit' ([CXXMethod]ChannelsSplit)
+	- Return Type: void ([Void]void)
+		[open] Member 'count' ([ParmDecl]count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'ChannelsSplit' ([CXXMethod]ChannelsSplit)
+	[open] Function 'ChannelsMerge' ([CXXMethod]ChannelsMerge)
+	- Return Type: void ([Void]void)
+	[close] Function 'ChannelsMerge' ([CXXMethod]ChannelsMerge)
+	[open] Function 'ChannelsSetCurrent' ([CXXMethod]ChannelsSetCurrent)
+	- Return Type: void ([Void]void)
+		[open] Member 'n' ([ParmDecl]n)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'ChannelsSetCurrent' ([CXXMethod]ChannelsSetCurrent)
+	[open] Function 'PrimReserve' ([CXXMethod]PrimReserve)
+	- Return Type: void ([Void]void)
+		[open] Member 'idx_count' ([ParmDecl]idx_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'vtx_count' ([ParmDecl]vtx_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PrimReserve' ([CXXMethod]PrimReserve)
+	[open] Function 'PrimUnreserve' ([CXXMethod]PrimUnreserve)
+	- Return Type: void ([Void]void)
+		[open] Member 'idx_count' ([ParmDecl]idx_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'vtx_count' ([ParmDecl]vtx_count)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'PrimUnreserve' ([CXXMethod]PrimUnreserve)
+	[open] Function 'PrimRect' ([CXXMethod]PrimRect)
+	- Return Type: void ([Void]void)
+		[open] Member 'a' ([ParmDecl]a)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'b' ([ParmDecl]b)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PrimRect' ([CXXMethod]PrimRect)
+	[open] Function 'PrimRectUV' ([CXXMethod]PrimRectUV)
+	- Return Type: void ([Void]void)
+		[open] Member 'a' ([ParmDecl]a)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'b' ([ParmDecl]b)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_a' ([ParmDecl]uv_a)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_b' ([ParmDecl]uv_b)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PrimRectUV' ([CXXMethod]PrimRectUV)
+	[open] Function 'PrimQuadUV' ([CXXMethod]PrimQuadUV)
+	- Return Type: void ([Void]void)
+		[open] Member 'a' ([ParmDecl]a)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'b' ([ParmDecl]b)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'd' ([ParmDecl]d)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_a' ([ParmDecl]uv_a)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_b' ([ParmDecl]uv_b)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_c' ([ParmDecl]uv_c)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv_d' ([ParmDecl]uv_d)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PrimQuadUV' ([CXXMethod]PrimQuadUV)
+	[open] Function 'PrimWriteVtx' ([CXXMethod]PrimWriteVtx)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv' ([ParmDecl]uv)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PrimWriteVtx' ([CXXMethod]PrimWriteVtx)
+	[open] Function 'PrimWriteIdx' ([CXXMethod]PrimWriteIdx)
+	- Return Type: void ([Void]void)
+		[open] Member 'idx' ([ParmDecl]idx)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'PrimWriteIdx' ([CXXMethod]PrimWriteIdx)
+	[open] Function 'PrimVtx' ([CXXMethod]PrimVtx)
+	- Return Type: void ([Void]void)
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'uv' ([ParmDecl]uv)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'PrimVtx' ([CXXMethod]PrimVtx)
+	[open] Function 'PushTextureID' ([CXXMethod]PushTextureID)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+	[close] Function 'PushTextureID' ([CXXMethod]PushTextureID)
+	[open] Function 'PopTextureID' ([CXXMethod]PopTextureID)
+	- Return Type: void ([Void]void)
+	[close] Function 'PopTextureID' ([CXXMethod]PopTextureID)
+	[open] Function '_SetDrawListSharedData' ([CXXMethod]_SetDrawListSharedData)
+	- Return Type: void ([Void]void)
+		[open] Member 'data' ([ParmDecl]data)
+		- Type: pointer to 'record 'ImDrawListSharedData'' ([Pointer]ImDrawListSharedData *)
+		- Definition: true
+	[close] Function '_SetDrawListSharedData' ([CXXMethod]_SetDrawListSharedData)
+	[open] Function '_ResetForNewFrame' ([CXXMethod]_ResetForNewFrame)
+	- Return Type: void ([Void]void)
+	[close] Function '_ResetForNewFrame' ([CXXMethod]_ResetForNewFrame)
+	[open] Function '_ClearFreeMemory' ([CXXMethod]_ClearFreeMemory)
+	- Return Type: void ([Void]void)
+	[close] Function '_ClearFreeMemory' ([CXXMethod]_ClearFreeMemory)
+	[open] Function '_PopUnusedDrawCmd' ([CXXMethod]_PopUnusedDrawCmd)
+	- Return Type: void ([Void]void)
+	[close] Function '_PopUnusedDrawCmd' ([CXXMethod]_PopUnusedDrawCmd)
+	[open] Function '_TryMergeDrawCmds' ([CXXMethod]_TryMergeDrawCmds)
+	- Return Type: void ([Void]void)
+	[close] Function '_TryMergeDrawCmds' ([CXXMethod]_TryMergeDrawCmds)
+	[open] Function '_OnChangedClipRect' ([CXXMethod]_OnChangedClipRect)
+	- Return Type: void ([Void]void)
+	[close] Function '_OnChangedClipRect' ([CXXMethod]_OnChangedClipRect)
+	[open] Function '_OnChangedTexture' ([CXXMethod]_OnChangedTexture)
+	- Return Type: void ([Void]void)
+	[close] Function '_OnChangedTexture' ([CXXMethod]_OnChangedTexture)
+	[open] Function '_OnChangedVtxOffset' ([CXXMethod]_OnChangedVtxOffset)
+	- Return Type: void ([Void]void)
+	[close] Function '_OnChangedVtxOffset' ([CXXMethod]_OnChangedVtxOffset)
+	[open] Function '_SetTexture' ([CXXMethod]_SetTexture)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_ref' ([ParmDecl]tex_ref)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+	[close] Function '_SetTexture' ([CXXMethod]_SetTexture)
+	[open] Function '_CalcCircleAutoSegmentCount' ([CXXMethod]_CalcCircleAutoSegmentCount)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function '_CalcCircleAutoSegmentCount' ([CXXMethod]_CalcCircleAutoSegmentCount)
+	[open] Function '_PathArcToFastEx' ([CXXMethod]_PathArcToFastEx)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_min_sample' ([ParmDecl]a_min_sample)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'a_max_sample' ([ParmDecl]a_max_sample)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'a_step' ([ParmDecl]a_step)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function '_PathArcToFastEx' ([CXXMethod]_PathArcToFastEx)
+	[open] Function '_PathArcToN' ([CXXMethod]_PathArcToN)
+	- Return Type: void ([Void]void)
+		[open] Member 'center' ([ParmDecl]center)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'radius' ([ParmDecl]radius)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_min' ([ParmDecl]a_min)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'a_max' ([ParmDecl]a_max)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'num_segments' ([ParmDecl]num_segments)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function '_PathArcToN' ([CXXMethod]_PathArcToN)
 [close] Struct 'ImDrawList' ([StructDecl]ImDrawList)
 [open] Struct 'ImDrawData' ([StructDecl]ImDrawData)
 - Definition: true
@@ -7579,7 +9082,7 @@
 	- Type: i32 ([Int]int)
 	- Definition: true
 	[open] Member 'CmdLists' ([FieldDecl]CmdLists)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawList *>)
+	- Type: unexposed ([Record]ImVector<ImDrawList *>)
 	- Definition: true
 	[open] Member 'DisplayPos' ([FieldDecl]DisplayPos)
 	- Type: record 'ImVec2' ([Record]ImVec2)
@@ -7594,8 +9097,26 @@
 	- Type: pointer to 'record 'ImGuiViewport'' ([Pointer]ImGuiViewport *)
 	- Definition: true
 	[open] Member 'Textures' ([FieldDecl]Textures)
-	- Type: pointer to 'not_yet_implemented' ([Pointer]ImVector<ImTextureData *> *)
+	- Type: pointer to 'unexposed' ([Pointer]ImVector<ImTextureData *> *)
 	- Definition: true
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'AddDrawList' ([CXXMethod]AddDrawList)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+	[close] Function 'AddDrawList' ([CXXMethod]AddDrawList)
+	[open] Function 'DeIndexAllBuffers' ([CXXMethod]DeIndexAllBuffers)
+	- Return Type: void ([Void]void)
+	[close] Function 'DeIndexAllBuffers' ([CXXMethod]DeIndexAllBuffers)
+	[open] Function 'ScaleClipRects' ([CXXMethod]ScaleClipRects)
+	- Return Type: void ([Void]void)
+		[open] Member 'fb_scale' ([ParmDecl]fb_scale)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+	[close] Function 'ScaleClipRects' ([CXXMethod]ScaleClipRects)
 [close] Struct 'ImDrawData' ([StructDecl]ImDrawData)
 [open] Enum 'ImTextureFormat' ([EnumDecl]ImTextureFormat)
 - Definition: true
@@ -7682,7 +9203,7 @@
 	- Type: record 'ImTextureRect' ([Record]ImTextureRect)
 	- Definition: true
 	[open] Member 'Updates' ([FieldDecl]Updates)
-	- Type: not_yet_implemented ([Record]ImVector<ImTextureRect>)
+	- Type: unexposed ([Record]ImVector<ImTextureRect>)
 	- Definition: true
 	[open] Member 'UnusedFrames' ([FieldDecl]UnusedFrames)
 	- Type: i32 ([Int]int)
@@ -7696,6 +9217,57 @@
 	[open] Member 'WantDestroyNextFrame' ([FieldDecl]WantDestroyNextFrame)
 	- Type: bool ([Bool]bool)
 	- Definition: true
+	[open] Function 'Create' ([CXXMethod]Create)
+	- Return Type: void ([Void]void)
+		[open] Member 'format' ([ParmDecl]format)
+		- Type: enum 'ImTextureFormat' ([Enum]ImTextureFormat)
+		- Definition: true
+		[open] Member 'w' ([ParmDecl]w)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'Create' ([CXXMethod]Create)
+	[open] Function 'DestroyPixels' ([CXXMethod]DestroyPixels)
+	- Return Type: void ([Void]void)
+	[close] Function 'DestroyPixels' ([CXXMethod]DestroyPixels)
+	[open] Function 'GetPixels' ([CXXMethod]GetPixels)
+	- Return Type: pointer to 'void' ([Pointer]void *)
+	[close] Function 'GetPixels' ([CXXMethod]GetPixels)
+	[open] Function 'GetPixelsAt' ([CXXMethod]GetPixelsAt)
+	- Return Type: pointer to 'void' ([Pointer]void *)
+		[open] Member 'x' ([ParmDecl]x)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'y' ([ParmDecl]y)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'GetPixelsAt' ([CXXMethod]GetPixelsAt)
+	[open] Function 'GetSizeInBytes' ([CXXMethod]GetSizeInBytes)
+	- Return Type: i32 ([Int]int)
+	[close] Function 'GetSizeInBytes' ([CXXMethod]GetSizeInBytes)
+	[open] Function 'GetPitch' ([CXXMethod]GetPitch)
+	- Return Type: i32 ([Int]int)
+	[close] Function 'GetPitch' ([CXXMethod]GetPitch)
+	[open] Function 'GetTexRef' ([CXXMethod]GetTexRef)
+	- Return Type: record 'ImTextureRef' ([Record]ImTextureRef)
+	[close] Function 'GetTexRef' ([CXXMethod]GetTexRef)
+	[open] Function 'GetTexID' ([CXXMethod]GetTexID)
+	- Return Type: u64 ([ULongLong]unsigned long long)
+	[close] Function 'GetTexID' ([CXXMethod]GetTexID)
+	[open] Function 'SetTexID' ([CXXMethod]SetTexID)
+	- Return Type: void ([Void]void)
+		[open] Member 'tex_id' ([ParmDecl]tex_id)
+		- Type: u64 ([ULongLong]unsigned long long)
+		- Definition: true
+	[close] Function 'SetTexID' ([CXXMethod]SetTexID)
+	[open] Function 'SetStatus' ([CXXMethod]SetStatus)
+	- Return Type: void ([Void]void)
+		[open] Member 'status' ([ParmDecl]status)
+		- Type: enum 'ImTextureStatus' ([Enum]ImTextureStatus)
+		- Definition: true
+	[close] Function 'SetStatus' ([CXXMethod]SetStatus)
 [close] Struct 'ImTextureData' ([StructDecl]ImTextureData)
 [open] Struct 'ImFontConfig' ([StructDecl]ImFontConfig)
 - Definition: true
@@ -7823,9 +9395,53 @@
 [open] Struct 'ImFontGlyphRangesBuilder' ([StructDecl]ImFontGlyphRangesBuilder)
 - Definition: true
 	[open] Member 'UsedChars' ([FieldDecl]UsedChars)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned int>)
+	- Type: unexposed ([Record]ImVector<unsigned int>)
 	- Definition: true
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'GetBit' ([CXXMethod]GetBit)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'n' ([ParmDecl]n)
+		- Type: u64 ([ULongLong]unsigned long long)
+		- Definition: true
+	[close] Function 'GetBit' ([CXXMethod]GetBit)
+	[open] Function 'SetBit' ([CXXMethod]SetBit)
+	- Return Type: void ([Void]void)
+		[open] Member 'n' ([ParmDecl]n)
+		- Type: u64 ([ULongLong]unsigned long long)
+		- Definition: true
+	[close] Function 'SetBit' ([CXXMethod]SetBit)
+	[open] Function 'AddChar' ([CXXMethod]AddChar)
+	- Return Type: void ([Void]void)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'AddChar' ([CXXMethod]AddChar)
+	[open] Function 'AddText' ([CXXMethod]AddText)
+	- Return Type: void ([Void]void)
+		[open] Member 'text' ([ParmDecl]text)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+	[close] Function 'AddText' ([CXXMethod]AddText)
+	[open] Function 'AddRanges' ([CXXMethod]AddRanges)
+	- Return Type: void ([Void]void)
+		[open] Member 'ranges' ([ParmDecl]ranges)
+		- Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+		- Definition: true
+	[close] Function 'AddRanges' ([CXXMethod]AddRanges)
+	[open] Function 'BuildRanges' ([CXXMethod]BuildRanges)
+	- Return Type: void ([Void]void)
+		[open] Member 'out_ranges' ([ParmDecl]out_ranges)
+		- Type: pointer to 'unexposed' ([Pointer]ImVector<ImWchar> *)
+		- Definition: true
+	[close] Function 'BuildRanges' ([CXXMethod]BuildRanges)
 [close] Struct 'ImFontGlyphRangesBuilder' ([StructDecl]ImFontGlyphRangesBuilder)
+[open] Typedef 'ImFontAtlasRectId' ([TypedefDecl]ImFontAtlasRectId)
+- Definition: true
 [open] Struct 'ImFontAtlasRect' ([StructDecl]ImFontAtlasRect)
 - Definition: true
 	[open] Member 'x' ([FieldDecl]x)
@@ -7905,7 +9521,7 @@
 	- Type: pointer to 'record 'ImTextureData'' ([Pointer]ImTextureData *)
 	- Definition: true
 	[open] Member 'TexList' ([FieldDecl]TexList)
-	- Type: not_yet_implemented ([Record]ImVector<ImTextureData *>)
+	- Type: unexposed ([Record]ImVector<ImTextureData *>)
 	- Definition: true
 	[open] Member 'Locked' ([FieldDecl]Locked)
 	- Type: bool ([Bool]bool)
@@ -7926,10 +9542,10 @@
 	- Type: record 'ImVec2' ([Record]ImVec2)
 	- Definition: true
 	[open] Member 'Fonts' ([FieldDecl]Fonts)
-	- Type: not_yet_implemented ([Record]ImVector<ImFont *>)
+	- Type: unexposed ([Record]ImVector<ImFont *>)
 	- Definition: true
 	[open] Member 'Sources' ([FieldDecl]Sources)
-	- Type: not_yet_implemented ([Record]ImVector<ImFontConfig>)
+	- Type: unexposed ([Record]ImVector<ImFontConfig>)
 	- Definition: true
 	[open] Member 'TexUvLines' ([FieldDecl]TexUvLines)
 	- Type: record 'ImVec4'[33] ([ConstantArray]ImVec4[33])
@@ -7941,7 +9557,7 @@
 	- Type: i32 ([Int]int)
 	- Definition: true
 	[open] Member 'DrawListSharedDatas' ([FieldDecl]DrawListSharedDatas)
-	- Type: not_yet_implemented ([Record]ImVector<ImDrawListSharedData *>)
+	- Type: unexposed ([Record]ImVector<ImDrawListSharedData *>)
 	- Definition: true
 	[open] Member 'Builder' ([FieldDecl]Builder)
 	- Type: pointer to 'record 'ImFontAtlasBuilder'' ([Pointer]ImFontAtlasBuilder *)
@@ -7967,11 +9583,290 @@
 	[open] Member 'TempRect' ([FieldDecl]TempRect)
 	- Type: record 'ImFontAtlasRect' ([Record]ImFontAtlasRect)
 	- Definition: true
+	[open] Function 'AddFont' ([CXXMethod]AddFont)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+	[close] Function 'AddFont' ([CXXMethod]AddFont)
+	[open] Function 'AddFontDefault' ([CXXMethod]AddFontDefault)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+	[close] Function 'AddFontDefault' ([CXXMethod]AddFontDefault)
+	[open] Function 'AddFontFromFileTTF' ([CXXMethod]AddFontFromFileTTF)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'filename' ([ParmDecl]filename)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'size_pixels' ([ParmDecl]size_pixels)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+		[open] Member 'glyph_ranges' ([ParmDecl]glyph_ranges)
+		- Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+		- Definition: true
+	[close] Function 'AddFontFromFileTTF' ([CXXMethod]AddFontFromFileTTF)
+	[open] Function 'AddFontFromMemoryTTF' ([CXXMethod]AddFontFromMemoryTTF)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'font_data' ([ParmDecl]font_data)
+		- Type: pointer to 'void' ([Pointer]void *)
+		- Definition: true
+		[open] Member 'font_data_size' ([ParmDecl]font_data_size)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'size_pixels' ([ParmDecl]size_pixels)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+		[open] Member 'glyph_ranges' ([ParmDecl]glyph_ranges)
+		- Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+		- Definition: true
+	[close] Function 'AddFontFromMemoryTTF' ([CXXMethod]AddFontFromMemoryTTF)
+	[open] Function 'AddFontFromMemoryCompressedTTF' ([CXXMethod]AddFontFromMemoryCompressedTTF)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'compressed_font_data' ([ParmDecl]compressed_font_data)
+		- Type: pointer to 'const void' ([Pointer]const void *)
+		- Definition: true
+		[open] Member 'compressed_font_data_size' ([ParmDecl]compressed_font_data_size)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'size_pixels' ([ParmDecl]size_pixels)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+		[open] Member 'glyph_ranges' ([ParmDecl]glyph_ranges)
+		- Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+		- Definition: true
+	[close] Function 'AddFontFromMemoryCompressedTTF' ([CXXMethod]AddFontFromMemoryCompressedTTF)
+	[open] Function 'AddFontFromMemoryCompressedBase85TTF' ([CXXMethod]AddFontFromMemoryCompressedBase85TTF)
+	- Return Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		[open] Member 'compressed_font_data_base85' ([ParmDecl]compressed_font_data_base85)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'size_pixels' ([ParmDecl]size_pixels)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'font_cfg' ([ParmDecl]font_cfg)
+		- Type: pointer to 'const record 'ImFontConfig'' ([Pointer]const ImFontConfig *)
+		- Definition: true
+		[open] Member 'glyph_ranges' ([ParmDecl]glyph_ranges)
+		- Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+		- Definition: true
+	[close] Function 'AddFontFromMemoryCompressedBase85TTF' ([CXXMethod]AddFontFromMemoryCompressedBase85TTF)
+	[open] Function 'RemoveFont' ([CXXMethod]RemoveFont)
+	- Return Type: void ([Void]void)
+		[open] Member 'font' ([ParmDecl]font)
+		- Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		- Definition: true
+	[close] Function 'RemoveFont' ([CXXMethod]RemoveFont)
+	[open] Function 'Clear' ([CXXMethod]Clear)
+	- Return Type: void ([Void]void)
+	[close] Function 'Clear' ([CXXMethod]Clear)
+	[open] Function 'CompactCache' ([CXXMethod]CompactCache)
+	- Return Type: void ([Void]void)
+	[close] Function 'CompactCache' ([CXXMethod]CompactCache)
+	[open] Function 'SetFontLoader' ([CXXMethod]SetFontLoader)
+	- Return Type: void ([Void]void)
+		[open] Member 'font_loader' ([ParmDecl]font_loader)
+		- Type: pointer to 'const record 'ImFontLoader'' ([Pointer]const ImFontLoader *)
+		- Definition: true
+	[close] Function 'SetFontLoader' ([CXXMethod]SetFontLoader)
+	[open] Function 'ClearInputData' ([CXXMethod]ClearInputData)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearInputData' ([CXXMethod]ClearInputData)
+	[open] Function 'ClearFonts' ([CXXMethod]ClearFonts)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearFonts' ([CXXMethod]ClearFonts)
+	[open] Function 'ClearTexData' ([CXXMethod]ClearTexData)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearTexData' ([CXXMethod]ClearTexData)
+	[open] Function 'Build' ([CXXMethod]Build)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'Build' ([CXXMethod]Build)
+	[open] Function 'GetTexDataAsAlpha8' ([CXXMethod]GetTexDataAsAlpha8)
+	- Return Type: void ([Void]void)
+		[open] Member 'out_pixels' ([ParmDecl]out_pixels)
+		- Type: pointer to 'pointer to 'u8'' ([Pointer]unsigned char **)
+		- Definition: true
+		[open] Member 'out_width' ([ParmDecl]out_width)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+		[open] Member 'out_height' ([ParmDecl]out_height)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+		[open] Member 'out_bytes_per_pixel' ([ParmDecl]out_bytes_per_pixel)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+	[close] Function 'GetTexDataAsAlpha8' ([CXXMethod]GetTexDataAsAlpha8)
+	[open] Function 'GetTexDataAsRGBA32' ([CXXMethod]GetTexDataAsRGBA32)
+	- Return Type: void ([Void]void)
+		[open] Member 'out_pixels' ([ParmDecl]out_pixels)
+		- Type: pointer to 'pointer to 'u8'' ([Pointer]unsigned char **)
+		- Definition: true
+		[open] Member 'out_width' ([ParmDecl]out_width)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+		[open] Member 'out_height' ([ParmDecl]out_height)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+		[open] Member 'out_bytes_per_pixel' ([ParmDecl]out_bytes_per_pixel)
+		- Type: pointer to 'i32' ([Pointer]int *)
+		- Definition: true
+	[close] Function 'GetTexDataAsRGBA32' ([CXXMethod]GetTexDataAsRGBA32)
+	[open] Function 'SetTexID' ([CXXMethod]SetTexID)
+	- Return Type: void ([Void]void)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: u64 ([ULongLong]unsigned long long)
+		- Definition: true
+	[close] Function 'SetTexID' ([CXXMethod]SetTexID)
+	[open] Function 'SetTexID' ([CXXMethod]SetTexID)
+	- Return Type: void ([Void]void)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: record 'ImTextureRef' ([Record]ImTextureRef)
+		- Definition: true
+	[close] Function 'SetTexID' ([CXXMethod]SetTexID)
+	[open] Function 'IsBuilt' ([CXXMethod]IsBuilt)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'IsBuilt' ([CXXMethod]IsBuilt)
+	[open] Function 'GetGlyphRangesDefault' ([CXXMethod]GetGlyphRangesDefault)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesDefault' ([CXXMethod]GetGlyphRangesDefault)
+	[open] Function 'GetGlyphRangesGreek' ([CXXMethod]GetGlyphRangesGreek)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesGreek' ([CXXMethod]GetGlyphRangesGreek)
+	[open] Function 'GetGlyphRangesKorean' ([CXXMethod]GetGlyphRangesKorean)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesKorean' ([CXXMethod]GetGlyphRangesKorean)
+	[open] Function 'GetGlyphRangesJapanese' ([CXXMethod]GetGlyphRangesJapanese)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesJapanese' ([CXXMethod]GetGlyphRangesJapanese)
+	[open] Function 'GetGlyphRangesChineseFull' ([CXXMethod]GetGlyphRangesChineseFull)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesChineseFull' ([CXXMethod]GetGlyphRangesChineseFull)
+	[open] Function 'GetGlyphRangesChineseSimplifiedCommon' ([CXXMethod]GetGlyphRangesChineseSimplifiedCommon)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesChineseSimplifiedCommon' ([CXXMethod]GetGlyphRangesChineseSimplifiedCommon)
+	[open] Function 'GetGlyphRangesCyrillic' ([CXXMethod]GetGlyphRangesCyrillic)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesCyrillic' ([CXXMethod]GetGlyphRangesCyrillic)
+	[open] Function 'GetGlyphRangesThai' ([CXXMethod]GetGlyphRangesThai)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesThai' ([CXXMethod]GetGlyphRangesThai)
+	[open] Function 'GetGlyphRangesVietnamese' ([CXXMethod]GetGlyphRangesVietnamese)
+	- Return Type: pointer to 'const u16' ([Pointer]const ImWchar *)
+	[close] Function 'GetGlyphRangesVietnamese' ([CXXMethod]GetGlyphRangesVietnamese)
+	[open] Function 'AddCustomRect' ([CXXMethod]AddCustomRect)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'width' ([ParmDecl]width)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'height' ([ParmDecl]height)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'out_r' ([ParmDecl]out_r)
+		- Type: pointer to 'record 'ImFontAtlasRect'' ([Pointer]ImFontAtlasRect *)
+		- Definition: true
+	[close] Function 'AddCustomRect' ([CXXMethod]AddCustomRect)
+	[open] Function 'RemoveCustomRect' ([CXXMethod]RemoveCustomRect)
+	- Return Type: void ([Void]void)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'RemoveCustomRect' ([CXXMethod]RemoveCustomRect)
+	[open] Function 'GetCustomRect' ([CXXMethod]GetCustomRect)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'out_r' ([ParmDecl]out_r)
+		- Type: pointer to 'record 'ImFontAtlasRect'' ([Pointer]ImFontAtlasRect *)
+		- Definition: true
+	[close] Function 'GetCustomRect' ([CXXMethod]GetCustomRect)
+	[open] Function 'AddCustomRectRegular' ([CXXMethod]AddCustomRectRegular)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'w' ([ParmDecl]w)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'AddCustomRectRegular' ([CXXMethod]AddCustomRectRegular)
+	[open] Function 'GetCustomRectByIndex' ([CXXMethod]GetCustomRectByIndex)
+	- Return Type: pointer to 'const record 'ImFontAtlasRect'' ([Pointer]const ImFontAtlasRect *)
+		[open] Member 'id' ([ParmDecl]id)
+		- Type: i32 ([Int]int)
+		- Definition: true
+	[close] Function 'GetCustomRectByIndex' ([CXXMethod]GetCustomRectByIndex)
+	[open] Function 'CalcCustomRectUV' ([CXXMethod]CalcCustomRectUV)
+	- Return Type: void ([Void]void)
+		[open] Member 'r' ([ParmDecl]r)
+		- Type: pointer to 'const record 'ImFontAtlasRect'' ([Pointer]const ImFontAtlasRect *)
+		- Definition: true
+		[open] Member 'out_uv_min' ([ParmDecl]out_uv_min)
+		- Type: pointer to 'record 'ImVec2'' ([Pointer]ImVec2 *)
+		- Definition: true
+		[open] Member 'out_uv_max' ([ParmDecl]out_uv_max)
+		- Type: pointer to 'record 'ImVec2'' ([Pointer]ImVec2 *)
+		- Definition: true
+	[close] Function 'CalcCustomRectUV' ([CXXMethod]CalcCustomRectUV)
+	[open] Function 'AddCustomRectFontGlyph' ([CXXMethod]AddCustomRectFontGlyph)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'font' ([ParmDecl]font)
+		- Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		- Definition: true
+		[open] Member 'codepoint' ([ParmDecl]codepoint)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+		[open] Member 'w' ([ParmDecl]w)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'advance_x' ([ParmDecl]advance_x)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'offset' ([ParmDecl]offset)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+	[close] Function 'AddCustomRectFontGlyph' ([CXXMethod]AddCustomRectFontGlyph)
+	[open] Function 'AddCustomRectFontGlyphForSize' ([CXXMethod]AddCustomRectFontGlyphForSize)
+	- Return Type: i32 ([Int]int)
+		[open] Member 'font' ([ParmDecl]font)
+		- Type: pointer to 'record 'ImFont'' ([Pointer]ImFont *)
+		- Definition: true
+		[open] Member 'font_size' ([ParmDecl]font_size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'codepoint' ([ParmDecl]codepoint)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+		[open] Member 'w' ([ParmDecl]w)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'h' ([ParmDecl]h)
+		- Type: i32 ([Int]int)
+		- Definition: true
+		[open] Member 'advance_x' ([ParmDecl]advance_x)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'offset' ([ParmDecl]offset)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+	[close] Function 'AddCustomRectFontGlyphForSize' ([CXXMethod]AddCustomRectFontGlyphForSize)
 [close] Struct 'ImFontAtlas' ([StructDecl]ImFontAtlas)
 [open] Struct 'ImFontBaked' ([StructDecl]ImFontBaked)
 - Definition: true
 	[open] Member 'IndexAdvanceX' ([FieldDecl]IndexAdvanceX)
-	- Type: not_yet_implemented ([Record]ImVector<float>)
+	- Type: unexposed ([Record]ImVector<float>)
 	- Definition: true
 	[open] Member 'FallbackAdvanceX' ([FieldDecl]FallbackAdvanceX)
 	- Type: f32 ([Float]float)
@@ -7983,10 +9878,10 @@
 	- Type: f32 ([Float]float)
 	- Definition: true
 	[open] Member 'IndexLookup' ([FieldDecl]IndexLookup)
-	- Type: not_yet_implemented ([Record]ImVector<unsigned short>)
+	- Type: unexposed ([Record]ImVector<unsigned short>)
 	- Definition: true
 	[open] Member 'Glyphs' ([FieldDecl]Glyphs)
-	- Type: not_yet_implemented ([Record]ImVector<ImFontGlyph>)
+	- Type: unexposed ([Record]ImVector<ImFontGlyph>)
 	- Definition: true
 	[open] Member 'FallbackGlyphIndex' ([FieldDecl]FallbackGlyphIndex)
 	- Type: i32 ([Int]int)
@@ -8021,6 +9916,33 @@
 	[open] Member 'FontLoaderDatas' ([FieldDecl]FontLoaderDatas)
 	- Type: pointer to 'void' ([Pointer]void *)
 	- Definition: true
+	[open] Function 'ClearOutputData' ([CXXMethod]ClearOutputData)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearOutputData' ([CXXMethod]ClearOutputData)
+	[open] Function 'FindGlyph' ([CXXMethod]FindGlyph)
+	- Return Type: pointer to 'record 'ImFontGlyph'' ([Pointer]ImFontGlyph *)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'FindGlyph' ([CXXMethod]FindGlyph)
+	[open] Function 'FindGlyphNoFallback' ([CXXMethod]FindGlyphNoFallback)
+	- Return Type: pointer to 'record 'ImFontGlyph'' ([Pointer]ImFontGlyph *)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'FindGlyphNoFallback' ([CXXMethod]FindGlyphNoFallback)
+	[open] Function 'GetCharAdvance' ([CXXMethod]GetCharAdvance)
+	- Return Type: f32 ([Float]float)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'GetCharAdvance' ([CXXMethod]GetCharAdvance)
+	[open] Function 'IsGlyphLoaded' ([CXXMethod]IsGlyphLoaded)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'IsGlyphLoaded' ([CXXMethod]IsGlyphLoaded)
 [close] Struct 'ImFontBaked' ([StructDecl]ImFontBaked)
 [open] Enum 'ImFontFlags_' ([EnumDecl]ImFontFlags_)
 - Definition: true
@@ -8062,7 +9984,7 @@
 	- Type: f32 ([Float]float)
 	- Definition: true
 	[open] Member 'Sources' ([FieldDecl]Sources)
-	- Type: not_yet_implemented ([Record]ImVector<ImFontConfig *>)
+	- Type: unexposed ([Record]ImVector<ImFontConfig *>)
 	- Definition: true
 	[open] Member 'EllipsisChar' ([FieldDecl]EllipsisChar)
 	- Type: u16 ([UShort]unsigned short)
@@ -8082,6 +10004,150 @@
 	[open] Member 'Scale' ([FieldDecl]Scale)
 	- Type: f32 ([Float]float)
 	- Definition: true
+	[open] Function 'IsGlyphInFont' ([CXXMethod]IsGlyphInFont)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'IsGlyphInFont' ([CXXMethod]IsGlyphInFont)
+	[open] Function 'IsLoaded' ([CXXMethod]IsLoaded)
+	- Return Type: bool ([Bool]bool)
+	[close] Function 'IsLoaded' ([CXXMethod]IsLoaded)
+	[open] Function 'GetDebugName' ([CXXMethod]GetDebugName)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+	[close] Function 'GetDebugName' ([CXXMethod]GetDebugName)
+	[open] Function 'GetFontBaked' ([CXXMethod]GetFontBaked)
+	- Return Type: pointer to 'record 'ImFontBaked'' ([Pointer]ImFontBaked *)
+		[open] Member 'font_size' ([ParmDecl]font_size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'density' ([ParmDecl]density)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'GetFontBaked' ([CXXMethod]GetFontBaked)
+	[open] Function 'CalcTextSizeA' ([CXXMethod]CalcTextSizeA)
+	- Return Type: record 'ImVec2' ([Record]ImVec2)
+		[open] Member 'size' ([ParmDecl]size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'max_width' ([ParmDecl]max_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'wrap_width' ([ParmDecl]wrap_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'text_begin' ([ParmDecl]text_begin)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'remaining' ([ParmDecl]remaining)
+		- Type: pointer to 'pointer to 'const i8'' ([Pointer]const char **)
+		- Definition: true
+	[close] Function 'CalcTextSizeA' ([CXXMethod]CalcTextSizeA)
+	[open] Function 'CalcWordWrapPosition' ([CXXMethod]CalcWordWrapPosition)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+		[open] Member 'size' ([ParmDecl]size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'text' ([ParmDecl]text)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'wrap_width' ([ParmDecl]wrap_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'CalcWordWrapPosition' ([CXXMethod]CalcWordWrapPosition)
+	[open] Function 'RenderChar' ([CXXMethod]RenderChar)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+		[open] Member 'size' ([ParmDecl]size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'c' ([ParmDecl]c)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+		[open] Member 'cpu_fine_clip' ([ParmDecl]cpu_fine_clip)
+		- Type: pointer to 'const record 'ImVec4'' ([Pointer]const ImVec4 *)
+		- Definition: true
+	[close] Function 'RenderChar' ([CXXMethod]RenderChar)
+	[open] Function 'RenderText' ([CXXMethod]RenderText)
+	- Return Type: void ([Void]void)
+		[open] Member 'draw_list' ([ParmDecl]draw_list)
+		- Type: pointer to 'record 'ImDrawList'' ([Pointer]ImDrawList *)
+		- Definition: true
+		[open] Member 'size' ([ParmDecl]size)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'pos' ([ParmDecl]pos)
+		- Type: reference to 'const record 'ImVec2'' ([LValueReference]const ImVec2 &)
+		- Definition: true
+		[open] Member 'col' ([ParmDecl]col)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'clip_rect' ([ParmDecl]clip_rect)
+		- Type: reference to 'const record 'ImVec4'' ([LValueReference]const ImVec4 &)
+		- Definition: true
+		[open] Member 'text_begin' ([ParmDecl]text_begin)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'wrap_width' ([ParmDecl]wrap_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'cpu_fine_clip' ([ParmDecl]cpu_fine_clip)
+		- Type: bool ([Bool]bool)
+		- Definition: true
+	[close] Function 'RenderText' ([CXXMethod]RenderText)
+	[open] Function 'CalcWordWrapPositionA' ([CXXMethod]CalcWordWrapPositionA)
+	- Return Type: pointer to 'const i8' ([Pointer]const char *)
+		[open] Member 'scale' ([ParmDecl]scale)
+		- Type: f32 ([Float]float)
+		- Definition: true
+		[open] Member 'text' ([ParmDecl]text)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'text_end' ([ParmDecl]text_end)
+		- Type: pointer to 'const i8' ([Pointer]const char *)
+		- Definition: true
+		[open] Member 'wrap_width' ([ParmDecl]wrap_width)
+		- Type: f32 ([Float]float)
+		- Definition: true
+	[close] Function 'CalcWordWrapPositionA' ([CXXMethod]CalcWordWrapPositionA)
+	[open] Function 'ClearOutputData' ([CXXMethod]ClearOutputData)
+	- Return Type: void ([Void]void)
+	[close] Function 'ClearOutputData' ([CXXMethod]ClearOutputData)
+	[open] Function 'AddRemapChar' ([CXXMethod]AddRemapChar)
+	- Return Type: void ([Void]void)
+		[open] Member 'from_codepoint' ([ParmDecl]from_codepoint)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+		[open] Member 'to_codepoint' ([ParmDecl]to_codepoint)
+		- Type: u16 ([UShort]unsigned short)
+		- Definition: true
+	[close] Function 'AddRemapChar' ([CXXMethod]AddRemapChar)
+	[open] Function 'IsGlyphRangeUnused' ([CXXMethod]IsGlyphRangeUnused)
+	- Return Type: bool ([Bool]bool)
+		[open] Member 'c_begin' ([ParmDecl]c_begin)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+		[open] Member 'c_last' ([ParmDecl]c_last)
+		- Type: u32 ([UInt]unsigned int)
+		- Definition: true
+	[close] Function 'IsGlyphRangeUnused' ([CXXMethod]IsGlyphRangeUnused)
 [close] Struct 'ImFont' ([StructDecl]ImFont)
 [open] Enum 'ImGuiViewportFlags_' ([EnumDecl]ImGuiViewportFlags_)
 - Definition: true
@@ -8131,6 +10197,12 @@
 	[open] Member 'PlatformHandleRaw' ([FieldDecl]PlatformHandleRaw)
 	- Type: pointer to 'void' ([Pointer]void *)
 	- Definition: true
+	[open] Function 'GetCenter' ([CXXMethod]GetCenter)
+	- Return Type: record 'ImVec2' ([Record]ImVec2)
+	[close] Function 'GetCenter' ([CXXMethod]GetCenter)
+	[open] Function 'GetWorkCenter' ([CXXMethod]GetWorkCenter)
+	- Return Type: record 'ImVec2' ([Record]ImVec2)
+	[close] Function 'GetWorkCenter' ([CXXMethod]GetWorkCenter)
 [close] Struct 'ImGuiViewport' ([StructDecl]ImGuiViewport)
 [open] Struct 'ImGuiPlatformIO' ([StructDecl]ImGuiPlatformIO)
 - Definition: true
@@ -8168,7 +10240,7 @@
 	- Type: pointer to 'void' ([Pointer]void *)
 	- Definition: true
 	[open] Member 'Textures' ([FieldDecl]Textures)
-	- Type: not_yet_implemented ([Record]ImVector<ImTextureData *>)
+	- Type: unexposed ([Record]ImVector<ImTextureData *>)
 	- Definition: true
 [close] Struct 'ImGuiPlatformIO' ([StructDecl]ImGuiPlatformIO)
 [open] Struct 'ImGuiPlatformImeData' ([StructDecl]ImGuiPlatformImeData)
@@ -8189,3 +10261,5 @@
 	- Type: u32 ([UInt]unsigned int)
 	- Definition: true
 [close] Struct 'ImGuiPlatformImeData' ([StructDecl]ImGuiPlatformImeData)
+[open] Typedef 'ImFontAtlasCustomRect' ([TypedefDecl]ImFontAtlasCustomRect)
+- Definition: true

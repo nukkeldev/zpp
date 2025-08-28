@@ -1,19 +1,19 @@
 [open] Struct 'ImGui_ImplSDLGPU3_InitInfo' ([StructDecl]ImGui_ImplSDLGPU3_InitInfo)
 - Definition: true
 	[open] Member 'Device' ([FieldDecl]Device)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUDevice *)
 	- Definition: true
 	[open] Member 'ColorTargetFormat' ([FieldDecl]ColorTargetFormat)
-	- Type: i32 ([Int]int)
+	- Type: included ([Enum]SDL_GPUTextureFormat)
 	- Definition: true
 	[open] Member 'MSAASamples' ([FieldDecl]MSAASamples)
-	- Type: i32 ([Int]int)
+	- Type: included ([Enum]SDL_GPUSampleCount)
 	- Definition: true
 	[open] Member 'SwapchainComposition' ([FieldDecl]SwapchainComposition)
-	- Type: i32 ([Int]int)
+	- Type: included ([Enum]SDL_GPUSwapchainComposition)
 	- Definition: true
 	[open] Member 'PresentMode' ([FieldDecl]PresentMode)
-	- Type: i32 ([Int]int)
+	- Type: included ([Enum]SDL_GPUPresentMode)
 	- Definition: true
 [close] Struct 'ImGui_ImplSDLGPU3_InitInfo' ([StructDecl]ImGui_ImplSDLGPU3_InitInfo)
 [open] Function 'ImGui_ImplSDLGPU3_Init' ([FunctionDecl]ImGui_ImplSDLGPU3_Init)
@@ -31,25 +31,25 @@
 [open] Function 'ImGui_ImplSDLGPU3_PrepareDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_PrepareDrawData)
 - Return Type: void ([Void]void)
 	[open] Member 'draw_data' ([ParmDecl]draw_data)
-	- Type: pointer to 'record 'ImDrawData'' ([Pointer]ImDrawData *)
+	- Type: pointer to 'included' ([Pointer]ImDrawData *)
 	- Definition: true
 	[open] Member 'command_buffer' ([ParmDecl]command_buffer)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUCommandBuffer *)
 	- Definition: true
 [close] Function 'ImGui_ImplSDLGPU3_PrepareDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_PrepareDrawData)
 [open] Function 'ImGui_ImplSDLGPU3_RenderDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_RenderDrawData)
 - Return Type: void ([Void]void)
 	[open] Member 'draw_data' ([ParmDecl]draw_data)
-	- Type: pointer to 'record 'ImDrawData'' ([Pointer]ImDrawData *)
+	- Type: pointer to 'included' ([Pointer]ImDrawData *)
 	- Definition: true
 	[open] Member 'command_buffer' ([ParmDecl]command_buffer)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUCommandBuffer *)
 	- Definition: true
 	[open] Member 'render_pass' ([ParmDecl]render_pass)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPURenderPass *)
 	- Definition: true
 	[open] Member 'pipeline' ([ParmDecl]pipeline)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUGraphicsPipeline *)
 	- Definition: true
 [close] Function 'ImGui_ImplSDLGPU3_RenderDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_RenderDrawData)
 [open] Function 'ImGui_ImplSDLGPU3_CreateDeviceObjects' ([FunctionDecl]ImGui_ImplSDLGPU3_CreateDeviceObjects)
@@ -61,18 +61,18 @@
 [open] Function 'ImGui_ImplSDLGPU3_UpdateTexture' ([FunctionDecl]ImGui_ImplSDLGPU3_UpdateTexture)
 - Return Type: void ([Void]void)
 	[open] Member 'tex' ([ParmDecl]tex)
-	- Type: pointer to 'record 'ImTextureData'' ([Pointer]ImTextureData *)
+	- Type: pointer to 'included' ([Pointer]ImTextureData *)
 	- Definition: true
 [close] Function 'ImGui_ImplSDLGPU3_UpdateTexture' ([FunctionDecl]ImGui_ImplSDLGPU3_UpdateTexture)
 [open] Struct 'ImGui_ImplSDLGPU3_RenderState' ([StructDecl]ImGui_ImplSDLGPU3_RenderState)
 - Definition: true
 	[open] Member 'Device' ([FieldDecl]Device)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUDevice *)
 	- Definition: true
 	[open] Member 'SamplerDefault' ([FieldDecl]SamplerDefault)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUSampler *)
 	- Definition: true
 	[open] Member 'SamplerCurrent' ([FieldDecl]SamplerCurrent)
-	- Type: pointer to 'i32' ([Pointer]int *)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUSampler *)
 	- Definition: true
 [close] Struct 'ImGui_ImplSDLGPU3_RenderState' ([StructDecl]ImGui_ImplSDLGPU3_RenderState)

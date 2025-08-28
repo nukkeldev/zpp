@@ -6,6 +6,8 @@
 [close] Struct 'SDL_Gamepad' ([StructDecl]SDL_Gamepad)
 [open] Union 'SDL_Event' ([UnionDecl]SDL_Event)
 [close] Union 'SDL_Event' ([UnionDecl]SDL_Event)
+[open] Typedef 'SDL_Event' ([TypedefDecl]SDL_Event)
+- Definition: true
 [open] Function 'ImGui_ImplSDL3_InitForOpenGL' ([FunctionDecl]ImGui_ImplSDL3_InitForOpenGL)
 - Return Type: bool ([Bool]bool)
 	[open] Member 'window' ([ParmDecl]window)

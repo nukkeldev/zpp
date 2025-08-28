@@ -1,6 +1,8 @@
 const std = @import("std");
 const util = @import("util.zig");
+const ffi = @import("../../ffi.zig");
 
+const c = ffi.c;
 const IR = @import("../../ir/IR.zig");
 
 const log = std.log.scoped(.cpp_wrapper);
@@ -33,8 +35,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
     var ns_stack: std.array_list.Managed([]const u8) = .init(ir.arena.allocator());
     var fn_params: std.array_list.Managed(usize) = .init(ir.arena.allocator());
-
-    var ignore_members: bool = false; // TODO: This won't hold up well...
+    var ctx_stack: std.array_list.Managed(union(enum) {
+        struct_like: IR.TypeReference,
+        ignore_members,
+        function,
+        root,
+    }) = .init(ir.arena.allocator());
+    ctx_stack.append(.root) catch @panic("OOM");
 
     while (i < ir.instrs.items.len) : (i += 1) {
         const instr = ir.instrs.items[i];
@@ -59,15 +66,34 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (overload_ptr.* > 0) try writer.print("_{}", .{overload_ptr.*});
                     try writer.writeByte('(');
 
-                    ignore_members = false;
+                    if (ctx_stack.getLast() == .struct_like) {
+                        try (util.FormatMember{
+                            .type_ref = ctx_stack.getLast().struct_like,
+                            .name = "obj",
+                        }).format(writer);
+                        if (ir.instrs.items[i + 1].inner == .Member or f.return_type.inner == .record) try writer.writeAll(", ");
+                    }
+
+                    ctx_stack.append(.function) catch @panic("OOM");
                 },
-                .Member => |m| if (!ignore_members) {
+                .Member => |m| if (ctx_stack.getLast() == .function) {
                     try (util.FormatMember{ .type_ref = m, .name = instr.name }).format(writer);
                     if (ir.instrs.items[i + 1].inner == .Member) try writer.writeAll(", ");
 
                     fn_params.append(i) catch @panic("OOM");
                 },
-                .Struct, .Enum, .Union, .Value, .Typedef => ignore_members = true,
+                .Struct, .Enum, .Union => {
+                    const ty = ir.arena.allocator().create(IR.TypeReference) catch @panic("OOM");
+                    ty.* = IR.TypeReference.fromCXType(
+                        ir.arena.allocator(),
+                        c.clang_getCursorType(instr.__cursor),
+                        &ir,
+                    ) catch @panic("OOM");
+
+                    ns_stack.append(instr.name) catch @panic("OOM");
+                    ctx_stack.append(.{ .struct_like = ty.intoFakePointer() }) catch @panic("OOM");
+                },
+                .Value, .Typedef => ctx_stack.append(.ignore_members) catch @panic("OOM"),
                 // else => {
                 //     log.warn("Open instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
                 // },
@@ -114,7 +140,11 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         else => {},
                     }
 
-                    for (ns_stack.items) |n| try writer.print("{s}::", .{n});
+                    if (ctx_stack.items.len > 1 and ctx_stack.items[ctx_stack.items.len - 2] == .struct_like) {
+                        try writer.writeAll("obj->");
+                    } else {
+                        for (ns_stack.items) |n| try writer.print("{s}::", .{n});
+                    }
                     try writer.print("{s}(", .{instr.name});
 
                     for (fn_params.items, 0..) |p, j| {
@@ -133,9 +163,17 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (f.variadic) try writer.writeAll("\tva_end(__ZPP_args);\n");
                     if (needs_to_return and f.variadic and !use_out_param) try writer.writeAll("\treturn __ZPP_result;\n");
                     try writer.writeAll("}\n");
+
+                    _ = ctx_stack.pop();
                 },
-                .Struct, .Enum, .Union, .Typedef => {
+                .Struct, .Enum, .Union => {
                     fn_params.clearAndFree();
+                    _ = ns_stack.pop();
+                    _ = ctx_stack.pop();
+                },
+                .Typedef => {
+                    fn_params.clearAndFree();
+                    _ = ctx_stack.pop();
                 },
                 .Member, .Value => unreachable,
                 // else => {

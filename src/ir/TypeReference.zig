@@ -167,7 +167,7 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
                 const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
                 if (c.clang_Type_getNumTemplateArguments(cx_type) > 0) {
                     if (Logging.WARN_TEMPLATE_TYPE) log.warn("Templated type '{s}' not yet implemented!", .{name});
-                    break :outer .not_yet_implemented;
+                    break :outer .unexposed;
                 }
 
                 const is_in_main_file = ffi.isTypeDeclaredInMainFile(cx_type);
@@ -216,6 +216,16 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
         .cx_type = cx_type,
     };
 }
+
+pub fn intoFakePointer(self: *@This()) @This() {
+    return .{
+        .cx_type = self.cx_type,
+        .is_const = false,
+        .inner = .{ .pointer = self },
+    };
+}
+
+// -- Getters -- //
 
 pub fn getPointerDepthAndType(self: *const TypeReference) struct { usize, *const TypeReference } {
     var i: usize = 0;

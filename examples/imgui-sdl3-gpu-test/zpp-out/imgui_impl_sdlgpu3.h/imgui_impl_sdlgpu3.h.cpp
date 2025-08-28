@@ -6,7 +6,6 @@
 #pragma clang diagnostic ignored "-Wformat-security"
 
 #include "imgui_impl_sdlgpu3.h"
-#include <SDL3/SDL_gpu.h>
 
 extern "C" bool ImGui_ImplSDLGPU3_Init__600d26a5acf96a01(ImGui_ImplSDLGPU3_InitInfo* info) {
 	return ImGui_ImplSDLGPU3_Init(info);
@@ -17,11 +16,9 @@ extern "C" void ImGui_ImplSDLGPU3_Shutdown__13b42b5729a15b3() {
 extern "C" void ImGui_ImplSDLGPU3_NewFrame__65431eefe517df84() {
 	ImGui_ImplSDLGPU3_NewFrame();
 }
-// NOTE: Patched
 extern "C" void ImGui_ImplSDLGPU3_PrepareDrawData__93ec289e13d03601(ImDrawData* draw_data, SDL_GPUCommandBuffer* command_buffer) {
 	ImGui_ImplSDLGPU3_PrepareDrawData(draw_data, command_buffer);
 }
-// NOTE: Patched
 extern "C" void ImGui_ImplSDLGPU3_RenderDrawData__ed2e5ca6ef1b8528(ImDrawData* draw_data, SDL_GPUCommandBuffer* command_buffer, SDL_GPURenderPass* render_pass, SDL_GPUGraphicsPipeline* pipeline) {
 	ImGui_ImplSDLGPU3_RenderDrawData(draw_data, command_buffer, render_pass, pipeline);
 }
