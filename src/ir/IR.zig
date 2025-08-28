@@ -98,15 +98,15 @@ pub const Value = struct {
 
 // -- Processing -- //
 
+const CLANG_CRASH_ON_FATAL_ERROR = true;
+
 pub const REQUIRED_ARGUMENTS: []const [:0]const u8 = &.{"-xc++"};
-const CLANG_DISPLAY_DIAGNOSTICS = true;
 const TU_FLAGS: c.CXTranslationUnit_Flags =
     c.CXTranslationUnit_SkipFunctionBodies;
 
 const ProcessingState = struct {
     allocator: Allocator,
     ir: *IR,
-    /// "" = root
     namespaces: *std.StringHashMap(IR),
 
     err: ?anyerror = null,
@@ -129,7 +129,7 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
 
     log.info("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
 
-    const index = c.clang_createIndex(0, if (CLANG_DISPLAY_DIAGNOSTICS) 1 else 0);
+    const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
 
     var file = c.CXUnsavedFile{ .Filename = path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
@@ -141,6 +141,16 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     // defer c.clang_disposeTranslationUnit(translation_unit);
 
     if (translation_unit == null) return IRProcessingError.ParseTUFail;
+
+    const diagnostic_set = c.clang_getDiagnosticSetFromTU(translation_unit);
+    for (0..c.clang_getNumDiagnosticsInSet(diagnostic_set)) |i| {
+        const diagnostic = c.clang_getDiagnosticInSet(diagnostic_set, @intCast(i));
+        const severity = c.clang_getDiagnosticSeverity(diagnostic);
+        
+        try ffi.printDiagnostic(allocator, diagnostic);
+        if (CLANG_CRASH_ON_FATAL_ERROR and severity == c.CXDiagnostic_Fatal) @panic("Fatal error while parsing TU! See above.");
+    }
+
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
     var ir: IR = try .init(allocator, path, contents);
@@ -478,7 +488,6 @@ test "fromTU" {
 // -- Logging -- //
 
 const Logging = struct {
-    // -- Effectful Debug Values -- //
     // NOTE: Do NOT leave these set.
 
     pub var PANIC_ON_NAME: ?[]const u8 = null;
@@ -490,8 +499,5 @@ const Logging = struct {
             if (self.indent >= 256) @panic("Too much indentation!");
             return INDENT[0..self.indent];
         }
-    } = null;
-
-    pub const DEBUG_CANONICAL_CURSOR_KIND_AND_HASH = false;
-    pub const DEBUG_DUPLICATE_CANONICAL_CURSOR = true;
+    } = .{};
 };

@@ -75,8 +75,7 @@ pub const FormatMember = struct {
                 return;
             },
 
-            .enumeration => |name| try writer.writeAll(name),
-            .record => |name| try writer.writeAll(name),
+            .record, .included, .enumeration => |name| try writer.writeAll(name),
 
             .function => |f| {
                 // TODO: handle pointer return types

@@ -29,6 +29,8 @@ cx_type: c.CXType,
 
 pub const Inner = union(enum) {
     unexposed,
+    included: []const u8,
+
     void,
 
     bool,
@@ -168,10 +170,20 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
                     break :outer .not_yet_implemented;
                 }
 
+                const declaration = c.clang_getTypeDeclaration(cx_type);
+                const is_in_main_file = c.clang_Location_isFromMainFile(c.clang_getCursorLocation(declaration)) != 0;
+
+                if (!is_in_main_file) break :outer .{ .included = name };
+
                 break :outer .{ .record = name };
             },
             c.CXType_Enum => outer: {
                 const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
+
+                const declaration = c.clang_getTypeDeclaration(cx_type);
+                const is_in_main_file = c.clang_Location_isFromMainFile(c.clang_getCursorLocation(declaration)) != 0;
+
+                if (!is_in_main_file) break :outer .{ .included = name };
 
                 break :outer .{ .enumeration = name };
             },

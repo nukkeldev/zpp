@@ -65,8 +65,14 @@ pub const FormatType = struct {
 
             else => {
                 if (Logging.WARN_NOT_YET_FORMATTED) log.warn("Not yet formatted type '{s}'!", .{@tagName(t.inner)});
-                try writer.print("[{}]u8", .{c.clang_Type_getSizeOf(t.cx_type)});
-                if (self.annotate_with_alignment) try writer.print(" align({})", .{c.clang_Type_getAlignOf(self.type_ref.cx_type)});
+
+                const size = c.clang_Type_getSizeOf(t.cx_type);
+                if (size <= 0) {
+                    try writer.writeAll("?*anyopaque");
+                } else {
+                    try writer.print("[{}]u8", .{size});
+                    if (self.annotate_with_alignment) try writer.print(" align({})", .{c.clang_Type_getAlignOf(self.type_ref.cx_type)});
+                }
             },
         }
     }
