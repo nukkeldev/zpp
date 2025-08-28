@@ -69,8 +69,13 @@ pub const Instruction = struct {
         Typedef: TypeReference,
     };
 
-    pub fn getUniqueName(instr: *const Instruction, allocator: Allocator) ![]const u8 {
-        return std.fmt.allocPrint(allocator, "{s}__{x}", .{ instr.name, std.hash.Wyhash.hash(0xBEEF, instr.name) });
+    pub fn getUniqueName(instr: *const Instruction, allocator: Allocator, ns_stack: []const []const u8) ![]const u8 {
+        var out = std.array_list.Managed(u8).init(allocator);
+
+        for (ns_stack) |ns| try out.print("{s}_", .{ns});
+        try out.print("{s}__{x}", .{ instr.name, std.hash.Wyhash.hash(0xBEEF, instr.name) });
+
+        return try out.toOwnedSlice();
     }
 };
 
@@ -302,8 +307,9 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                 // -- Functions -- //
 
                 c.CXCursor_FunctionDecl => inner: {
-                    // TODO: Convert these into normal methods.
-                    if (std.mem.startsWith(u8, name, "operator ")) break :outer null;
+                    // TODO: Replace with an explict check for each type of operator overload so as to not mistaken functions.
+                    // TODO: Then convert the operator overloads to normal methods.
+                    if (std.mem.startsWith(u8, name, "operator")) break :outer null;
 
                     break :inner .{
                         .Function = .{
@@ -344,10 +350,22 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 // -- C++ -- //
 
-                c.CXCursor_CXXMethod => break :outer null,
+                // c.CXCursor_CXXMethod => inner: {
+                //     // TODO: Replace with an explict check for each type of operator overload so as to not mistaken functions.
+                //     // TODO: Then convert the operator overloads to normal methods.
+                //     if (std.mem.startsWith(u8, name, "operator")) break :outer null;
+
+                //     break :inner .{
+                //         .Function = .{
+                //             .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
+                //             .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
+                //         },
+                //     };
+                // },
 
                 // -- TODO -- //
 
+                c.CXCursor_CXXMethod,
                 c.CXCursor_Constructor, // CXXConstructor
                 c.CXCursor_Destructor,
                 c.CXCursor_ConversionFunction,
@@ -447,7 +465,7 @@ pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
         }
         if (c.clang_isCursorDefinition(instr.__cursor) != 0) try writer.print("{s}- Definition: true\n", .{indent});
 
-        if (instr.state == .open and instr.inner != .Member and instr.inner != .Value) DEBUG_formattingIndentLevel += 1;
+        if (instr.state == .open and instr.inner != .Member and instr.inner != .Value and instr.inner != .Typedef) DEBUG_formattingIndentLevel += 1;
     }
 }
 
@@ -499,5 +517,5 @@ const Logging = struct {
             if (self.indent >= 256) @panic("Too much indentation!");
             return INDENT[0..self.indent];
         }
-    } = .{};
+    } = null;
 };

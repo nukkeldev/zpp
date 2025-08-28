@@ -61,7 +61,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     while (i < ir.instrs.items.len) : (i += 1) {
         const instr = ir.instrs.items[i];
-        const uname = instr.getUniqueName(ir.arena.allocator()) catch @panic("OOM");
+        const uname = instr.getUniqueName(ir.arena.allocator(), ns_stack.items) catch @panic("OOM");
 
         if (instr.state == .open) {
             switch (instr.inner) {

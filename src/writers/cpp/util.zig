@@ -41,6 +41,7 @@ pub const FormatMember = struct {
 
                 switch (int.bits) {
                     8 => try writer.writeAll("char"),
+                    16 => try writer.writeAll("short"),
                     32 => try writer.writeAll("int"),
                     64 => try writer.writeAll("long long"),
                     else => log.warn("Integer width '{}' not yet implemented!", .{int.bits}),
