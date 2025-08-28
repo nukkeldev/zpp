@@ -17,11 +17,14 @@ struct Struct;
 // EX: Ignored
 union Union;
 
+// -- Opaque Types -- //
+
+// EX: `?*anyopaque`
+struct Opaque;
+
 // -- Structs -- //
 
 // EX: `extern struct {}`
-// TODO: This is currently converted to an opaque struct due to it having no fields and us having no
-// TODO: determinate for that being valid.
 struct ZST
 {
 };

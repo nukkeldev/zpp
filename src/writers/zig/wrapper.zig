@@ -2,8 +2,9 @@
 
 const std = @import("std");
 const util = @import("util.zig");
-const c = @import("../../ffi.zig").c;
+const ffi = @import("../../ffi.zig");
 
+const c = ffi.c;
 const IR = @import("../../ir/IR.zig");
 
 const log = std.log.scoped(.zig_wrapper);
@@ -43,7 +44,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     var i: usize = 0;
 
-    var fwd_decls: std.StringHashMap(void) = .init(ir.arena.allocator());
+    var fwd_decls: std.StringHashMap(usize) = .init(ir.arena.allocator());
     var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
     var ns_stack: std.array_list.Managed([]const u8) = .init(ir.arena.allocator());
     var member_stack: std.array_list.Managed(*std.array_list.Managed(usize)) = .init(ir.arena.allocator());
@@ -139,9 +140,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
-                    // Ignore forward definitions, this might hit empty structs tho.
                     if (ir.instrs.items[i + 1].state == .close) {
-                        fwd_decls.put(instr.name, {}) catch @panic("OOM");
+                        fwd_decls.put(instr.name, i) catch @panic("OOM");
                         continue;
                     }
                     _ = fwd_decls.remove(instr.name);
@@ -156,7 +156,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
-                    if (ir.instrs.items[i + 1].state == .close) continue; // Ignore forward definitions, this might hit empty structs tho.
+                    if (ir.instrs.items[i + 1].state == .close) {
+                        fwd_decls.put(instr.name, i) catch @panic("OOM");
+                        continue;
+                    }
+                    _ = fwd_decls.remove(instr.name);
+
                     const T = util.FormatType{
                         .type_ref = .{
                             .is_const = false,
@@ -175,7 +180,11 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
-                    if (ir.instrs.items[i + 1].state == .close) continue; // Ignore forward definitions, this might hit empty structs tho.
+                    if (ir.instrs.items[i + 1].state == .close) {
+                        fwd_decls.put(instr.name, i) catch @panic("OOM");
+                        continue;
+                    }
+                    _ = fwd_decls.remove(instr.name);
 
                     switch (ctx_stack.getLast()) {
                         .struc => |n| {
@@ -190,6 +199,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.uni) catch @panic("OOM");
                 },
                 .Typedef => |t| {
+                    switch (t.inner) {
+                        .record, .enumeration, .included => |name| if (std.mem.eql(u8, name, instr.name)) {
+                            continue;
+                        },
+                        else => {},
+                    }
+
                     try writer.print("pub const {s} = {f};\n", .{
                         instr.name,
                         util.FormatType{ .type_ref = t },
@@ -295,9 +311,22 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         }
     }
 
-    var opaque_type_decls_iter = fwd_decls.keyIterator();
-    while (opaque_type_decls_iter.next()) |t| {
-        try writer.print("pub const {s} = ?*anyopaque;\n", .{t.*});
+    var opaque_type_decls_iter = fwd_decls.iterator();
+    while (opaque_type_decls_iter.next()) |entry| {
+        const instr = ir.instrs.items[entry.value_ptr.*];
+        try writer.print("pub const {s} = {s};\n", .{
+            entry.key_ptr.*,
+            switch (instr.inner) {
+                .Struct, .Union, .Enum => outer: {
+                    if (ffi.isTypeComplete(c.clang_getCursorType(instr.__cursor))) {
+                        break :outer "extern struct {}";
+                    } else {
+                        break :outer "?*anyopaque";
+                    }
+                },
+                else => unreachable,
+            }
+        });
     }
 
     try writer.writeAll(

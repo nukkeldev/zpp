@@ -146,7 +146,7 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
     for (0..c.clang_getNumDiagnosticsInSet(diagnostic_set)) |i| {
         const diagnostic = c.clang_getDiagnosticInSet(diagnostic_set, @intCast(i));
         const severity = c.clang_getDiagnosticSeverity(diagnostic);
-        
+
         try ffi.printDiagnostic(allocator, diagnostic);
         if (CLANG_CRASH_ON_FATAL_ERROR and severity == c.CXDiagnostic_Fatal) @panic("Fatal error while parsing TU! See above.");
     }
@@ -238,11 +238,10 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 }
 
 fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
-    const location = ffi.SourceLocation.fromCursor(cursor);
     const name = try ffi.getCursorSpelling(allocator, cursor);
 
     if (Logging.DEBUG_TRACE) |trace| {
-        log.debug("{s}Line {}: {s} [{s}]", .{ trace.getIndent(), location.line, name, try ffi.getCursorKindSpelling(allocator, cursor.kind) });
+        log.debug("{s} {f}", .{ trace.getIndent(), std.fmt.Alt(c.CXCursor, ffi.formatCXCursorDetailed){ .data = cursor } });
     }
     if (Logging.PANIC_ON_NAME) |panic_on| if (std.mem.eql(u8, name, panic_on)) @panic("Found name!");
 
@@ -339,12 +338,9 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 // -- Type Defintions -- //
 
-                c.CXCursor_TypedefDecl => break :outer null,
-                // TODO: While we have serialization for these in place, the usage sites are resolved to the underlying types
-                // TODO: Instead of the type definition and I don't see it being useful currently to undo that.
-                // .{
-                //     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
-                // },
+                c.CXCursor_TypedefDecl => .{
+                    .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
+                },
 
                 // -- TODO -- //
 
@@ -494,7 +490,7 @@ const Logging = struct {
     pub var DEBUG_TRACE: ?struct {
         indent: usize = 0,
 
-        pub const INDENT: []const u8 = " " ** 256;
+        pub const INDENT: []const u8 = "+" ** 256;
         pub fn getIndent(self: @This()) []const u8 {
             if (self.indent >= 256) @panic("Too much indentation!");
             return INDENT[0..self.indent];
