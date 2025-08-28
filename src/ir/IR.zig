@@ -204,7 +204,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
         };
 
         switch (instr.inner) {
-            .Value, .Member => break :outer,
+            .Value, .Member, .Typedef => break :outer,
             .Namespace => {
                 const ns = state.namespaces.getOrPut(instr.name) catch @panic("OOM");
                 if (!ns.found_existing) {
@@ -342,9 +342,12 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                     .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
                 },
 
+                // -- C++ -- //
+
+                c.CXCursor_CXXMethod => break :outer null,
+
                 // -- TODO -- //
 
-                c.CXCursor_CXXMethod,
                 c.CXCursor_Constructor, // CXXConstructor
                 c.CXCursor_Destructor,
                 c.CXCursor_ConversionFunction,
@@ -377,6 +380,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
     if (Logging.DEBUG_TRACE) |_| if (instruction) |instr| switch (instr.inner) {
         .Member,
         .Value,
+        .Typedef,
         => {},
         else => Logging.DEBUG_TRACE.?.indent += 1,
     };

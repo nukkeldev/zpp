@@ -206,7 +206,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         else => {},
                     }
 
-                    try writer.print("pub const {s} = {f};\n", .{
+                    try writer.print("pub const {s} = {f};\n\n", .{
                         instr.name,
                         util.FormatType{ .type_ref = t },
                     });

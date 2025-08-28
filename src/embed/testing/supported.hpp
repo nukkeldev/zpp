@@ -22,6 +22,27 @@ union Union;
 // EX: `?*anyopaque`
 struct Opaque;
 
+// -- Typedefs -- //
+
+// EX: `AlsoStruct = Struct`
+typedef Struct AlsoStruct;
+
+// EX: `AlsoOpaque = Opaque`
+typedef struct Opaque AlsoOpaque;
+
+// EX: `AlsoInlineOpaque = InlineOpaque` and `InlineOpaque = ?*anyopaque`
+typedef struct InlineOpaque AlsoInlineOpaque;
+
+// EX: `ZST2 = extern struct {}`
+typedef struct {} ZST2;
+
+// EX: `InlinePOD = extern struct {
+//    x: i32,
+// }`
+typedef struct {
+    int x;
+} InlinePOD;
+
 // -- Structs -- //
 
 // EX: `extern struct {}`
