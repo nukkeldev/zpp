@@ -9,16 +9,17 @@ Supported features include:
 - Namespaced Declarations
 - Struct, Union, and Enum Declarations
 - Functions
+- Type Aliases
 - Opaque Types
 - Forward Declaration Filtering
   - Unfortunately, the current implementation keeps the declaration in-place
     instead of moving it to the first forward declaration.
 - `comptime` ABI Verification
+- Member Functions
 
 See and compile [supported.hpp](src/embed/testing/supported.hpp) for a more complete list.
 
 Planned features include:
-- Member Functions (#12)
 - Default Function Parameters
 - Default Struct Field Values
 - Programmatic Configuration In `build.zig`
