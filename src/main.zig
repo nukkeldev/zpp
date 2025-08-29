@@ -11,7 +11,7 @@ const IR = @import("ir/IR.zig");
 
 const Args = struct {
     /// The path to the C++ header.
-    header_path: [:0]const u8,
+    header_paths: []const [:0]const u8,
     /// Any additional arguments to pass to `clang`.
     clang_args: []const [:0]const u8 = &.{},
     /// Whether to generate a sandbox for debugging purposes.
@@ -26,21 +26,26 @@ const Args = struct {
     }
 
     fn filename(self: *const @This()) []const u8 {
-        return std.fs.path.basename(self.header_path);
+        // TODO: Actually use all of the paths.
+        return std.fs.path.basename(self.header_paths[0]);
     }
 
     fn dirname(self: *const @This()) []const u8 {
-        return std.fs.path.dirname(self.header_path) orelse "";
+        // TODO: Actually use all of the paths.
+        return std.fs.path.dirname(self.header_paths[0]) orelse "";
     }
 
     pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-        try writer.print("Args {{\n\theader: {s},\n\targs: [", .{self.header_path});
+        try writer.writeAll("Args {\n\theaders: [\n");
+        for (self.header_paths) |path| try writer.print("\t\t\"{s}\",\n", .{path});
+        try writer.writeAll("\t],\n\targs: [");
+
         if (self.clang_args.len > 0) {
-            try writer.print("\n", .{});
+            try writer.writeAll("\n");
             for (self.clang_args) |arg| try writer.print("\t\t\"{s}\",\n", .{arg});
-            try writer.print("\t", .{});
+            try writer.writeAll("\t");
         }
-        try writer.print("],\n}}", .{});
+        try writer.writeAll("],\n}");
     }
 };
 
@@ -49,28 +54,38 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
     defer std.process.argsFree(allocator, args);
     if (args.len < 2) printUsageAndExit();
 
-    const header_path = try std.fs.cwd().realpathAlloc(allocator, args[1]);
     var out: Args = .{
-        .header_path = try allocator.dupeZ(u8, header_path),
+        .header_paths = undefined,
     };
-    std.fs.cwd().access(header_path, .{}) catch |e|
-        printUsageWithErrorAndExit("Accessing <header-path> '{s}' errored with {}!", .{ header_path, e });
 
+    var header_paths = std.array_list.Managed([:0]const u8).init(allocator);
     var clang_args = std.array_list.Managed([:0]const u8).init(allocator);
 
-    var i: usize = 2;
+    var i: usize = 1;
     while (i < args.len) : (i += 1) {
-        if (args[i].len < 2 or args[i][0] != '-') continue;
-
-        if (args[i][1] == 'x' or std.mem.eql(u8, args[i], "--clang-arg")) {
+        if (std.mem.eql(u8, args[i], "-x") or std.mem.eql(u8, args[i], "--clang-arg")) {
             i += 1;
             if (i == args.len) printUsageWithErrorAndExit("-x/--clang-arg requires a subsequent argument!", .{});
             try clang_args.append(try allocator.dupeZ(u8, args[i]));
         } else if (std.mem.eql(u8, args[i], "-s") or std.mem.eql(u8, args[i], "--sandbox")) {
             out.generate_sandbox = true;
-        } else printUsageWithErrorAndExit("Unknown argument '{s}'!", .{args[i]});
+        } else {
+            const header_path = std.fs.cwd().realpathAlloc(allocator, args[i]) catch |e| switch (e) {
+                error.FileNotFound => {
+                    std.log.err("Could not find header path '{s}'! Are you sure you meant it to be a header path?", .{args[i]});
+                    return e;
+                },
+                else => return e,
+            };
+            try header_paths.append(try allocator.dupeZ(u8, header_path));
+        }
     }
 
+    if (header_paths.items.len == 0) {
+        printUsageWithErrorAndExit("At least one header path is required!", .{});
+    }
+
+    out.header_paths = try header_paths.toOwnedSlice();
     if (clang_args.items.len > 0) out.clang_args = try clang_args.toOwnedSlice();
 
     return out;
@@ -89,7 +104,7 @@ pub fn main() !void {
 
     var time: i64 = getNs();
 
-    const ir = try IR.processFile(arena.allocator(), args.header_path, args.clang_args);
+    const ir = try IR.processFiles(arena.allocator(), args.header_paths, args.clang_args);
 
     std.log.info("IR: {D}", .{getNs() - time});
     time = getNs();
@@ -158,11 +173,11 @@ fn getNs() i64 {
 // -- Usage -- //
 
 const USAGE =
-    \\Usage: zpp <header-path> [OPTIONS]
+    \\Usage: zpp <header-path>+ [OPTIONS]
     \\Generates C-compatible header files from (a subset of) C++ headers. 
     \\
     \\Required Arguments:
-    \\    <header-path>       The path to the C++ header
+    \\    <header-path>+      The paths to the C++ headers
     \\
     \\Optional Arguments:
     \\    -x,  --clang-arg    Passes the subsequent argument through to clang.

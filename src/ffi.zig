@@ -68,22 +68,7 @@ pub const SourceLocation = struct {
     line: usize,
     column: usize,
     offset: usize,
-    file: ?[]const u8,
-
-    /// TODO: Deprecate for `fromCXSourceLocation`.
-    pub fn fromCursor(cursor: c.CXCursor) SourceLocation {
-        var line: c_uint = 0;
-        var column: c_uint = 0;
-        var offset: c_uint = 0;
-        c.clang_getExpansionLocation(c.clang_getCursorLocation(cursor), null, &line, &column, &offset);
-
-        return .{
-            .line = @intCast(line),
-            .column = @intCast(column),
-            .offset = @intCast(offset),
-            .file = null, // TODO
-        };
-    }
+    file: []const u8,
 
     pub fn fromCXSourceLocation(allocator: std.mem.Allocator, location: c.CXSourceLocation) !SourceLocation {
         var line: c_uint = 0;
@@ -101,7 +86,7 @@ pub const SourceLocation = struct {
     }
 
     pub fn deinit(self: @This(), allocator: std.mem.Allocator) void {
-        if (self.file) |file| allocator.free(file);
+        allocator.free(self.file);
     }
 };
 
@@ -122,7 +107,7 @@ pub fn printDiagnostic(allocator: std.mem.Allocator, diagnostic: c.CXDiagnostic)
     defer str.deinit();
 
     if (severity == c.CXDiagnostic_Fatal) try str.appendSlice("[FATAL] ");
-    try str.print("\"{s}\" on {s}:{}", .{ spelling, std.fs.path.basename(location.file.?), location.line });
+    try str.print("\"{s}\" on {s}:{}", .{ spelling, std.fs.path.basename(location.file), location.line });
 
     switch (severity) {
         c.CXDiagnostic_Fatal, c.CXDiagnostic_Error => std.log.scoped(.clang).err("{s}", .{str.items}),
@@ -144,7 +129,7 @@ pub fn formatCXCursorDetailed(cursor: c.CXCursor, writer: *std.Io.Writer) std.Io
     const location = SourceLocation.fromCXSourceLocation(std.heap.page_allocator, c.clang_getCursorLocation(cursor)) catch @panic("OOM");
     defer location.deinit(std.heap.page_allocator);
 
-    try writer.print("Cursor '{s}' ({s}) is on {s}:{}.", .{ name, kind, std.fs.path.basename(location.file.?), location.line });
+    try writer.print("Cursor '{s}' ({s}) is on {s}:{}.", .{ name, kind, std.fs.path.basename(location.file), location.line });
 
     const cursor_type = c.clang_getCursorType(cursor);
     if (cursor_type.kind != c.CXType_Invalid) {
@@ -182,6 +167,6 @@ pub fn formatCXCursorDetailed(cursor: c.CXCursor, writer: *std.Io.Writer) std.Io
         const canonical_location = SourceLocation.fromCXSourceLocation(std.heap.page_allocator, c.clang_getCursorLocation(canonical_cursor)) catch @panic("OOM");
         defer canonical_location.deinit(std.heap.page_allocator);
 
-        try writer.print("\n  This cursor's canonical cursor is defined on {s}:{}", .{ std.fs.path.basename(location.file.?), location.line });
+        try writer.print("\n  This cursor's canonical cursor is defined on {s}:{}", .{ std.fs.path.basename(location.file), location.line });
     }
 }

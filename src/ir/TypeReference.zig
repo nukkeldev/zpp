@@ -164,22 +164,24 @@ pub fn fromCXType(allocator: Allocator, cx_type: c.CXType, ir: *const IR) (TypeR
             // -- Records & Enums -- //
 
             c.CXType_Record => outer: {
-                const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
+                const decl = c.clang_getTypeDeclaration(cx_type);
+                const name = try ffi.getCursorSpelling(allocator, decl);
                 if (c.clang_Type_getNumTemplateArguments(cx_type) > 0) {
                     if (Logging.WARN_TEMPLATE_TYPE) log.warn("Templated type '{s}' not yet implemented!", .{name});
                     break :outer .unexposed;
                 }
 
-                const is_in_main_file = ffi.isTypeDeclaredInMainFile(cx_type);
-                if (!is_in_main_file) break :outer .{ .included = name };
+                const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, c.clang_getCursorLocation(decl));
+                if (!ir.hashed_paths.contains(location.file)) break :outer .{ .included = name };
 
                 break :outer .{ .record = name };
             },
             c.CXType_Enum => outer: {
-                const name = try ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(cx_type));
+                const decl = c.clang_getTypeDeclaration(cx_type);
+                const name = try ffi.getCursorSpelling(allocator, decl);
 
-                const is_in_main_file = ffi.isTypeDeclaredInMainFile(cx_type);
-                if (!is_in_main_file) break :outer .{ .included = name };
+                const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, c.clang_getCursorLocation(decl));
+                if (!ir.hashed_paths.contains(location.file)) break :outer .{ .included = name };
 
                 break :outer .{ .enumeration = name };
             },

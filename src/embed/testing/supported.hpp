@@ -7,9 +7,6 @@
 #include <stdio.h>
 // #include <vector>
 
-// EX: Ignored
-using namespace std;
-
 // -- Forward Declarations -- //
 
 // EX: Ignored

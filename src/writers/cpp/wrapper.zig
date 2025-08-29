@@ -23,7 +23,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         \\
         \\
     );
-    try writer.print("#include \"{s}\"\n\n", .{std.fs.path.basename(ir.path)});
+    for (ir.paths) |path| if (!std.mem.eql(u8, path, IR.ROOT_FILE)) try writer.print("#include \"{s}\"\n", .{std.fs.path.basename(path)});
+    try writer.writeByte('\n');
 
     if (ir.instrs.items.len == 0) {
         try writer.writeAll("// Why are you generating an empty file?\n");

@@ -24,20 +24,20 @@ const Instructions = std.array_list.Managed(Instruction);
 
 // -- Fields -- //
 
-path: []const u8,
-source: []const u8,
+paths: []const []const u8,
+hashed_paths: std.StringHashMap(void),
 
 arena: *std.heap.ArenaAllocator,
 instrs: Instructions,
 
 // -- (De)initialization -- //
 
-pub fn init(allocator: Allocator, path: []const u8, source: []const u8) !IR {
+pub fn init(allocator: Allocator, paths: []const []const u8, hashed_paths: std.StringHashMap(void)) !IR {
     const arena = try allocator.create(std.heap.ArenaAllocator);
     arena.* = .init(allocator);
     return .{
-        .path = path,
-        .source = source,
+        .paths = paths,
+        .hashed_paths = hashed_paths,
         .arena = arena,
         .instrs = .init(arena.allocator()),
     };
@@ -96,12 +96,21 @@ pub const Value = struct {
         switch (self.type.inner) {
             // TODO: Define i128 in a const
             .integer, .enumeration => try writer.print("{}", .{@as(*i128, @ptrCast(@alignCast(self.value))).*}),
-            else => try writer.print("{?}", .{self.value}),
+            .included, .record => |name| {
+                log.err("Value serialization for {s} type '{s}' not yet implemented!", .{ @tagName(self.type.inner), name });
+                @panic("Value serialization error.");
+            },
+            else => {
+                log.err("Value serialization for '{s}'s not yet implemented!", .{@tagName(self.type.inner)});
+                @panic("Value serialization error.");
+            },
         }
     }
 };
 
 // -- Processing -- //
+
+pub const ROOT_FILE = "ZPP_ROOT_FILE.hpp";
 
 const CLANG_CRASH_ON_FATAL_ERROR = true;
 
@@ -122,26 +131,43 @@ pub const IRProcessingError = error{
     ParseTUFail,
 };
 
-pub fn processFile(allocator: Allocator, path: [:0]const u8, clang_args: []const [:0]const u8) !IR {
+pub fn processFiles(allocator: Allocator, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
     // TODO: A cross-platform mmap implementation would go here nicely.
-    const contents = try std.fs.cwd().readFileAlloc(allocator, path, std.math.maxInt(usize));
-    return processBytes(allocator, path, contents, clang_args);
+    var contents = std.array_list.Managed(u8).init(allocator);
+    for (paths) |path| try contents.print("#include \"{s}\"\n", .{path});
+    log.debug("File Contents:\n{s}", .{contents.items});
+
+    const actual_paths = try allocator.alloc([:0]const u8, paths.len + 1);
+    actual_paths[0] = ROOT_FILE;
+    @memcpy(actual_paths[1..], paths);
+
+    return processBytes(allocator, ROOT_FILE, contents.items, actual_paths, clang_args);
 }
 
-pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const u8, clang_args: []const [:0]const u8) !IR {
+pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []const u8, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
     const clang_version = c.clang_getClangVersion();
     defer c.clang_disposeString(clang_version);
 
     log.info("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
 
+    var hashed_paths = std.StringHashMap(void).init(allocator);
+    try hashed_paths.ensureTotalCapacity(@intCast(paths.len));
+    for (paths) |p| hashed_paths.putAssumeCapacity(p, {});
+
+    {
+        log.debug("Paths:", .{});
+        var iter = hashed_paths.keyIterator();
+        while (iter.next()) |p| log.debug("  {s}", .{p.*});
+    }
+
     const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
 
-    var file = c.CXUnsavedFile{ .Filename = path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
+    var file = c.CXUnsavedFile{ .Filename = root_path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
     const args = try combineArgs(allocator, &.{ REQUIRED_ARGUMENTS, clang_args });
     defer allocator.free(args);
 
-    const translation_unit = c.clang_parseTranslationUnit(index, path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
+    const translation_unit = c.clang_parseTranslationUnit(index, root_path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
     // NOTE: Because we store references to cursors and types, we need this for the entire lifetime of the program.
     // defer c.clang_disposeTranslationUnit(translation_unit);
 
@@ -158,7 +184,7 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
 
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
-    var ir: IR = try .init(allocator, path, contents);
+    var ir: IR = try .init(allocator, paths, hashed_paths);
     var namespaces: std.StringHashMap(IR) = .init(ir.arena.allocator());
 
     var state = ProcessingState{
@@ -242,10 +268,11 @@ pub fn processBytes(allocator: Allocator, path: [:0]const u8, contents: []const 
 }
 
 fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXClientData) callconv(.c) c.CXVisitorResult {
-    const location = c.clang_getCursorLocation(current_cursor);
-    if (c.clang_Location_isFromMainFile(location) == 0) return c.CXChildVisit_Continue;
-
     var state: *ProcessingState = @ptrCast(@alignCast(client_data_opaque));
+
+    const raw_location = c.clang_getCursorLocation(current_cursor);
+    const location = ffi.SourceLocation.fromCXSourceLocation(state.ir.arena.allocator(), raw_location) catch @panic("OOM");
+    if (!state.ir.hashed_paths.contains(location.file)) return c.CXChildVisit_Continue;
 
     const instr_opt = visitor(state.allocator, current_cursor, state.ir) catch |e| {
         state.err = e;
@@ -262,7 +289,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
             .Namespace => {
                 const ns = state.namespaces.getOrPut(instr.name) catch @panic("OOM");
                 if (!ns.found_existing) {
-                    ns.value_ptr.* = IR.init(state.allocator, "", "") catch @panic("OOM");
+                    ns.value_ptr.* = IR.init(state.allocator, state.ir.paths, state.ir.hashed_paths) catch @panic("OOM");
                 }
 
                 const prev = state.ir;

@@ -10263,3 +10263,178 @@
 [close] Struct 'ImGuiPlatformImeData' ([StructDecl]ImGuiPlatformImeData)
 [open] Typedef 'ImFontAtlasCustomRect' ([TypedefDecl]ImFontAtlasCustomRect)
 - Definition: true
+[open] Struct 'SDL_Window' ([StructDecl]SDL_Window)
+[close] Struct 'SDL_Window' ([StructDecl]SDL_Window)
+[open] Struct 'SDL_Renderer' ([StructDecl]SDL_Renderer)
+[close] Struct 'SDL_Renderer' ([StructDecl]SDL_Renderer)
+[open] Struct 'SDL_Gamepad' ([StructDecl]SDL_Gamepad)
+[close] Struct 'SDL_Gamepad' ([StructDecl]SDL_Gamepad)
+[open] Union 'SDL_Event' ([UnionDecl]SDL_Event)
+[close] Union 'SDL_Event' ([UnionDecl]SDL_Event)
+[open] Typedef 'SDL_Event' ([TypedefDecl]SDL_Event)
+- Definition: true
+[open] Function 'ImGui_ImplSDL3_InitForOpenGL' ([FunctionDecl]ImGui_ImplSDL3_InitForOpenGL)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+	[open] Member 'sdl_gl_context' ([ParmDecl]sdl_gl_context)
+	- Type: pointer to 'void' ([Pointer]void *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForOpenGL' ([FunctionDecl]ImGui_ImplSDL3_InitForOpenGL)
+[open] Function 'ImGui_ImplSDL3_InitForVulkan' ([FunctionDecl]ImGui_ImplSDL3_InitForVulkan)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForVulkan' ([FunctionDecl]ImGui_ImplSDL3_InitForVulkan)
+[open] Function 'ImGui_ImplSDL3_InitForD3D' ([FunctionDecl]ImGui_ImplSDL3_InitForD3D)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForD3D' ([FunctionDecl]ImGui_ImplSDL3_InitForD3D)
+[open] Function 'ImGui_ImplSDL3_InitForMetal' ([FunctionDecl]ImGui_ImplSDL3_InitForMetal)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForMetal' ([FunctionDecl]ImGui_ImplSDL3_InitForMetal)
+[open] Function 'ImGui_ImplSDL3_InitForSDLRenderer' ([FunctionDecl]ImGui_ImplSDL3_InitForSDLRenderer)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+	[open] Member 'renderer' ([ParmDecl]renderer)
+	- Type: pointer to 'record 'SDL_Renderer'' ([Pointer]SDL_Renderer *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForSDLRenderer' ([FunctionDecl]ImGui_ImplSDL3_InitForSDLRenderer)
+[open] Function 'ImGui_ImplSDL3_InitForSDLGPU' ([FunctionDecl]ImGui_ImplSDL3_InitForSDLGPU)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForSDLGPU' ([FunctionDecl]ImGui_ImplSDL3_InitForSDLGPU)
+[open] Function 'ImGui_ImplSDL3_InitForOther' ([FunctionDecl]ImGui_ImplSDL3_InitForOther)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'window' ([ParmDecl]window)
+	- Type: pointer to 'record 'SDL_Window'' ([Pointer]SDL_Window *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_InitForOther' ([FunctionDecl]ImGui_ImplSDL3_InitForOther)
+[open] Function 'ImGui_ImplSDL3_Shutdown' ([FunctionDecl]ImGui_ImplSDL3_Shutdown)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDL3_Shutdown' ([FunctionDecl]ImGui_ImplSDL3_Shutdown)
+[open] Function 'ImGui_ImplSDL3_NewFrame' ([FunctionDecl]ImGui_ImplSDL3_NewFrame)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDL3_NewFrame' ([FunctionDecl]ImGui_ImplSDL3_NewFrame)
+[open] Function 'ImGui_ImplSDL3_ProcessEvent' ([FunctionDecl]ImGui_ImplSDL3_ProcessEvent)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'event' ([ParmDecl]event)
+	- Type: pointer to 'const record 'SDL_Event'' ([Pointer]const SDL_Event *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_ProcessEvent' ([FunctionDecl]ImGui_ImplSDL3_ProcessEvent)
+[open] Enum 'ImGui_ImplSDL3_GamepadMode' ([EnumDecl]ImGui_ImplSDL3_GamepadMode)
+- Definition: true
+	[open] Value 'ImGui_ImplSDL3_GamepadMode_AutoFirst' ([EnumConstantDecl]ImGui_ImplSDL3_GamepadMode_AutoFirst)
+	- Type: enum 'ImGui_ImplSDL3_GamepadMode' ([Enum]ImGui_ImplSDL3_GamepadMode)
+- Value: 0
+	- Definition: true
+	[open] Value 'ImGui_ImplSDL3_GamepadMode_AutoAll' ([EnumConstantDecl]ImGui_ImplSDL3_GamepadMode_AutoAll)
+	- Type: enum 'ImGui_ImplSDL3_GamepadMode' ([Enum]ImGui_ImplSDL3_GamepadMode)
+- Value: 1
+	- Definition: true
+	[open] Value 'ImGui_ImplSDL3_GamepadMode_Manual' ([EnumConstantDecl]ImGui_ImplSDL3_GamepadMode_Manual)
+	- Type: enum 'ImGui_ImplSDL3_GamepadMode' ([Enum]ImGui_ImplSDL3_GamepadMode)
+- Value: 2
+	- Definition: true
+[close] Enum 'ImGui_ImplSDL3_GamepadMode' ([EnumDecl]ImGui_ImplSDL3_GamepadMode)
+[open] Function 'ImGui_ImplSDL3_SetGamepadMode' ([FunctionDecl]ImGui_ImplSDL3_SetGamepadMode)
+- Return Type: void ([Void]void)
+	[open] Member 'mode' ([ParmDecl]mode)
+	- Type: enum 'ImGui_ImplSDL3_GamepadMode' ([Enum]ImGui_ImplSDL3_GamepadMode)
+	- Definition: true
+	[open] Member 'manual_gamepads_array' ([ParmDecl]manual_gamepads_array)
+	- Type: pointer to 'pointer to 'record 'SDL_Gamepad''' ([Pointer]SDL_Gamepad **)
+	- Definition: true
+	[open] Member 'manual_gamepads_count' ([ParmDecl]manual_gamepads_count)
+	- Type: i32 ([Int]int)
+	- Definition: true
+[close] Function 'ImGui_ImplSDL3_SetGamepadMode' ([FunctionDecl]ImGui_ImplSDL3_SetGamepadMode)
+[open] Struct 'ImGui_ImplSDLGPU3_InitInfo' ([StructDecl]ImGui_ImplSDLGPU3_InitInfo)
+- Definition: true
+	[open] Member 'Device' ([FieldDecl]Device)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUDevice *)
+	- Definition: true
+	[open] Member 'ColorTargetFormat' ([FieldDecl]ColorTargetFormat)
+	- Type: included ([Enum]SDL_GPUTextureFormat)
+	- Definition: true
+	[open] Member 'MSAASamples' ([FieldDecl]MSAASamples)
+	- Type: included ([Enum]SDL_GPUSampleCount)
+	- Definition: true
+	[open] Member 'SwapchainComposition' ([FieldDecl]SwapchainComposition)
+	- Type: included ([Enum]SDL_GPUSwapchainComposition)
+	- Definition: true
+	[open] Member 'PresentMode' ([FieldDecl]PresentMode)
+	- Type: included ([Enum]SDL_GPUPresentMode)
+	- Definition: true
+[close] Struct 'ImGui_ImplSDLGPU3_InitInfo' ([StructDecl]ImGui_ImplSDLGPU3_InitInfo)
+[open] Function 'ImGui_ImplSDLGPU3_Init' ([FunctionDecl]ImGui_ImplSDLGPU3_Init)
+- Return Type: bool ([Bool]bool)
+	[open] Member 'info' ([ParmDecl]info)
+	- Type: pointer to 'record 'ImGui_ImplSDLGPU3_InitInfo'' ([Pointer]ImGui_ImplSDLGPU3_InitInfo *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDLGPU3_Init' ([FunctionDecl]ImGui_ImplSDLGPU3_Init)
+[open] Function 'ImGui_ImplSDLGPU3_Shutdown' ([FunctionDecl]ImGui_ImplSDLGPU3_Shutdown)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDLGPU3_Shutdown' ([FunctionDecl]ImGui_ImplSDLGPU3_Shutdown)
+[open] Function 'ImGui_ImplSDLGPU3_NewFrame' ([FunctionDecl]ImGui_ImplSDLGPU3_NewFrame)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDLGPU3_NewFrame' ([FunctionDecl]ImGui_ImplSDLGPU3_NewFrame)
+[open] Function 'ImGui_ImplSDLGPU3_PrepareDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_PrepareDrawData)
+- Return Type: void ([Void]void)
+	[open] Member 'draw_data' ([ParmDecl]draw_data)
+	- Type: pointer to 'record 'ImDrawData'' ([Pointer]ImDrawData *)
+	- Definition: true
+	[open] Member 'command_buffer' ([ParmDecl]command_buffer)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUCommandBuffer *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDLGPU3_PrepareDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_PrepareDrawData)
+[open] Function 'ImGui_ImplSDLGPU3_RenderDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_RenderDrawData)
+- Return Type: void ([Void]void)
+	[open] Member 'draw_data' ([ParmDecl]draw_data)
+	- Type: pointer to 'record 'ImDrawData'' ([Pointer]ImDrawData *)
+	- Definition: true
+	[open] Member 'command_buffer' ([ParmDecl]command_buffer)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUCommandBuffer *)
+	- Definition: true
+	[open] Member 'render_pass' ([ParmDecl]render_pass)
+	- Type: pointer to 'included' ([Pointer]SDL_GPURenderPass *)
+	- Definition: true
+	[open] Member 'pipeline' ([ParmDecl]pipeline)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUGraphicsPipeline *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDLGPU3_RenderDrawData' ([FunctionDecl]ImGui_ImplSDLGPU3_RenderDrawData)
+[open] Function 'ImGui_ImplSDLGPU3_CreateDeviceObjects' ([FunctionDecl]ImGui_ImplSDLGPU3_CreateDeviceObjects)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDLGPU3_CreateDeviceObjects' ([FunctionDecl]ImGui_ImplSDLGPU3_CreateDeviceObjects)
+[open] Function 'ImGui_ImplSDLGPU3_DestroyDeviceObjects' ([FunctionDecl]ImGui_ImplSDLGPU3_DestroyDeviceObjects)
+- Return Type: void ([Void]void)
+[close] Function 'ImGui_ImplSDLGPU3_DestroyDeviceObjects' ([FunctionDecl]ImGui_ImplSDLGPU3_DestroyDeviceObjects)
+[open] Function 'ImGui_ImplSDLGPU3_UpdateTexture' ([FunctionDecl]ImGui_ImplSDLGPU3_UpdateTexture)
+- Return Type: void ([Void]void)
+	[open] Member 'tex' ([ParmDecl]tex)
+	- Type: pointer to 'record 'ImTextureData'' ([Pointer]ImTextureData *)
+	- Definition: true
+[close] Function 'ImGui_ImplSDLGPU3_UpdateTexture' ([FunctionDecl]ImGui_ImplSDLGPU3_UpdateTexture)
+[open] Struct 'ImGui_ImplSDLGPU3_RenderState' ([StructDecl]ImGui_ImplSDLGPU3_RenderState)
+- Definition: true
+	[open] Member 'Device' ([FieldDecl]Device)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUDevice *)
+	- Definition: true
+	[open] Member 'SamplerDefault' ([FieldDecl]SamplerDefault)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUSampler *)
+	- Definition: true
+	[open] Member 'SamplerCurrent' ([FieldDecl]SamplerCurrent)
+	- Type: pointer to 'included' ([Pointer]SDL_GPUSampler *)
+	- Definition: true
+[close] Struct 'ImGui_ImplSDLGPU3_RenderState' ([StructDecl]ImGui_ImplSDLGPU3_RenderState)

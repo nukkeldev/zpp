@@ -1,9 +1,5 @@
 const std = @import("std");
-const include = @import("imgui");
-
-const imgui = include.@"imgui.h";
-const imgui_impl_sdl3 = include.@"imgui_impl_sdl3.h";
-const imgui_impl_sdlgpu3 = include.@"imgui_impl_sdlgpu3.h";
+const imgui = @import("imgui");
 
 const c = @cImport({
     @cDefine("SDL_DISABLE_OLD_NAMES", {});
@@ -72,18 +68,18 @@ pub fn main() void {
     style.ScaleAllSizes(main_scale);
 
     // Setup Platform/Renderer backends
-    _ = imgui_impl_sdl3.ImGui_ImplSDL3_InitForSDLGPU(@ptrCast(@alignCast(window)));
-    defer imgui_impl_sdl3.ImGui_ImplSDL3_Shutdown();
+    _ = imgui.ImGui_ImplSDL3_InitForSDLGPU(@ptrCast(@alignCast(window)));
+    defer imgui.ImGui_ImplSDL3_Shutdown();
 
-    var init_info: include.@"imgui_impl_sdlgpu3.h".ImGui_ImplSDLGPU3_InitInfo = .{
+    var init_info: imgui.ImGui_ImplSDLGPU3_InitInfo = .{
         .Device = @ptrCast(@alignCast(gpu_device)),
         .ColorTargetFormat = @bitCast(c.SDL_GetGPUSwapchainTextureFormat(gpu_device, window)),
         .MSAASamples = @bitCast(c.SDL_GPU_SAMPLECOUNT_1),
         .SwapchainComposition = @bitCast(c.SDL_GPU_SWAPCHAINCOMPOSITION_SDR),
         .PresentMode = @bitCast(c.SDL_GPU_PRESENTMODE_VSYNC),
     };
-    _ = imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_Init(&init_info);
-    defer imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_Shutdown();
+    _ = imgui.ImGui_ImplSDLGPU3_Init(&init_info);
+    defer imgui.ImGui_ImplSDLGPU3_Shutdown();
 
     // Our state
     var show_demo_window = true;
@@ -105,7 +101,7 @@ pub fn main() void {
         // Poll and handle events (inputs, window resize, etc.)
         var event: c.SDL_Event = undefined;
         while (c.SDL_PollEvent(&event)) {
-            _ = imgui_impl_sdl3.ImGui_ImplSDL3_ProcessEvent(@ptrCast(&event));
+            _ = imgui.ImGui_ImplSDL3_ProcessEvent(@ptrCast(&event));
             if (event.type == c.SDL_EVENT_QUIT) done = true;
             if (event.type == c.SDL_EVENT_WINDOW_CLOSE_REQUESTED and event.window.windowID == c.SDL_GetWindowID(window))
                 done = true;
@@ -117,8 +113,8 @@ pub fn main() void {
         }
 
         // Start the Dear ImGui frame
-        imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_NewFrame();
-        imgui_impl_sdl3.ImGui_ImplSDL3_NewFrame();
+        imgui.ImGui_ImplSDLGPU3_NewFrame();
+        imgui.ImGui_ImplSDL3_NewFrame();
         ImGui.NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
@@ -167,7 +163,7 @@ pub fn main() void {
 
         if (swapchain_texture != null and !is_minimized) {
             // This is mandatory: call ImGui_ImplSDLGPU3_PrepareDrawData() to upload the vertex/index buffer!
-            imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_PrepareDrawData(draw_data, @ptrCast(@alignCast(command_buffer)));
+            imgui.ImGui_ImplSDLGPU3_PrepareDrawData(draw_data, @ptrCast(@alignCast(command_buffer)));
 
             // Setup and start a render pass
             const target_info: c.SDL_GPUColorTargetInfo = .{
@@ -188,7 +184,7 @@ pub fn main() void {
             defer c.SDL_EndGPURenderPass(render_pass);
 
             // Render ImGui
-            imgui_impl_sdlgpu3.ImGui_ImplSDLGPU3_RenderDrawData(draw_data, @ptrCast(@alignCast(command_buffer)), @ptrCast(@alignCast(render_pass)), null);
+            imgui.ImGui_ImplSDLGPU3_RenderDrawData(draw_data, @ptrCast(@alignCast(command_buffer)), @ptrCast(@alignCast(render_pass)), null);
         }
 
         // Submit the command buffer
