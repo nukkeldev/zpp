@@ -22,7 +22,8 @@ pub const FormatType = struct {
             .void => try writer.writeAll("void"),
 
             .bool => try writer.writeAll("bool"),
-            .integer => |int| try writer.print("{s}{}", .{ if (int.signedness == .signed) "i" else "u", int.bits }),
+            // NOTE: This makes C++ `char`s unsigned by default.
+            .integer => |int| try writer.print("{s}{}", .{ if (int.signedness == .signed and t.cx_type.kind != c.CXType_Char_S) "i" else "u", int.bits }),
             .float => |float| try writer.print("f{}", .{float.bits}),
 
             .pointer => |p| {

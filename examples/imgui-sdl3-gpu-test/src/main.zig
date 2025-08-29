@@ -13,36 +13,6 @@ const c = @cImport({
 const ImGui = imgui.ImGui;
 
 pub fn main() void {
-    example_null();
-    example_sdl3_sdlgpu3();
-}
-
-pub fn example_null() void {
-    _ = ImGui.CreateContext(null);
-    const io = ImGui.GetIO();
-
-    io.BackendFlags |= imgui.ImGuiBackendFlags_.ImGuiBackendFlags_RendererHasTextures.data;
-    io.DisplaySize = .{ .x = 1920, .y = 1080 };
-    io.DeltaTime = 1.0 / 60.0;
-
-    var f: f32 = 0;
-    for (0..20) |n| {
-        std.debug.print("NewFrame() {}\n", .{n});
-
-        ImGui.NewFrame();
-        defer ImGui.Render();
-
-        ImGui.Text(@ptrCast("Hello, world!"));
-        _ = ImGui.SliderFloat(@ptrCast("float"), &f, 0, 1, @ptrCast("%.3f"), 0);
-        ImGui.Text(@ptrCast("Application average %.3f ms/frame (%.1f FPS)"), 1000.0 / io.Framerate, io.Framerate);
-        ImGui.ShowDemoWindow(null);
-    }
-
-    std.debug.print("DestroyContext()\n", .{});
-    ImGui.DestroyContext(null);
-}
-
-pub fn example_sdl3_sdlgpu3() void {
     // Setup SDL
     if (!c.SDL_Init(c.SDL_INIT_VIDEO | c.SDL_INIT_GAMEPAD)) {
         std.debug.print("Error: SDL_Init(): {s}\n", .{c.SDL_GetError()});
@@ -157,31 +127,31 @@ pub fn example_sdl3_sdlgpu3() void {
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
         {
-            _ = ImGui.Begin(@ptrCast("Hello, world!"), null, 0); // Create a window called "Hello, world!" and append into it.
+            _ = ImGui.Begin("Hello, world!", null, 0); // Create a window called "Hello, world!" and append into it.
             defer ImGui.End();
 
-            ImGui.Text(@ptrCast("This is some useful text.")); // Display some text (you can use a format strings too)
-            _ = ImGui.Checkbox(@ptrCast("Demo Window"), &show_demo_window); // Edit bools storing our window open/close state
-            _ = ImGui.Checkbox(@ptrCast("Another Window"), &show_another_window);
+            ImGui.Text("This is some useful text."); // Display some text (you can use a format strings too)
+            _ = ImGui.Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
+            _ = ImGui.Checkbox("Another Window", &show_another_window);
 
-            _ = ImGui.SliderFloat(@ptrCast("float"), &f, 0, 1, @ptrCast("%.3f"), 0); // Edit 1 float using a slider from 0.0f to 1.0f
-            _ = ImGui.ColorEdit3(@ptrCast("clear color"), @ptrCast(&clear_color.x), 0); // Edit 3 floats representing a color
+            _ = ImGui.SliderFloat("float", &f, 0, 1, "%.3f", 0); // Edit 1 float using a slider from 0.0f to 1.0f
+            _ = ImGui.ColorEdit3("clear color", @ptrCast(&clear_color.x), 0); // Edit 3 floats representing a color
 
-            if (ImGui.Button(@ptrCast("Button"), &.{ .x = 0, .y = 0 })) // Buttons return true when clicked (most widgets return true when edited/activated)
+            if (ImGui.Button("Button", &.{ .x = 0, .y = 0 })) // Buttons return true when clicked (most widgets return true when edited/activated)
                 counter += 1;
             ImGui.SameLine(0, -1);
-            ImGui.Text(@ptrCast("counter = %d"), counter);
+            ImGui.Text("counter = %d", counter);
 
-            ImGui.Text(@ptrCast("Application average %.3f ms/frame (%.1f FPS)"), 1000 / io.Framerate, io.Framerate);
+            ImGui.Text("Application average %.3f ms/frame (%.1f FPS)", 1000 / io.Framerate, io.Framerate);
         }
 
         // 3. Show another simple window.
         if (show_another_window) {
-            _ = ImGui.Begin(@ptrCast("Another Window"), &show_another_window, 0); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+            _ = ImGui.Begin("Another Window", &show_another_window, 0); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
             defer ImGui.End();
 
-            ImGui.Text(@ptrCast("Hello from another window!"));
-            if (ImGui.Button(@ptrCast("Close Me"), &.{ .x = 0, .y = 0 }))
+            ImGui.Text("Hello from another window!");
+            if (ImGui.Button("Close Me", &.{ .x = 0, .y = 0 }))
                 show_another_window = false;
         }
 
