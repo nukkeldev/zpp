@@ -451,6 +451,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 c.CXCursor_TypeRef, // Any time a non-primitive type is used; we get this info other ways.
                 c.CXCursor_UsingDirective, // `using namespace ...`
+                c.CXCursor_UnexposedAttr, // TODO: Not too sure what this is but it on some declarations in `imgui.h`...
                 => break :outer null,
 
                 // -- Fallback -- //

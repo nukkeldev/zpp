@@ -1,11 +1,10 @@
 // -- Imports -- //
 
 const std = @import("std");
-const util = @import("util.zig");
-const ffi = @import("../../ffi.zig");
+const ffi = @import("../ffi.zig");
 
 const c = ffi.c;
-const IR = @import("../../ir/IR.zig");
+const IR = @import("../ir/IR.zig");
 
 const log = std.log.scoped(.zig_wrapper);
 
@@ -13,25 +12,14 @@ const log = std.log.scoped(.zig_wrapper);
 
 const ANONYMOUS_MEMBER_PREFIX = "anon";
 
-// -- Writer -- //
+// -- Formatting -- //
 
-pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.mem.Allocator.Error![:0]const u8 {
-    return std.fmt.allocPrintSentinel(allocator, "{s}.zig", .{filename}, 0);
-}
-
-// TODO: This function is horrendous; please:
-// TODO: - Fix the member stack horror.
-// TODO: - Convert this to be a stateful struct, so we can use methods and such.
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
-    try writer.writeAll(@import("../../writers.zig").PREAMBLE);
-    try writer.writeAll("\n\n");
+    const allocator = ir.arena.allocator();
 
-    if (ir.instrs.items.len == 0) {
-        try writer.writeAll("// Why are you generating an empty file?\n");
-        return;
-    }
-
-    try writer.writeAll(
+    // Write preamble.
+    try writer.writeAll(@import("../writers.zig").PREAMBLE ++
+        \\
         \\
         \\fn refAllDecls(comptime T: type) void {
         \\    inline for (comptime @import("std").meta.declarations(T)) |decl| {
@@ -42,12 +30,11 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         \\
     );
 
-    var i: usize = 0;
-
-    var fwd_decls: std.StringHashMap(usize) = .init(ir.arena.allocator());
-    var overload_map: std.StringHashMap(usize) = .init(ir.arena.allocator());
-    var ns_stack: std.array_list.Managed([]const u8) = .init(ir.arena.allocator());
-    var member_stack: std.array_list.Managed(*std.array_list.Managed(usize)) = .init(ir.arena.allocator());
+    // Initialize context.
+    var fwd_decls: std.StringHashMap(usize) = .init(allocator);
+    var overload_map: std.StringHashMap(usize) = .init(allocator);
+    var ns_stack: std.array_list.Managed([]const u8) = .init(allocator);
+    var member_stack: std.array_list.Managed(*std.array_list.Managed(usize)) = .init(allocator);
     var ctx_stack: std.array_list.Managed(union(enum) {
         func,
         /// The amount of unnamed fields
@@ -56,12 +43,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         uni,
         ns,
         bitfield: usize,
-    }) = .init(ir.arena.allocator());
+    }) = .init(allocator);
     ctx_stack.append(.ns) catch @panic("OOM");
 
+    var i: usize = 0;
     while (i < ir.instrs.items.len) : (i += 1) {
         const instr = ir.instrs.items[i];
-        const uname = instr.getUniqueName(ir.arena.allocator(), ns_stack.items) catch @panic("OOM");
+        const unique_name = instr.getUniqueName(allocator, ns_stack.items) catch @panic("OOM");
 
         if (instr.state == .open) {
             switch (instr.inner) {
@@ -72,12 +60,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.ns) catch @panic("OOM");
                 },
                 .Function => |f| {
-                    const overload_ptr = (overload_map.getOrPutValue(uname, 0) catch @panic("OOM")).value_ptr;
+                    const overload_ptr = (overload_map.getOrPutValue(unique_name, 0) catch @panic("OOM")).value_ptr;
                     defer overload_ptr.* += 1;
-                    const suffix = if (overload_ptr.* == 0) "" else std.fmt.allocPrint(ir.arena.allocator(), "_{}", .{overload_ptr.*}) catch @panic("OOM");
+                    const suffix = if (overload_ptr.* == 0) "" else std.fmt.allocPrint(allocator, "_{}", .{overload_ptr.*}) catch @panic("OOM");
 
-                    try writer.print("pub const {s}{s} = {s}{s};\n", .{ instr.name, suffix, uname, suffix });
-                    try writer.print("extern fn {s}{s}(", .{ uname, suffix });
+                    try writer.print("pub const {s}{s} = {s}{s};\n", .{ instr.name, suffix, unique_name, suffix });
+                    try writer.print("extern fn {s}{s}(", .{ unique_name, suffix });
 
                     if (ctx_stack.items.len > 0) switch (ctx_stack.getLast()) {
                         .struc, .uni => {
@@ -89,8 +77,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     ctx_stack.append(.func) catch @panic("OOM");
 
-                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
-                    new_stack.* = .init(ir.arena.allocator());
+                    const new_stack = allocator.create(std.array_list.Managed(usize)) catch @panic("OOM");
+                    new_stack.* = .init(allocator);
 
                     member_stack.append(new_stack) catch @panic("OOM");
                 },
@@ -120,31 +108,32 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                         ctx_stack.items[ctx_stack.items.len - 1].bitfield += @intCast(bits);
                     } else {
-                        try writer.print("{s}: {f}{s}", .{
-                            instr.name,
-                            util.FormatType{
-                                .type_ref = m,
-                                .annotate_with_alignment = !in_bitfield and ctx_stack.getLast() != .func,
-                                .erase_array_size = ctx_stack.getLast() == .func,
-                            },
+                        try writer.print("{s}: ", .{instr.name});
+                        try formatType(m.cx_type, allocator, writer, .{
+                            .hashed_paths = &ir.hashed_paths,
+                            .annotate_with_alignment = !in_bitfield and ctx_stack.getLast() != .func,
+                            .erase_array_size = ctx_stack.getLast() == .func,
+                        });
+                        try writer.print("{s}", .{
                             if (ctx_stack.getLast() == .func)
-                            outer: {
-                                break :outer if (ir.instrs.items[i + 1].inner == .Member) ", " else "";
-                            } else outer: {
-                                break :outer ",\n";
-                            },
+                                (if (ir.instrs.items[i + 1].inner == .Member) ", " else "")
+                            else
+                                ",\n",
                         });
                     }
 
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Value => |v| {
-                    try writer.print("pub const {s}: {f} = .{{.data={f}}};\n", .{ instr.name, util.FormatType{ .type_ref = v.type }, v });
+                    try writer.print("pub const {s}: ", .{instr.name});
+                    try formatType(v.type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try writer.print(" = .{{.data={f}}};\n", .{v});
+
                     member_stack.getLast().append(i) catch @panic("OOM");
                 },
                 .Struct => {
-                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
-                    new_stack.* = .init(ir.arena.allocator());
+                    const new_stack = allocator.create(std.array_list.Managed(usize)) catch @panic("OOM");
+                    new_stack.* = .init(allocator);
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
@@ -159,9 +148,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ns_stack.append(instr.name) catch @panic("OOM");
                     ctx_stack.append(.{ .struc = 0 }) catch @panic("OOM");
                 },
-                .Enum => |e| {
-                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
-                    new_stack.* = .init(ir.arena.allocator());
+                .Enum => {
+                    const new_stack = allocator.create(std.array_list.Managed(usize)) catch @panic("OOM");
+                    new_stack.* = .init(allocator);
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
@@ -171,21 +160,18 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     }
                     _ = fwd_decls.remove(instr.name);
 
-                    const T = util.FormatType{
-                        .type_ref = .{
-                            .is_const = false,
-                            .cx_type = undefined,
-                            .inner = .{ .integer = e.backing },
-                        },
-                    };
-                    try writer.print("pub const {s} = packed struct({f}) {{\n", .{ instr.name, T });
-                    try writer.print("data: {f},\n", .{T});
+                    const @"type" = c.clang_getEnumDeclIntegerType(instr.__cursor);
+                    try writer.print("pub const {s} = packed struct(", .{instr.name});
+                    try formatType(@"type", allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try writer.writeAll(") {\ndata: ");
+                    try formatType(@"type", allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try writer.writeAll(",\n");
 
                     ctx_stack.append(.enu) catch @panic("OOM");
                 },
                 .Union => {
-                    const new_stack = ir.arena.allocator().create(std.array_list.Managed(usize)) catch @panic("OOM");
-                    new_stack.* = .init(ir.arena.allocator());
+                    const new_stack = allocator.create(std.array_list.Managed(usize)) catch @panic("OOM");
+                    new_stack.* = .init(allocator);
 
                     member_stack.append(new_stack) catch @panic("OOM");
 
@@ -216,14 +202,10 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         else => {},
                     }
 
-                    try writer.print("pub const {s} = {f};\n\n", .{
-                        instr.name,
-                        util.FormatType{ .type_ref = t },
-                    });
+                    try writer.print("pub const {s} = ", .{instr.name});
+                    try formatType(t.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try writer.writeAll(";\n\n");
                 },
-                // else => {
-                //     log.warn("Open instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
-                // },
             }
         } else {
             switch (instr.inner) {
@@ -245,9 +227,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (f.return_type.inner == .record) {
                         // TODO: Avoid name collisions.
                         if (member_stack.getLast().items.len > 0) try writer.writeAll(", ");
-                        try writer.print("zpp_out: *{f}", .{
-                            util.FormatType{ .type_ref = f.return_type },
-                        });
+                        try writer.writeAll("zpp_out: *");
+                        try formatType(f.return_type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
                     }
 
                     if (f.variadic) {
@@ -255,14 +236,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         try writer.writeAll("...");
                     }
 
-                    try writer.print(") callconv(.c) {f};\n\n", .{
-                        util.FormatType{
-                            .type_ref = switch (f.return_type.inner) {
-                                .record => .VOID,
-                                else => f.return_type,
-                            },
-                        },
-                    });
+                    try writer.writeAll(") callconv(.c) ");
+                    switch (f.return_type.cx_type.kind) {
+                        c.CXType_Record => try writer.writeAll("void"),
+                        else => try formatType(f.return_type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths }),
+                    }
+                    try writer.writeAll(";\n\n");
 
                     _ = ctx_stack.pop();
                     member_stack.getLast().clearAndFree();
@@ -316,9 +295,6 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 },
                 .Typedef => {},
                 .Member, .Value => unreachable,
-                // else => {
-                //     log.warn("Close instruction '{s}' not yet implemented!", .{@tagName(instr.inner)});
-                // },
             }
         }
     }
@@ -415,4 +391,204 @@ fn writeSizeAndAlignmentChecks(
         \\}
         \\}
     );
+}
+
+// -- Member & Type Formatting -- //
+
+const FormatTypeArgs = struct {
+    hashed_paths: *const std.StringHashMap(void),
+
+    ignore_const: bool = false,
+    erase_array_size: bool = false,
+    annotate_with_alignment: bool = false,
+};
+
+fn __formatMemberOrType(
+    @"type": c.CXType,
+    allocator: std.mem.Allocator,
+    writer: *std.Io.Writer,
+    args: FormatTypeArgs,
+) !void {
+    // Format the type itself.
+    const spelling_ = try ffi.getTypeSpelling(allocator, @"type");
+    defer allocator.free(spelling_);
+
+    // Some spellings have `const` directly in them.
+    const spelling = spelling_[if (std.mem.lastIndexOfScalar(u8, spelling_, ' ')) |i| i + 1 else 0..];
+
+    const kind = @as(c_int, @intCast(@"type".kind));
+    const out = inner: switch (kind) {
+        c.CXType_Elaborated => return __formatMemberOrType(c.clang_getCanonicalType(@"type"), allocator, writer, args),
+
+        c.CXType_Void => "void",
+
+        c.CXType_Bool => "bool",
+
+        c.CXType_Float => "f32",
+        c.CXType_Double => "f64",
+        c.CXType_LongDouble => "f128",
+
+        c.CXType_Char_U,
+        c.CXType_UChar,
+        c.CXType_UShort,
+        c.CXType_UInt,
+        c.CXType_ULong,
+        c.CXType_ULongLong,
+        c.CXType_UInt128,
+        => {
+            try writer.print("u{}", .{c.clang_Type_getSizeOf(@"type") * 8});
+            return;
+        },
+
+        c.CXType_Char16,
+        c.CXType_Char32,
+        c.CXType_Char_S,
+        c.CXType_SChar,
+        c.CXType_WChar,
+        c.CXType_Short,
+        c.CXType_Int,
+        c.CXType_Long,
+        c.CXType_LongLong,
+        c.CXType_Int128,
+        => {
+            try writer.print("{s}{}", .{ if (@"type".kind != c.CXType_Char_S) "i" else "u", c.clang_Type_getSizeOf(@"type") * 8 });
+            return;
+        },
+
+        c.CXType_Enum,
+        c.CXType_Record,
+        => {
+            const decl = c.clang_getTypeDeclaration(@"type");
+            const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, c.clang_getCursorLocation(decl));
+            if (c.clang_Type_getNumTemplateArguments(@"type") > 0 or !args.hashed_paths.contains(location.file)) {
+                continue :inner -2;
+            } else {
+                break :inner spelling;
+            }
+        },
+
+        c.CXType_Pointer, c.CXType_LValueReference => {
+            const pointee = c.clang_getPointeeType(@"type");
+            if (pointee.kind == c.CXType_Void or kind == c.CXType_LValueReference) {
+                try writer.writeAll("*"); // TODO: Maybe ?*
+            } else {
+                try writer.writeAll("[*c]");
+            }
+
+            var pointee_args = args;
+            pointee_args.annotate_with_alignment = false;
+
+            if (c.clang_isConstQualifiedType(pointee) != 0) {
+                try writer.writeAll("const ");
+            }
+
+            try __formatMemberOrType(pointee, allocator, writer, pointee_args);
+            return;
+        },
+
+        c.CXType_ConstantArray, c.CXType_IncompleteArray => {
+            const count = c.clang_getArraySize(@"type");
+
+            try writer.writeByte('[');
+            if (count >= 0 and !args.erase_array_size) {
+                try writer.print("{}", .{count});
+            } else {
+                try writer.writeByte('*');
+            }
+            try writer.writeByte(']');
+
+            var elm_args = args;
+            elm_args.annotate_with_alignment = false;
+
+            const elm = c.clang_getArrayElementType(@"type");
+            if (c.clang_isConstQualifiedType(elm) != 0) {
+                try writer.writeAll("const ");
+            }
+
+            try __formatMemberOrType(elm, allocator, writer, elm_args);
+            return;
+        },
+
+        c.CXType_FunctionProto => {
+            try writer.writeAll("*const fn (");
+
+            const n_params = c.clang_getNumArgTypes(@"type");
+            const variadic = c.clang_isFunctionTypeVariadic(@"type") != 0;
+            for (0..@intCast(n_params)) |i| {
+                try __formatMemberOrType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+                if (i < n_params - 1 or variadic) try writer.writeAll(", ");
+            }
+            if (variadic) try writer.writeAll("...");
+            try writer.writeAll(") callconv(.c) ");
+
+            try __formatMemberOrType(c.clang_getResultType(@"type"), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+
+            return;
+        },
+
+        else => continue :inner -1,
+        -1 => {
+            const kind_spelling = try ffi.getTypeKindSpelling(allocator, @"type".kind);
+            defer allocator.free(kind_spelling);
+
+            log.err("Not yet formatted type: '{s}' ({s})!", .{ spelling, kind_spelling });
+            continue :inner -2;
+        },
+        -2 => {
+            const size = c.clang_Type_getSizeOf(@"type");
+            if (size <= 0) {
+                try writer.writeAll("?*anyopaque");
+            } else {
+                try writer.print("[{}]u8", .{size});
+                if (args.annotate_with_alignment) try writer.print(" align({})", .{c.clang_Type_getAlignOf(@"type")});
+            }
+
+            return;
+        },
+    };
+
+    try writer.writeAll(out);
+}
+
+fn formatType(
+    @"type": c.CXType,
+    allocator: std.mem.Allocator,
+    writer: *std.Io.Writer,
+    args: FormatTypeArgs,
+) std.Io.Writer.Error!void {
+    __formatMemberOrType(@"type", allocator, writer, args) catch |e| switch (e) {
+        std.Io.Writer.Error.WriteFailed => return std.Io.Writer.Error.WriteFailed,
+        else => {
+            log.err("Type Formatting Error: {}", .{e});
+            return std.Io.Writer.Error.WriteFailed;
+        },
+    };
+}
+
+// -- Other Writer Functions -- //
+
+pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.mem.Allocator.Error![:0]const u8 {
+    return std.fmt.allocPrintSentinel(allocator, "{s}.zig", .{filename}, 0);
+}
+
+pub fn postProcessFile(allocator: std.mem.Allocator, path: []const u8) !void {
+    _ = try std.process.Child.run(.{
+        .allocator = allocator,
+        .argv = &.{ "zig", "fmt", std.fs.path.dirname(path) orelse "." },
+    });
+}
+
+pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) std.mem.Allocator.Error!bool {
+    _ = args;
+
+    const res = try std.process.Child.run(.{
+        .allocator = allocator,
+        .argv = &.{ "zig", "build-lib", path, "-fno-emit-bin" },
+    });
+
+    const success = res.term == .Exited and res.term.Exited == 0;
+    if (res.stdout.len > 0) std.debug.print("[zig build-lib {s} -fno-emit-bin stdout]:\n{s}", .{ path, res.stdout });
+    if (res.stderr.len > 0) std.debug.print("[zig build-lib {s} -fno-emit-bin stderr]:\n{s}", .{ path, res.stderr });
+
+    return success;
 }

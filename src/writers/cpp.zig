@@ -173,6 +173,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
 const FormatTypeArgs = struct {
     name_opt: ?[]const u8 = null,
+    
     override_const: ?bool = null,
     fake_pointer: bool = false,
 
@@ -197,8 +198,6 @@ fn __formatMemberOrType(
     outer: {
         const spelling = try ffi.getTypeSpelling(allocator, @"type");
         defer allocator.free(spelling);
-        const kind_spelling = try ffi.getTypeKindSpelling(allocator, @"type".kind);
-        defer allocator.free(kind_spelling);
 
         var kind = @as(c_int, @intCast(@"type".kind));
         if (args.fake_pointer) kind = c.CXType_Pointer;
@@ -294,6 +293,9 @@ fn __formatMemberOrType(
 
             else => continue :inner -1,
             -1 => {
+                const kind_spelling = try ffi.getTypeKindSpelling(allocator, @"type".kind);
+                defer allocator.free(kind_spelling);
+
                 log.err("Not yet formatted type: '{s}' ({s})!", .{ spelling, kind_spelling });
                 try writer.print("/* TODO: Not yet formatted type '{s}' ({s}) */", .{ spelling, kind_spelling });
 

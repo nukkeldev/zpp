@@ -19,10 +19,10 @@ pub const CppWrapper: IRWriter = .{
 };
 
 pub const ZigWrapper: IRWriter = .{
-    .formatFilename = @import("writers/zig/wrapper.zig").formatFilename,
-    .formatFile = @import("writers/zig/wrapper.zig").formatFile,
-    .postProcessFile = @import("writers/zig/util.zig").postProcessFile,
-    .checkFile = @import("writers/zig/util.zig").checkFile,
+    .formatFilename = @import("writers/zig.zig").formatFilename,
+    .formatFile = @import("writers/zig.zig").formatFile,
+    .postProcessFile = @import("writers/zig.zig").postProcessFile,
+    .checkFile = @import("writers/zig.zig").checkFile,
 };
 
 // -- Helpers -- //
