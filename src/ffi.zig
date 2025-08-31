@@ -6,11 +6,6 @@ pub const c = @cImport({
 
 // -- Types -- //
 
-pub fn isTypeDeclaredInMainFile(cx_type: c.CXType) bool {
-    const declaration = c.clang_getTypeDeclaration(cx_type);
-    return c.clang_Location_isFromMainFile(c.clang_getCursorLocation(declaration)) != 0;
-}
-
 pub fn isTypeComplete(cx_type: c.CXType) bool {
     return c.clang_Type_getSizeOf(cx_type) != c.CXTypeLayoutError_Incomplete;
 }
@@ -20,19 +15,6 @@ pub fn isTypeComplete(cx_type: c.CXType) bool {
 pub fn isCursorCanonical(cursor: c.CXCursor) bool {
     const canonical_cursor = c.clang_getCanonicalCursor(cursor);
     return c.clang_equalCursors(cursor, canonical_cursor) != 0;
-}
-
-pub fn getCursorNamespaceStack(allocator: std.mem.Allocator, cursor: c.CXCursor) !std.ArrayList([]const u8) {
-    var ns_stack = std.ArrayList([]const u8).empty;
-    var cur = cursor;
-    while (cur.kind != c.CXCursor_TranslationUnit) {
-        if (cur.kind == c.CXCursor_Namespace) {
-            try ns_stack.append(allocator, try getCursorSpelling(allocator, cursor));
-        }
-
-        cur = c.clang_getCursorSemanticParent(cur);
-    }
-    return ns_stack;
 }
 
 // -- Spelling -- //
