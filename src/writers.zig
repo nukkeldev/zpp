@@ -1,7 +1,7 @@
 // -- Imports -- //
 
 const std = @import("std");
-const IR = @import("ir/IR.zig");
+const IR = @import("ir.zig").IR;
 
 // -- Writers -- //
 
@@ -13,16 +13,16 @@ pub const IRWriter = struct {
 };
 
 pub const CppWrapper: IRWriter = .{
-    .formatFilename = @import("writers/cpp/wrapper.zig").formatFilename,
-    .formatFile = @import("writers/cpp/wrapper.zig").formatFile,
-    .checkFile = @import("writers/cpp/util.zig").checkFile,
+    .formatFilename = @import("writers/cpp.zig").formatFilename,
+    .formatFile = @import("writers/cpp.zig").formatFile,
+    .checkFile = @import("writers/cpp.zig").checkFile,
 };
 
 pub const ZigWrapper: IRWriter = .{
-    .formatFilename = @import("writers/zig/wrapper.zig").formatFilename,
-    .formatFile = @import("writers/zig/wrapper.zig").formatFile,
-    .postProcessFile = @import("writers/zig/util.zig").postProcessFile,
-    .checkFile = @import("writers/zig/util.zig").checkFile,
+    .formatFilename = @import("writers/zig.zig").formatFilename,
+    .formatFile = @import("writers/zig.zig").formatFile,
+    .postProcessFile = @import("writers/zig.zig").postProcessFile,
+    .checkFile = @import("writers/zig.zig").checkFile,
 };
 
 // -- Helpers -- //

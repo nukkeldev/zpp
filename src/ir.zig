@@ -1,72 +1,63 @@
 //! An intermediate representation of a C++ header.
-//!
-//! Requirements:
-//! - Represent as much information as necessary without _needing_ to expose underlying Index API cursors.
-//! - Maintain declaration ordering as some languages require it (i.e. C++).
-//!
-//! Structure:
-//! - The IR is flat (i.e. namespace scopes are it's own "instruction")
+//! TODO: Move data members into struct as we changed the name to be lowercase.
 
 // -- Imports -- //
 
 const std = @import("std");
-const ffi = @import("../ffi.zig");
+const ffi = @import("ffi.zig");
 
 const c = ffi.c;
 const Allocator = std.mem.Allocator;
 
-pub const TypeReference = @import("TypeReference.zig");
-const IR = @This();
-
 const log = std.log.scoped(.ir);
 
-const Instructions = std.array_list.Managed(Instruction);
+// -- IR -- //
 
-// -- Fields -- //
+pub const IR = struct {
+    paths: []const []const u8,
+    hashed_paths: std.StringHashMap(void),
 
-paths: []const []const u8,
-hashed_paths: std.StringHashMap(void),
+    arena: *std.heap.ArenaAllocator,
+    instrs: std.array_list.Managed(Instruction),
 
-arena: *std.heap.ArenaAllocator,
-instrs: Instructions,
+    // --
 
-// -- (De)initialization -- //
+    pub fn init(allocator: Allocator, paths: []const []const u8, hashed_paths: std.StringHashMap(void)) !IR {
+        const arena = try allocator.create(std.heap.ArenaAllocator);
+        arena.* = .init(allocator);
+        return .{
+            .paths = paths,
+            .hashed_paths = hashed_paths,
+            .arena = arena,
+            .instrs = .init(arena.allocator()),
+        };
+    }
 
-pub fn init(allocator: Allocator, paths: []const []const u8, hashed_paths: std.StringHashMap(void)) !IR {
-    const arena = try allocator.create(std.heap.ArenaAllocator);
-    arena.* = .init(allocator);
-    return .{
-        .paths = paths,
-        .hashed_paths = hashed_paths,
-        .arena = arena,
-        .instrs = .init(arena.allocator()),
-    };
-}
-
-pub fn deinit(ir: IR) void {
-    ir.arena.deinit();
-    ir.arena.child_allocator.destroy(ir.arena);
-}
+    pub fn deinit(ir: IR) void {
+        ir.arena.deinit();
+        ir.arena.child_allocator.destroy(ir.arena);
+    }
+};
 
 // -- Instructions -- //
 
-// TODO: A lot of the associated instruction information could be reduced with functions for c.clang_getCursorType(__cursor).
+// TODO: A lot of the associated instruction information could be reduced with functions for c.clang_getCursorType(cursor).
 // TODO: i.e. clang_Cursor_isVariadic, etc.
 pub const Instruction = struct {
     name: []const u8,
     state: enum { open, close } = .open,
     inner: Inner,
-    __cursor: c.CXCursor,
+    cursor: c.CXCursor,
 
     pub const Inner = union(enum) {
         Namespace,
         Struct,
         Union,
-        Enum: Enum,
-        Function: Function,
-        Member: TypeReference,
-        Value: Value,
-        Typedef: TypeReference,
+        Enum,
+        Function,
+        Member: c.CXType,
+        Value: Value, // TODO: This could probs be updated to a literal tagged union
+        Typedef: c.CXType,
     };
 
     pub fn getUniqueName(instr: *const Instruction, allocator: Allocator, ns_stack: []const []const u8) ![]const u8 {
@@ -79,29 +70,34 @@ pub const Instruction = struct {
     }
 };
 
-pub const Function = struct {
-    variadic: bool,
-    return_type: TypeReference,
-};
-
-pub const Enum = struct {
-    backing: TypeReference.Integral,
-};
-
 pub const Value = struct {
-    type: TypeReference,
+    type: c.CXType,
     value: ?*anyopaque,
 
     pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-        switch (self.type.inner) {
-            // TODO: Define i128 in a const
-            .integer, .enumeration => try writer.print("{}", .{@as(*i128, @ptrCast(@alignCast(self.value))).*}),
-            .included, .record => |name| {
-                log.err("Value serialization for {s} type '{s}' not yet implemented!", .{ @tagName(self.type.inner), name });
-                @panic("Value serialization error.");
-            },
+        switch (self.type.kind) {
+            c.CXType_Char_U,
+            c.CXType_UChar,
+            c.CXType_UShort,
+            c.CXType_UInt,
+            c.CXType_ULong,
+            c.CXType_ULongLong,
+            c.CXType_UInt128,
+            c.CXType_Char16,
+            c.CXType_Char32,
+            c.CXType_Char_S,
+            c.CXType_SChar,
+            c.CXType_WChar,
+            c.CXType_Short,
+            c.CXType_Int,
+            c.CXType_Long,
+            c.CXType_LongLong,
+            c.CXType_Int128,
+            c.CXType_Enum,
+            => try writer.print("{}", .{@as(*i128, @ptrCast(@alignCast(self.value))).*}),
+
             else => {
-                log.err("Value serialization for '{s}'s not yet implemented!", .{@tagName(self.type.inner)});
+                log.err("Value serialization for '{s}'s not yet implemented!", .{ffi.getTypeKindSpelling(std.heap.page_allocator, self.type.kind) catch @panic("OOM")});
                 @panic("Value serialization error.");
             },
         }
@@ -235,7 +231,7 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
                     _ = ctx_stack.pop();
                 },
                 .Union => outer: {
-                    if (c.clang_Cursor_isAnonymous(instr.__cursor) != 0) {
+                    if (c.clang_Cursor_isAnonymous(instr.cursor) != 0) {
                         if (ctx_stack.getLast()) |next| {
                             if (i != next) {
                                 ir.instrs.insertAssumeCapacity(next, ir.instrs.orderedRemove(i));
@@ -274,7 +270,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     const location = ffi.SourceLocation.fromCXSourceLocation(state.ir.arena.allocator(), raw_location) catch @panic("OOM");
     if (!state.ir.hashed_paths.contains(location.file)) return c.CXChildVisit_Continue;
 
-    const instr_opt = visitor(state.allocator, current_cursor, state.ir) catch |e| {
+    const instr_opt = visitor(state.allocator, current_cursor) catch |e| {
         state.err = e;
         return c.CXChildVisit_Break;
     };
@@ -296,10 +292,10 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
                 state.ir = ns.value_ptr;
                 defer state.ir = prev;
 
-                _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
+                _ = c.clang_visitChildren(instr.cursor, outerVisitor, @ptrCast(state));
             },
             else => {
-                _ = c.clang_visitChildren(instr.__cursor, outerVisitor, @ptrCast(state));
+                _ = c.clang_visitChildren(instr.cursor, outerVisitor, @ptrCast(state));
             },
         }
 
@@ -318,7 +314,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     return c.CXChildVisit_Continue;
 }
 
-fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruction {
+fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
     const name = try ffi.getCursorSpelling(allocator, cursor);
 
     // This prevents falsely parsing implementations of declared functions.
@@ -345,20 +341,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 c.CXCursor_FieldDecl,
                 c.CXCursor_ParmDecl,
-                => inner: {
-                    var type_ref = try TypeReference.fromCXType(allocator, c.clang_getCursorType(cursor), ir);
-                    if (c.clang_Cursor_isBitField(cursor) != 0) switch (type_ref.inner) {
-                        .integer => {
-                            type_ref.inner.integer.bits = @intCast(c.clang_getFieldDeclBitWidth(cursor));
-                        },
-                        // TODO: Enums?
-                        else => {
-                            std.log.err("Cannot have a non-integral bitfield '{s}'!", .{name});
-                            break :outer null;
-                        },
-                    };
-                    break :inner .{ .Member = type_ref };
-                },
+                => .{ .Member = c.clang_getCursorType(cursor) },
 
                 // -- Values -- //
 
@@ -369,7 +352,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                     break :inner .{
                         .Value = .{
-                            .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
+                            .type = c.clang_getCursorType(cursor),
                             .value = @ptrCast(value),
                         },
                     };
@@ -381,7 +364,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                     break :inner .{
                         .Value = .{
-                            .type = try .fromCXType(allocator, c.clang_getCursorType(cursor), ir),
+                            .type = c.clang_getCursorType(cursor),
                             .value = @ptrCast(value),
                         },
                     };
@@ -396,12 +379,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                     // TODO: Then convert the operator overloads to normal methods.
                     if (std.mem.startsWith(u8, name, "operator")) break :outer null;
 
-                    break :inner .{
-                        .Function = .{
-                            .variadic = c.clang_Cursor_isVariadic(cursor) != 0,
-                            .return_type = try .fromCXType(allocator, c.clang_getCursorResultType(cursor), ir),
-                        },
-                    };
+                    break :inner .Function;
                 },
 
                 // -- Structs & Unions -- //
@@ -416,22 +394,11 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 // -- Enums -- //
 
-                c.CXCursor_EnumDecl => inner: {
-                    break :inner .{
-                        .Enum = .{
-                            .backing = switch ((try TypeReference.fromCXType(allocator, c.clang_getEnumDeclIntegerType(cursor), ir)).inner) {
-                                .integer => |int| int,
-                                else => @panic("How did you back an enum with a non-integer type..."),
-                            },
-                        },
-                    };
-                },
+                c.CXCursor_EnumDecl => .Enum,
 
                 // -- Type Defintions -- //
 
-                c.CXCursor_TypedefDecl => .{
-                    .Typedef = try .fromCXType(allocator, c.clang_getTypedefDeclUnderlyingType(cursor), ir),
-                },
+                c.CXCursor_TypedefDecl => .{ .Typedef = c.clang_getTypedefDeclUnderlyingType(cursor) },
 
                 // -- TODO -- //
 
@@ -451,6 +418,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
 
                 c.CXCursor_TypeRef, // Any time a non-primitive type is used; we get this info other ways.
                 c.CXCursor_UsingDirective, // `using namespace ...`
+                c.CXCursor_UnexposedAttr, // TODO: Not too sure what this is but it on some declarations in `imgui.h`...
                 => break :outer null,
 
                 // -- Fallback -- //
@@ -460,7 +428,7 @@ fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor, ir: *IR) !?Instruct
                     break :outer null;
                 },
             },
-            .__cursor = cursor,
+            .cursor = cursor,
         };
     };
 
@@ -490,75 +458,6 @@ pub fn combineArgs(allocator: Allocator, args: []const []const [:0]const u8) ![]
         }
     }
     return out;
-}
-
-// -- Formatting -- //
-
-var DEBUG_formattingIndentLevel: usize = 0;
-const DEBUG_INDENTS = "\t" ** 256;
-pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-    for (self.instrs.items) |instr| {
-        if (instr.state == .close and DEBUG_formattingIndentLevel > 0) {
-            DEBUG_formattingIndentLevel -= 1;
-        }
-        const indent = DEBUG_INDENTS[0..DEBUG_formattingIndentLevel];
-
-        try writer.print("{s}[{s}] {s} '{s}' ([{s}]{s})\n", .{
-            indent,
-            @tagName(instr.state),
-            @tagName(instr.inner),
-            instr.name,
-            ffi.getCursorKindSpelling(self.arena.allocator(), instr.__cursor.kind) catch @panic("OOM"),
-            ffi.getCursorSpelling(self.arena.allocator(), instr.__cursor) catch @panic("OOM"),
-        });
-        if (instr.state == .close) continue;
-
-        switch (instr.inner) {
-            .Function => |f| try writer.print("{s}- Return Type: {f} ({f})\n", .{
-                indent,
-                f.return_type,
-                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = f.return_type.cx_type },
-            }),
-            .Value => |v| try writer.print("{s}- Type: {f} ({f})\n- Value: {f}\n", .{
-                indent,
-                v.type,
-                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = v.type.cx_type },
-                v,
-            }),
-            .Member => |m| try writer.print("{s}- Type: {f} ({f})\n", .{
-                indent,
-                m,
-                FormatRawType{ .allocator = self.arena.allocator(), .cx_type = m.cx_type },
-            }),
-            else => {},
-        }
-        if (c.clang_isCursorDefinition(instr.__cursor) != 0) try writer.print("{s}- Definition: true\n", .{indent});
-
-        if (instr.state == .open and instr.inner != .Member and instr.inner != .Value and instr.inner != .Typedef) DEBUG_formattingIndentLevel += 1;
-    }
-}
-
-const FormatRawType = struct {
-    allocator: std.mem.Allocator,
-    cx_type: c.CXType,
-
-    pub fn format(self: @This(), writer: *std.Io.Writer) std.Io.Writer.Error!void {
-        try writer.print("[{s}]{s}", .{
-            ffi.getTypeKindSpelling(self.allocator, self.cx_type.kind) catch @panic("OOM"),
-            ffi.getTypeSpelling(self.allocator, self.cx_type) catch @panic("OOM"),
-        });
-    }
-};
-
-/// Only for debugging.
-pub fn writeToFile(self: @This()) !void {
-    const file = try std.fs.cwd().createFile("ir.txt", .{});
-    defer file.close();
-
-    var writer = file.writer(&.{});
-    try self.format(&writer.interface);
-
-    log.debug("Wrote IR to ir.txt!", .{});
 }
 
 // -- Tests -- //

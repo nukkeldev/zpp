@@ -289,3 +289,26 @@ namespace NS1
         return 32;
     }
 }
+
+// -- Lots of Types -- //
+
+void lotsOfTypes(
+    char c,
+    signed char sc,
+    unsigned char uc,
+    short s,
+    unsigned short us,
+    int i,
+    unsigned int ui,
+    long l,
+    unsigned long ul,
+    long long ll,
+    unsigned long long ull,
+    float f,
+    double d,
+    long double ld,
+    int slice[],
+    int array[4],
+    int (*func)(char x, bool y, unsigned short z),
+    int (**func_ptr)(char x, bool y, unsigned short z)
+) {}
