@@ -2,6 +2,8 @@
 
 const std = @import("std");
 
+const tracy = @import("../util/tracy.zig");
+
 const ffi = @import("../ffi.zig");
 const c = ffi.c;
 
@@ -17,6 +19,9 @@ const ANONYMOUS_MEMBER_PREFIX = "anon";
 // -- Formatting -- //
 
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
+    var fz = tracy.FnZone.init(@src(), "zig.formatFile");
+    defer fz.end();
+
     const allocator = ir.arena.allocator();
 
     // Write preamble.
@@ -50,6 +55,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
     var i: usize = 0;
     while (i < ir.instrs.items.len) : (i += 1) {
+        var fz2 = tracy.FnZone.init(@src(), "instruction write");
+        defer fz2.end();
+
         const instr = ir.instrs.items[i];
         const unique_name = instr.getUniqueName(allocator, ns_stack.items) catch @panic("OOM");
 
@@ -336,6 +344,9 @@ fn writeSizeAndAlignmentChecks(
     instructions: []const ir_mod.Instruction,
     writer: *std.Io.Writer,
 ) std.Io.Writer.Error!void {
+    var fz = tracy.FnZone.init(@src(), "writeSizeAndAlignmentChecks");
+    defer fz.end();
+
     const expected_size = c.clang_Type_getSizeOf(cx_type);
     const expected_alignment = c.clang_Type_getAlignOf(cx_type);
     try writer.print(
@@ -408,12 +419,15 @@ const FormatTypeArgs = struct {
     annotate_with_alignment: bool = false,
 };
 
-fn __formatMemberOrType(
+fn __formatType(
     @"type": c.CXType,
     allocator: std.mem.Allocator,
     writer: *std.Io.Writer,
     args: FormatTypeArgs,
 ) !void {
+    var fz = tracy.FnZone.init(@src(), "formatType");
+    defer fz.end();
+
     // Format the type itself.
     const spelling_ = try ffi.getTypeSpelling(allocator, @"type");
     defer allocator.free(spelling_);
@@ -423,7 +437,7 @@ fn __formatMemberOrType(
 
     const kind = @as(c_int, @intCast(@"type".kind));
     const out = inner: switch (kind) {
-        c.CXType_Elaborated => return __formatMemberOrType(c.clang_getCanonicalType(@"type"), allocator, writer, args),
+        c.CXType_Elaborated => return __formatType(c.clang_getCanonicalType(@"type"), allocator, writer, args),
 
         c.CXType_Void => "void",
 
@@ -487,7 +501,7 @@ fn __formatMemberOrType(
                 try writer.writeAll("const ");
             }
 
-            try __formatMemberOrType(pointee, allocator, writer, pointee_args);
+            try __formatType(pointee, allocator, writer, pointee_args);
             return;
         },
 
@@ -510,7 +524,7 @@ fn __formatMemberOrType(
                 try writer.writeAll("const ");
             }
 
-            try __formatMemberOrType(elm, allocator, writer, elm_args);
+            try __formatType(elm, allocator, writer, elm_args);
             return;
         },
 
@@ -520,13 +534,13 @@ fn __formatMemberOrType(
             const n_params = c.clang_getNumArgTypes(@"type");
             const variadic = c.clang_isFunctionTypeVariadic(@"type") != 0;
             for (0..@intCast(n_params)) |i| {
-                try __formatMemberOrType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+                try __formatType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{ .hashed_paths = args.hashed_paths });
                 if (i < n_params - 1 or variadic) try writer.writeAll(", ");
             }
             if (variadic) try writer.writeAll("...");
             try writer.writeAll(") callconv(.c) ");
 
-            try __formatMemberOrType(c.clang_getResultType(@"type"), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+            try __formatType(c.clang_getResultType(@"type"), allocator, writer, .{ .hashed_paths = args.hashed_paths });
 
             return;
         },
@@ -561,7 +575,7 @@ fn formatType(
     writer: *std.Io.Writer,
     args: FormatTypeArgs,
 ) std.Io.Writer.Error!void {
-    __formatMemberOrType(@"type", allocator, writer, args) catch |e| switch (e) {
+    __formatType(@"type", allocator, writer, args) catch |e| switch (e) {
         std.Io.Writer.Error.WriteFailed => return std.Io.Writer.Error.WriteFailed,
         else => {
             log.err("Type Formatting Error: {}", .{e});
@@ -577,6 +591,9 @@ pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.me
 }
 
 pub fn postProcessFile(allocator: std.mem.Allocator, path: []const u8) !void {
+    var fz = tracy.FnZone.init(@src(), "zig.postProcessFile");
+    defer fz.end();
+
     _ = try std.process.Child.run(.{
         .allocator = allocator,
         .argv = &.{ "zig", "fmt", std.fs.path.dirname(path) orelse "." },
@@ -584,6 +601,9 @@ pub fn postProcessFile(allocator: std.mem.Allocator, path: []const u8) !void {
 }
 
 pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) std.mem.Allocator.Error!bool {
+    var fz = tracy.FnZone.init(@src(), "zig.checkFile");
+    defer fz.end();
+
     _ = args;
 
     const res = try std.process.Child.run(.{

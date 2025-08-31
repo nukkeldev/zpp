@@ -1,7 +1,15 @@
 const std = @import("std");
+const build_opts = @import("build-opts");
 
 pub const c = @cImport({
     @cInclude("clang-c/Index.h");
+
+    if (build_opts.enable_tracy) {
+        @cDefine("TRACY_ENABLE", {});
+        if (build_opts.enable_tracy_callstack) @cDefine("TRACY_CALLSTACK", {});
+
+        @cInclude("tracy/TracyC.h");
+    }
 });
 
 // -- Types -- //

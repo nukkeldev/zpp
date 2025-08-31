@@ -6,6 +6,13 @@ pub fn build(b: *std.Build) void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
+    const enable_tracy = b.option(bool, "tracy", "enables tracy") orelse false;
+    const enable_tracy_callstack = b.option(bool, "tracy-callstack", "enables tracy's callstack") orelse false;
+
+    const options = b.addOptions();
+    options.addOption(bool, "enable_tracy", enable_tracy);
+    options.addOption(bool, "enable_tracy_callstack", enable_tracy and enable_tracy_callstack);
+
     // -- Module -- //
 
     const mod = b.createModule(.{
@@ -17,7 +24,7 @@ pub fn build(b: *std.Build) void {
         .link_libcpp = target.result.os.tag == .windows,
     });
 
-    // Link LLVM
+    mod.addImport("build-opts", options.createModule());
 
     if (target.result.os.tag == .windows) {
         const path_to_llvm = b.option([]const u8, "llvm", "Path to LLVM installation [default: $LLVM_PATH]") orelse
@@ -27,6 +34,33 @@ pub fn build(b: *std.Build) void {
         mod.linkSystemLibrary("libclang", .{});
     } else {
         mod.linkSystemLibrary("clang", .{});
+    }
+
+    if (enable_tracy) {
+        const src = b.dependency("tracy", .{}).path(".");
+        const tracy_mod = b.createModule(.{
+            .target = target,
+            .optimize = optimize,
+            .link_libcpp = true,
+        });
+
+        tracy_mod.addCMacro("TRACY_ENABLE", "");
+        tracy_mod.addIncludePath(src.path(b, "public"));
+        tracy_mod.addCSourceFile(.{ .file = src.path(b, "public/TracyClient.cpp") });
+
+        if (target.result.os.tag == .windows) {
+            tracy_mod.linkSystemLibrary("dbghelp", .{ .needed = true });
+            tracy_mod.linkSystemLibrary("ws2_32", .{ .needed = true });
+        }
+
+        const tracy_lib = b.addLibrary(.{
+            .name = "tracy",
+            .root_module = tracy_mod,
+            .linkage = .static,
+        });
+        tracy_lib.installHeadersDirectory(src.path(b, "public"), "", .{ .include_extensions = &.{".h"} });
+
+        mod.linkLibrary(tracy_lib);
     }
 
     // -- Executable -- //

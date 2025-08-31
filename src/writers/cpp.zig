@@ -1,5 +1,7 @@
 const std = @import("std");
 
+const tracy = @import("../util/tracy.zig");
+
 const ffi = @import("../ffi.zig");
 const c = ffi.c;
 
@@ -11,6 +13,9 @@ const log = std.log.scoped(.cpp_wrapper);
 // -- Formatting -- //
 
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
+    var fz = tracy.FnZone.init(@src(), "cpp.formatFile");
+    defer fz.end();
+
     const allocator = ir.arena.allocator();
 
     // Write the preamble of the file.
@@ -37,6 +42,9 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     // Write instructions.
     var i: usize = 0;
     while (i < ir.instrs.items.len) : (i += 1) {
+        var fz2 = tracy.FnZone.init(@src(), "instruction write");
+        defer fz2.end();
+
         const instr = ir.instrs.items[i];
         const unique_name = instr.getUniqueName(allocator, ns_stack.items) catch @panic("OOM");
 
@@ -189,6 +197,9 @@ fn __formatMemberOrType(
     writer: *std.Io.Writer,
     args: FormatTypeArgs,
 ) !void {
+    var fz = tracy.FnZone.init(@src(), "formatMemberOrType");
+    defer fz.end();
+
     // Prefix with `const`.
     if ((args.override_const == null and c.clang_isConstQualifiedType(@"type") != 0) or
         (args.override_const != null and args.override_const.?))
@@ -346,6 +357,9 @@ pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.me
 }
 
 pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) std.mem.Allocator.Error!bool {
+    var fz = tracy.FnZone.init(@src(), "cpp.checkFile");
+    defer fz.end();
+
     const index = c.clang_createIndex(0, 1);
     defer c.clang_disposeIndex(index);
 
