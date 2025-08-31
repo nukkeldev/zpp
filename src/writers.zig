@@ -13,9 +13,9 @@ pub const IRWriter = struct {
 };
 
 pub const CppWrapper: IRWriter = .{
-    .formatFilename = @import("writers/cpp/wrapper.zig").formatFilename,
-    .formatFile = @import("writers/cpp/wrapper.zig").formatFile,
-    .checkFile = @import("writers/cpp/util.zig").checkFile,
+    .formatFilename = @import("writers/cpp.zig").formatFilename,
+    .formatFile = @import("writers/cpp.zig").formatFile,
+    .checkFile = @import("writers/cpp.zig").checkFile,
 };
 
 pub const ZigWrapper: IRWriter = .{
