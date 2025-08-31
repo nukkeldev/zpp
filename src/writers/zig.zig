@@ -1,10 +1,12 @@
 // -- Imports -- //
 
 const std = @import("std");
-const ffi = @import("../ffi.zig");
 
+const ffi = @import("../ffi.zig");
 const c = ffi.c;
-const IR = @import("../ir/IR.zig");
+
+const ir_mod = @import("../ir.zig");
+const IR = ir_mod.IR;
 
 const log = std.log.scoped(.zig_wrapper);
 
@@ -59,7 +61,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ns_stack.append(instr.name) catch @panic("OOM");
                     ctx_stack.append(.ns) catch @panic("OOM");
                 },
-                .Function => |f| {
+                .Function => {
                     const overload_ptr = (overload_map.getOrPutValue(unique_name, 0) catch @panic("OOM")).value_ptr;
                     defer overload_ptr.* += 1;
                     const suffix = if (overload_ptr.* == 0) "" else std.fmt.allocPrint(allocator, "_{}", .{overload_ptr.*}) catch @panic("OOM");
@@ -67,10 +69,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     try writer.print("pub const {s}{s} = {s}{s};\n", .{ instr.name, suffix, unique_name, suffix });
                     try writer.print("extern fn {s}{s}(", .{ unique_name, suffix });
 
+                    const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
+
                     if (ctx_stack.items.len > 0) switch (ctx_stack.getLast()) {
                         .struc, .uni => {
                             try writer.writeAll("self: *@This()");
-                            if (ir.instrs.items[i + 1].inner == .Member or f.return_type.inner == .record) try writer.writeAll(", ");
+                            if (ir.instrs.items[i + 1].inner == .Member or return_type.kind == c.CXType_Record) try writer.writeAll(", ");
                         },
                         else => {},
                     };
@@ -83,7 +87,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     member_stack.append(new_stack) catch @panic("OOM");
                 },
                 .Member => |m| {
-                    const in_bitfield = c.clang_Cursor_isBitField(instr.__cursor) != 0;
+                    const in_bitfield = c.clang_Cursor_isBitField(instr.cursor) != 0;
                     // TODO: I believe that this implictly verifies us to be "in" a struct.
                     if (in_bitfield and ctx_stack.getLast() != .bitfield) {
                         // NOTE: We haven't precomputed the size so we can't annotate the struct decl itself.
@@ -102,14 +106,14 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     }
 
                     if (in_bitfield) {
-                        const bits = c.clang_getFieldDeclBitWidth(instr.__cursor);
+                        const bits = c.clang_getFieldDeclBitWidth(instr.cursor);
 
                         try writer.print("{s}: u{},\n", .{ instr.name, bits });
 
                         ctx_stack.items[ctx_stack.items.len - 1].bitfield += @intCast(bits);
                     } else {
                         try writer.print("{s}: ", .{instr.name});
-                        try formatType(m.cx_type, allocator, writer, .{
+                        try formatType(m, allocator, writer, .{
                             .hashed_paths = &ir.hashed_paths,
                             .annotate_with_alignment = !in_bitfield and ctx_stack.getLast() != .func,
                             .erase_array_size = ctx_stack.getLast() == .func,
@@ -126,7 +130,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                 },
                 .Value => |v| {
                     try writer.print("pub const {s}: ", .{instr.name});
-                    try formatType(v.type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try formatType(v.type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
                     try writer.print(" = .{{.data={f}}};\n", .{v});
 
                     member_stack.getLast().append(i) catch @panic("OOM");
@@ -160,7 +164,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     }
                     _ = fwd_decls.remove(instr.name);
 
-                    const @"type" = c.clang_getEnumDeclIntegerType(instr.__cursor);
+                    const @"type" = c.clang_getEnumDeclIntegerType(instr.cursor);
                     try writer.print("pub const {s} = packed struct(", .{instr.name});
                     try formatType(@"type", allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
                     try writer.writeAll(") {\ndata: ");
@@ -195,15 +199,13 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.uni) catch @panic("OOM");
                 },
                 .Typedef => |t| {
-                    switch (t.inner) {
-                        .record, .enumeration, .included => |name| if (std.mem.eql(u8, name, instr.name)) {
-                            continue;
-                        },
-                        else => {},
+                    const spelling = ffi.getCursorSpelling(allocator, c.clang_getTypeDeclaration(t)) catch @panic("OOM");
+                    if (std.mem.eql(u8, spelling, instr.name)) {
+                        continue;
                     }
 
                     try writer.print("pub const {s} = ", .{instr.name});
-                    try formatType(t.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try formatType(t, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
                     try writer.writeAll(";\n\n");
                 },
             }
@@ -223,23 +225,26 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     _ = ns_stack.pop();
                     _ = ctx_stack.pop();
                 },
-                .Function => |f| {
-                    if (f.return_type.inner == .record) {
+                .Function => {
+                    const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
+                    const variadic = c.clang_Cursor_isVariadic(instr.cursor) != 0;
+
+                    if (return_type.kind == c.CXType_Record) {
                         // TODO: Avoid name collisions.
                         if (member_stack.getLast().items.len > 0) try writer.writeAll(", ");
                         try writer.writeAll("zpp_out: *");
-                        try formatType(f.return_type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                        try formatType(return_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
                     }
 
-                    if (f.variadic) {
-                        if (member_stack.getLast().items.len > 0 or f.return_type.inner == .record) try writer.writeAll(", ");
+                    if (variadic) {
+                        if (member_stack.getLast().items.len > 0 or return_type.kind == c.CXType_Record) try writer.writeAll(", ");
                         try writer.writeAll("...");
                     }
 
                     try writer.writeAll(") callconv(.c) ");
-                    switch (f.return_type.cx_type.kind) {
+                    switch (return_type.kind) {
                         c.CXType_Record => try writer.writeAll("void"),
-                        else => try formatType(f.return_type.cx_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths }),
+                        else => try formatType(return_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths }),
                     }
                     try writer.writeAll(";\n\n");
 
@@ -252,7 +257,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     try writeSizeAndAlignmentChecks(
                         instr.name,
-                        c.clang_getCursorType(instr.__cursor),
+                        c.clang_getCursorType(instr.cursor),
                         member_stack.getLast().items,
                         ir.instrs.items,
                         writer,
@@ -274,7 +279,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
 
                     try writeSizeAndAlignmentChecks(
                         instr.name,
-                        c.clang_getCursorType(instr.__cursor),
+                        c.clang_getCursorType(instr.cursor),
                         member_stack.getLast().items,
                         ir.instrs.items,
                         writer,
@@ -304,7 +309,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
         const instr = ir.instrs.items[entry.value_ptr.*];
         try writer.print("pub const {s} = {s};\n", .{ entry.key_ptr.*, switch (instr.inner) {
             .Struct, .Union, .Enum => outer: {
-                if (ffi.isTypeComplete(c.clang_getCursorType(instr.__cursor))) {
+                if (ffi.isTypeComplete(c.clang_getCursorType(instr.cursor))) {
                     break :outer "extern struct {}";
                 } else {
                     break :outer "?*anyopaque";
@@ -328,7 +333,7 @@ fn writeSizeAndAlignmentChecks(
     name: []const u8,
     cx_type: c.CXType,
     members: []const usize,
-    instructions: []const IR.Instruction,
+    instructions: []const ir_mod.Instruction,
     writer: *std.Io.Writer,
 ) std.Io.Writer.Error!void {
     const expected_size = c.clang_Type_getSizeOf(cx_type);
@@ -350,11 +355,11 @@ fn writeSizeAndAlignmentChecks(
         expected_alignment,
     });
 
-    var check_fields = false;
-    for (members) |m| {
-        if (instructions[m].inner.Member.inner == .not_yet_implemented) continue;
-        check_fields = true;
-    }
+    const check_fields = true;
+    // for (members) |m| {
+    //     if (instructions[m].inner.Member == .not_yet_implemented) continue;
+    //     check_fields = true;
+    // }
 
     if (check_fields) {
         try writer.writeAll(
@@ -365,10 +370,10 @@ fn writeSizeAndAlignmentChecks(
 
         for (members) |m| {
             const m_instr = instructions[m];
-            if (m_instr.inner.Member.inner == .not_yet_implemented) continue;
+            // if (m_instr.inner.Member == .not_yet_implemented) continue;
 
-            const m_size = c.clang_Type_getSizeOf(m_instr.inner.Member.cx_type);
-            const m_alignment = c.clang_Type_getAlignOf(m_instr.inner.Member.cx_type);
+            const m_size = c.clang_Type_getSizeOf(m_instr.inner.Member);
+            const m_alignment = c.clang_Type_getAlignOf(m_instr.inner.Member);
 
             try writer.print(
                 \\const T_{[name]s} = @TypeOf(this.{[name]s});

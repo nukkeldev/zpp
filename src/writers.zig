@@ -1,7 +1,7 @@
 // -- Imports -- //
 
 const std = @import("std");
-const IR = @import("ir/IR.zig");
+const IR = @import("ir.zig").IR;
 
 // -- Writers -- //
 

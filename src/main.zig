@@ -3,9 +3,9 @@
 // -- Imports -- //
 
 const std = @import("std");
-const writers = @import("writers.zig");
 
-const IR = @import("ir/IR.zig");
+const writers = @import("writers.zig");
+const ir_mod = @import("ir.zig");
 
 // -- Main -- //
 
@@ -104,7 +104,7 @@ pub fn main() !void {
 
     var time: i64 = getNs();
 
-    const ir = try IR.processFiles(arena.allocator(), args.header_paths, args.clang_args);
+    const ir = try ir_mod.processFiles(arena.allocator(), args.header_paths, args.clang_args);
 
     std.log.info("IR: {D}", .{getNs() - time});
     time = getNs();
@@ -116,8 +116,6 @@ pub fn main() !void {
 
     const out_dir = try std.fs.cwd().openDir(out_path, .{});
     try out_dir.setAsCwd();
-
-    try ir.writeToFile();
 
     try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
 
@@ -198,5 +196,5 @@ fn printUsageAndExit() noreturn {
 // -- Tests -- //
 
 comptime {
-    std.testing.refAllDecls(IR);
+    std.testing.refAllDeclsRecursive(ir_mod);
 }
