@@ -4,10 +4,12 @@
 // -- Imports -- //
 
 const std = @import("std");
-const ffi = @import("ffi.zig");
-
-const c = ffi.c;
 const Allocator = std.mem.Allocator;
+
+const ffi = @import("ffi.zig");
+const c = ffi.c;
+
+const tracy = @import("util/tracy.zig");
 
 const log = std.log.scoped(.ir);
 
@@ -128,7 +130,9 @@ pub const IRProcessingError = error{
 };
 
 pub fn processFiles(allocator: Allocator, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
-    // TODO: A cross-platform mmap implementation would go here nicely.
+    var fz = tracy.FnZone.init(@src(), "ir.processFiles");
+    defer fz.end();
+
     var contents = std.array_list.Managed(u8).init(allocator);
     for (paths) |path| try contents.print("#include \"{s}\"\n", .{path});
     log.debug("File Contents:\n{s}", .{contents.items});
@@ -141,10 +145,13 @@ pub fn processFiles(allocator: Allocator, paths: []const [:0]const u8, clang_arg
 }
 
 pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []const u8, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
+    var fz = tracy.FnZone.init(@src(), "ir.processBytes");
+    defer fz.end();
+
     const clang_version = c.clang_getClangVersion();
     defer c.clang_disposeString(clang_version);
 
-    log.info("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
+    log.debug("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
 
     var hashed_paths = std.StringHashMap(void).init(allocator);
     try hashed_paths.ensureTotalCapacity(@intCast(paths.len));
@@ -156,6 +163,7 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
         while (iter.next()) |p| log.debug("  {s}", .{p.*});
     }
 
+    fz.push(@src(), "clang parsing");
     const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
 
@@ -169,6 +177,7 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
 
     if (translation_unit == null) return IRProcessingError.ParseTUFail;
 
+    fz.replace(@src(), "diagnostic handling");
     const diagnostic_set = c.clang_getDiagnosticSetFromTU(translation_unit);
     for (0..c.clang_getNumDiagnosticsInSet(diagnostic_set)) |i| {
         const diagnostic = c.clang_getDiagnosticInSet(diagnostic_set, @intCast(i));
@@ -178,6 +187,7 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
         if (CLANG_CRASH_ON_FATAL_ERROR and severity == c.CXDiagnostic_Fatal) @panic("Fatal error while parsing TU! See above.");
     }
 
+    fz.replace(@src(), "visiting");
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
     var ir: IR = try .init(allocator, paths, hashed_paths);
@@ -195,8 +205,12 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
         if (visit_result == c.CXChildVisit_Break) std.process.exit(1);
     }
 
+    fz.replace(@src(), "post-processing");
     // Merge namespaced instructions.
     {
+        fz.push(@src(), "ns merging");
+        defer fz.pop();
+
         var i: usize = 0;
         while (i < ir.instrs.items.len) : (i += 1) {
             if (ir.instrs.items[i].inner == .Namespace) {
@@ -218,6 +232,9 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
     //   2.1.1 Move the member there.
     //  2.2 Store the index of the the subsequent _sibling_.
     {
+        fz.push(@src(), "field reordering");
+        defer fz.pop();
+
         var i: usize = 0;
         var ctx_stack: std.array_list.Managed(?usize) = .init(allocator);
         defer ctx_stack.deinit();
@@ -264,6 +281,9 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
 }
 
 fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c.CXClientData) callconv(.c) c.CXVisitorResult {
+    var fz = tracy.FnZone.init(@src(), "outerVisitor");
+    defer fz.end();
+
     var state: *ProcessingState = @ptrCast(@alignCast(client_data_opaque));
 
     const raw_location = c.clang_getCursorLocation(current_cursor);
@@ -315,6 +335,9 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
 }
 
 fn visitor(allocator: std.mem.Allocator, cursor: c.CXCursor) !?Instruction {
+    var fz = tracy.FnZone.init(@src(), "visitor");
+    defer fz.end();
+
     const name = try ffi.getCursorSpelling(allocator, cursor);
 
     // This prevents falsely parsing implementations of declared functions.

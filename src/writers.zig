@@ -1,6 +1,7 @@
 // -- Imports -- //
 
 const std = @import("std");
+const tracy = @import("util/tracy.zig");
 const IR = @import("ir.zig").IR;
 
 // -- Writers -- //
@@ -35,11 +36,18 @@ pub fn writeToFile(
     ir_writer: IRWriter,
     filename: []const u8,
 ) !void {
+    var fz = tracy.FnZone.init(@src(), "writers.writeToFile");
+    defer fz.end();
+
     const formatted_filename = try ir_writer.formatFilename(allocator, filename);
 
     var file = try std.fs.cwd().createFile(formatted_filename, .{});
-    var io_writer = file.writer(&.{});
+    var buffer: [32768]u8 = undefined;
+    @memset(&buffer, 0);
+
+    var io_writer = file.writer(&buffer);
     try ir_writer.formatFile(ir, &io_writer.interface);
+    try io_writer.interface.flush();
     file.close();
 
     if (ir_writer.postProcessFile) |ppf| try ppf(allocator, formatted_filename);
@@ -51,6 +59,9 @@ pub fn checkFile(
     filename: []const u8,
     args: anytype,
 ) !void {
+    var fz = tracy.FnZone.init(@src(), "writers.checkFile");
+    defer fz.end();
+
     if (ir_writer.checkFile == null) {
         std.log.err("Nothing to check the file with for IRWriter!", .{});
         return;

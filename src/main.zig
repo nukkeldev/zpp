@@ -4,6 +4,7 @@
 
 const std = @import("std");
 
+const tracy = @import("util/tracy.zig");
 const writers = @import("writers.zig");
 const ir_mod = @import("ir.zig");
 
@@ -46,6 +47,7 @@ const Args = struct {
             try writer.writeAll("\t");
         }
         try writer.writeAll("],\n}");
+        // TODO
     }
 };
 
@@ -92,23 +94,27 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
 }
 
 pub fn main() !void {
+    var fz = tracy.FnZone.init(@src(), "main");
+    defer fz.end();
+
     var debug_allocator = std.heap.DebugAllocator(.{}).init;
     defer _ = debug_allocator.deinit();
 
     const allocator = if (@import("builtin").mode == .Debug) debug_allocator.allocator() else std.heap.smp_allocator;
-    var arena = std.heap.ArenaAllocator.init(allocator);
+    var tracing_allocator = tracy.TracyAllocator(null).init(allocator);
+    var arena = std.heap.ArenaAllocator.init(if (tracy.enable) tracing_allocator.allocator() else allocator);
     defer arena.deinit();
 
+    fz.push(@src(), "arg parsing");
+
     const args = try processArgs(arena.allocator());
-    std.log.info("Invoking `zpp` with arguments: {f}", .{args});
+    std.log.debug("Invoking `zpp` with arguments: {f}", .{args});
 
-    var time: i64 = getNs();
-
+    fz.replace(@src(), "ir parsing");
+    const start = getNs();
     const ir = try ir_mod.processFiles(arena.allocator(), args.header_paths, args.clang_args);
 
-    std.log.info("IR: {D}", .{getNs() - time});
-    time = getNs();
-
+    fz.replace(@src(), "output setup");
     const out_path = try std.fmt.allocPrint(arena.allocator(), "zpp-out/{s}/", .{args.filename()});
 
     std.fs.cwd().deleteTree(out_path) catch {};
@@ -117,30 +123,19 @@ pub fn main() !void {
     const out_dir = try std.fs.cwd().openDir(out_path, .{});
     try out_dir.setAsCwd();
 
+    fz.replace(@src(), "c++");
     try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
-
-    std.log.info("C++ Wrapper: {D}", .{getNs() - time});
-    time = getNs();
-
     try writers.checkFile(arena.allocator(), writers.CppWrapper, args.filename(), .{
         .clang_args = args.clang_args,
         .source_dir = args.dirname(),
     });
 
-    std.log.info("C++ Wrapper Check: {D}", .{getNs() - time});
-    time = getNs();
-
+    fz.replace(@src(), "zig");
     try writers.writeToFile(arena.allocator(), ir, writers.ZigWrapper, args.filename());
-
-    std.log.info("Zig Wrapper: {D}", .{getNs() - time});
-    time = getNs();
-
     try writers.checkFile(arena.allocator(), writers.ZigWrapper, args.filename(), {});
 
-    std.log.info("Zig Wrapper Check: {D}", .{getNs() - time});
-    time = getNs();
-
     if (args.generate_sandbox) {
+        fz.replace(@src(), "copy sandbox");
         try std.fs.cwd().makePath("sandbox/src");
 
         var build = try std.mem.replaceOwned(u8, arena.allocator(), @embedFile("embed/sandbox/build.zig"), "FILENAME", args.filename());
@@ -158,10 +153,10 @@ pub fn main() !void {
         try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/build.zig", .data = build });
         try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/build.zig.zon", .data = @embedFile("embed/sandbox/build.zig.zon") });
         try std.fs.cwd().writeFile(.{ .sub_path = "sandbox/src/main.zig", .data = @embedFile("embed/sandbox/src/main.zig") });
-
-        std.log.info("Copy `sandbox`: {D}", .{getNs() - time});
-        time = getNs();
     }
+
+    std.log.info("Completed generation in {D}", .{getNs() - start});
+    std.log.info("Outputs in '{s}'.", .{out_path});
 }
 
 fn getNs() i64 {
