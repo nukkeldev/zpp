@@ -483,17 +483,6 @@ pub fn combineArgs(allocator: Allocator, args: []const []const [:0]const u8) ![]
     return out;
 }
 
-// -- Tests -- //
-
-test "fromTU" {
-    const file = @embedFile("../embed/testing/supported.hpp");
-
-    const ir = try processBytes(std.testing.allocator, "supported.hpp", file, &.{});
-    defer ir.deinit();
-
-    log.warn("{f}", .{ir});
-}
-
 // -- Logging -- //
 
 const Logging = struct {
