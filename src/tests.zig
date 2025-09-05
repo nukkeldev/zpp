@@ -39,13 +39,13 @@ fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer
     const expected_path_temp_root = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, test_name, "/", test_name, ".bkp" }, 0);
     const expected_path_temp = try writer.formatFilename(allocator, expected_path_temp_root);
 
-    const tag = path_final[std.mem.lastIndexOfScalar(u8, path_final, '.').?+1..];
+    const tag = path_final[std.mem.lastIndexOfScalar(u8, path_final, '.').? + 1 ..];
 
     const contents = try std.fs.cwd().readFileAlloc(allocator, header_path, std.math.maxInt(usize));
     const expected_opt: ?[]const u8 = blk: {
         const expected = std.fs.cwd().readFileAlloc(allocator, path_final, std.math.maxInt(usize)) catch |e| switch (e) {
             error.FileNotFound => {
-                std.debug.print("[WARN] Expected file for '{s}.{s}' not found.\n", .{test_name, tag});
+                std.debug.print("[WARN] Expected file for '{s}.{s}' not found.\n", .{ test_name, tag });
                 break :blk null;
             },
             else => return e,
@@ -61,15 +61,15 @@ fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer
     const output = try std.fs.cwd().readFileAlloc(allocator, expected_path_temp, std.math.maxInt(usize));
     blk: {
         if (expected_opt) |expected| if (std.mem.eql(u8, output, expected)) {
-            std.debug.print("[PASS] Test '{s}.{s}' matches.\n", .{test_name, tag});
+            std.debug.print("[PASS] Test '{s}.{s}' matches.\n", .{ test_name, tag });
             break :blk;
         };
-        std.debug.print("[FAIL] Test '{s}.{s}' failed.\n", .{test_name, tag});
+        std.debug.print("[FAIL] Test '{s}.{s}' failed.\n", .{ test_name, tag });
 
         const out = try std.process.Child.run(.{
             .allocator = allocator,
             .argv = &.{ "git", "diff", "--no-index", "--color=always", path_final, expected_path_temp },
         });
-        std.debug.print("{s}       Please update '{s}' if this is correct.\n", .{ out.stdout, path_final });
+        std.debug.print("{s}\n       Please update '{s}' if this is correct.\n", .{ out.stdout, path_final });
     }
 }

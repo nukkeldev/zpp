@@ -153,8 +153,8 @@ pub const StructWithAnonymousUnion = extern struct {
     }
 };
 
-pub const Enum = packed struct(i32) {
-    data: i32,
+pub const Enum = packed struct(u32) {
+    data: u32,
     pub const A: Enum = .{ .data = 0 };
     pub const B: Enum = .{ .data = 2 };
     pub const C: Enum = .{ .data = 1 };
@@ -271,7 +271,7 @@ pub const after_ns = after_ns__7ff6830c2603e947;
 extern fn after_ns__7ff6830c2603e947() callconv(.c) void;
 
 pub const lotsOfTypes = lotsOfTypes__85c39383158c72ab;
-extern fn lotsOfTypes__85c39383158c72ab(c: u8, sc: i8, uc: u8, s: i16, us: u16, i: i32, ui: u32, l: i32, ul: u32, ll: i64, ull: u64, f: f32, d: f64, ld: f128, slice: [*]i32, array: [*]i32, func: [*c]*const fn (u8, bool, u16) callconv(.c) i32, func_ptr: [*c][*c]*const fn (u8, bool, u16) callconv(.c) i32) callconv(.c) void;
+extern fn lotsOfTypes__85c39383158c72ab(c: u8, sc: i8, uc: u8, s: i16, us: u16, i: i32, ui: u32, l: i64, ul: u64, ll: i64, ull: u64, f: f32, d: f64, ld: f128, slice: [*]i32, array: [*]i32, func: [*c]*const fn (u8, bool, u16) callconv(.c) i32, func_ptr: [*c][*c]*const fn (u8, bool, u16) callconv(.c) i32) callconv(.c) void;
 
 pub const Opaque = ?*anyopaque;
 pub const ZST2 = extern struct {};
