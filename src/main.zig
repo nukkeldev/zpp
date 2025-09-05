@@ -191,5 +191,6 @@ fn printUsageAndExit() noreturn {
 // -- Tests -- //
 
 comptime {
-    std.testing.refAllDeclsRecursive(ir_mod);
+    // std.testing.refAllDeclsRecursive(ir_mod);
+    std.testing.refAllDecls(@import("tests.zig"));
 }
