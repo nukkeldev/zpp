@@ -12,6 +12,8 @@ const log = std.log.scoped(.cpp_wrapper);
 
 // -- Formatting -- //
 
+var revert_last_instruction: bool = false;
+
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var fz = tracy.FnZone.init(@src(), "cpp.formatFile");
     defer fz.end();
@@ -36,14 +38,23 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var overload_map: std.StringHashMap(usize) = .init(allocator);
     var ns_stack: std.array_list.Managed([]const u8) = .init(allocator);
     var fn_params: std.array_list.Managed(usize) = .init(allocator);
-    var ctx_stack: std.array_list.Managed(union(enum) { struct_like: c.CXType, ignore_members, function, root }) = .init(allocator);
+    // TODO: Add the writer's .end to the context.
+    var ctx_stack: std.array_list.Managed(union(enum) {
+        struct_like: c.CXType,
+        ignore_members,
+        function: usize,
+        root,
+    }) = .init(allocator);
     ctx_stack.append(.root) catch @panic("OOM");
 
     // Write instructions.
     var i: usize = 0;
+    var writer_offset: usize = writer.end;
     while (i < ir.instrs.items.len) : (i += 1) {
         var fz2 = tracy.FnZone.init(@src(), "instruction write");
         defer fz2.end();
+
+        writer_offset = writer.end;
 
         const instr = ir.instrs.items[i];
         const unique_name = instr.getUniqueName(allocator, ns_stack.items) catch @panic("OOM");
@@ -52,6 +63,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
             switch (instr.inner) {
                 .Namespace => ns_stack.append(instr.name) catch @panic("OOM"),
                 .Function => {
+                    const start = writer.end;
+
                     try writer.writeAll("extern \"C\" ");
 
                     const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
@@ -76,7 +89,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         if (ir.instrs.items[i + 1].inner == .Member or return_type.kind == c.CXType_Record) try writer.writeAll(", ");
                     }
 
-                    ctx_stack.append(.function) catch @panic("OOM");
+                    ctx_stack.append(.{ .function = start }) catch @panic("OOM");
                 },
                 .Member => |m| if (ctx_stack.getLast() == .function) {
                     try formatMemberOrType(m, allocator, writer, .{ .name_opt = instr.name });
@@ -160,7 +173,11 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     if (needs_to_return and variadic and !use_out_param) try writer.writeAll("\treturn __ZPP_result;\n");
                     try writer.writeAll("}\n");
 
-                    _ = ctx_stack.pop();
+                    const end = ctx_stack.pop().?.function;
+                    if (revert_last_instruction) {
+                        writer.end = end;
+                        revert_last_instruction = false;
+                    }
                 },
                 .Struct, .Enum, .Union => {
                     fn_params.clearAndFree();
@@ -211,6 +228,12 @@ fn __formatMemberOrType(
     outer: {
         const spelling = try ffi.getTypeSpelling(allocator, @"type");
         defer allocator.free(spelling);
+
+        if (@import("../writers.zig").untranslateable_types.has(spelling)) {
+            log.err("Cannot translate type: '{s}'", .{spelling});
+            revert_last_instruction = true;
+            return;
+        }
 
         var kind = @as(c_int, @intCast(@"type".kind));
         if (args.fake_pointer) kind = c.CXType_Pointer;

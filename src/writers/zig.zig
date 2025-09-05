@@ -16,6 +16,8 @@ const log = std.log.scoped(.zig_wrapper);
 
 const ANONYMOUS_MEMBER_PREFIX = "anon";
 
+var revert_last_instruction = false;
+
 // -- Formatting -- //
 
 pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
@@ -43,7 +45,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     var ns_stack: std.array_list.Managed([]const u8) = .init(allocator);
     var member_stack: std.array_list.Managed(*std.array_list.Managed(usize)) = .init(allocator);
     var ctx_stack: std.array_list.Managed(union(enum) {
-        func,
+        func: usize,
         /// The amount of unnamed fields
         struc: usize,
         enu,
@@ -70,6 +72,8 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     ctx_stack.append(.ns) catch @panic("OOM");
                 },
                 .Function => {
+                    const start = writer.end;
+
                     const overload_ptr = (overload_map.getOrPutValue(unique_name, 0) catch @panic("OOM")).value_ptr;
                     defer overload_ptr.* += 1;
                     const suffix = if (overload_ptr.* == 0) "" else std.fmt.allocPrint(allocator, "_{}", .{overload_ptr.*}) catch @panic("OOM");
@@ -87,7 +91,7 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                         else => {},
                     };
 
-                    ctx_stack.append(.func) catch @panic("OOM");
+                    ctx_stack.append(.{ .func = start }) catch @panic("OOM");
 
                     const new_stack = allocator.create(std.array_list.Managed(usize)) catch @panic("OOM");
                     new_stack.* = .init(allocator);
@@ -256,7 +260,12 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
                     }
                     try writer.writeAll(";\n\n");
 
-                    _ = ctx_stack.pop();
+                    const end = ctx_stack.pop().?.func;
+                    if (revert_last_instruction) {
+                        writer.end = end;
+                        revert_last_instruction = false;
+                    }
+
                     member_stack.getLast().clearAndFree();
                     _ = member_stack.pop();
                 },
@@ -434,6 +443,12 @@ fn __formatType(
 
     // Some spellings have `const` directly in them.
     const spelling = spelling_[if (std.mem.lastIndexOfScalar(u8, spelling_, ' ')) |i| i + 1 else 0..];
+
+    if (@import("../writers.zig").untranslateable_types.has(spelling)) {
+        log.err("Cannot translate type: '{s}'", .{spelling});
+        revert_last_instruction = true;
+        return;
+    }
 
     const kind = @as(c_int, @intCast(@"type".kind));
     const out = inner: switch (kind) {
