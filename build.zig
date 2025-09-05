@@ -19,6 +19,10 @@ pub fn build(b: *std.Build) void {
         .root_source_file = b.path("src/main.zig"),
         .target = target,
         .optimize = optimize,
+        .error_tracing = true,
+        .strip = false,
+        .unwind_tables = .sync,
+        .omit_frame_pointer = false,
         // TODO: I have zero clue why I originally did this.
         .link_libc = target.result.os.tag != .windows,
         .link_libcpp = target.result.os.tag == .windows,
@@ -41,6 +45,7 @@ pub fn build(b: *std.Build) void {
         const tracy_mod = b.createModule(.{
             .target = target,
             .optimize = optimize,
+            .omit_frame_pointer = false,
             .link_libcpp = true,
         });
 

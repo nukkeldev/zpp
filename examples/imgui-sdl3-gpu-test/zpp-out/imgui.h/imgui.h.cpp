@@ -390,17 +390,11 @@ extern "C" void ImGui_Text__5e98d1ef5d3f41bd(const char* fmt, ...) {
 	ImGui::Text(fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_TextV__2c72c613835cffdf(const char* fmt, char* args) {
-	ImGui::TextV(fmt, args);
-}
 extern "C" void ImGui_TextColored__49b349d1af96e43e(const ImVec4* col, const char* fmt, ...) {
 	va_list __ZPP_args;
 	va_start(__ZPP_args, fmt);
 	ImGui::TextColored(*col, fmt);
 	va_end(__ZPP_args);
-}
-extern "C" void ImGui_TextColoredV__5b9a62df7a068eb3(const ImVec4* col, const char* fmt, char* args) {
-	ImGui::TextColoredV(*col, fmt, args);
 }
 extern "C" void ImGui_TextDisabled__92ec324b4be7a6f2(const char* fmt, ...) {
 	va_list __ZPP_args;
@@ -408,17 +402,11 @@ extern "C" void ImGui_TextDisabled__92ec324b4be7a6f2(const char* fmt, ...) {
 	ImGui::TextDisabled(fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_TextDisabledV__50d5260b03138928(const char* fmt, char* args) {
-	ImGui::TextDisabledV(fmt, args);
-}
 extern "C" void ImGui_TextWrapped__ed4a12dc9ab5f371(const char* fmt, ...) {
 	va_list __ZPP_args;
 	va_start(__ZPP_args, fmt);
 	ImGui::TextWrapped(fmt);
 	va_end(__ZPP_args);
-}
-extern "C" void ImGui_TextWrappedV__d77e855d2ecbecb2(const char* fmt, char* args) {
-	ImGui::TextWrappedV(fmt, args);
 }
 extern "C" void ImGui_LabelText__1c776b0da8834f2a(const char* label, const char* fmt, ...) {
 	va_list __ZPP_args;
@@ -426,17 +414,11 @@ extern "C" void ImGui_LabelText__1c776b0da8834f2a(const char* label, const char*
 	ImGui::LabelText(label, fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_LabelTextV__3d1b1739b4df6cf6(const char* label, const char* fmt, char* args) {
-	ImGui::LabelTextV(label, fmt, args);
-}
 extern "C" void ImGui_BulletText__ff1531d7aa2f61e4(const char* fmt, ...) {
 	va_list __ZPP_args;
 	va_start(__ZPP_args, fmt);
 	ImGui::BulletText(fmt);
 	va_end(__ZPP_args);
-}
-extern "C" void ImGui_BulletTextV__aadf1dfd679856c6(const char* fmt, char* args) {
-	ImGui::BulletTextV(fmt, args);
 }
 extern "C" void ImGui_SeparatorText__73af9b61ffe008a9(const char* label) {
 	ImGui::SeparatorText(label);
@@ -582,13 +564,13 @@ extern "C" bool ImGui_VSliderInt__a09b40107a01af8e(const char* label, const ImVe
 extern "C" bool ImGui_VSliderScalar__bd3c9c10bbffc6d6(const char* label, const ImVec2* size, int data_type, void* p_data, const void* p_min, const void* p_max, const char* format, int flags) {
 	return ImGui::VSliderScalar(label, *size, data_type, p_data, p_min, p_max, format, flags);
 }
-extern "C" bool ImGui_InputText__fb724d96c0a5a49f(const char* label, char* buf, unsigned long long buf_size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
+extern "C" bool ImGui_InputText__fb724d96c0a5a49f(const char* label, char* buf, unsigned long buf_size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
 	return ImGui::InputText(label, buf, buf_size, flags, callback, user_data);
 }
-extern "C" bool ImGui_InputTextMultiline__5c703f04cb39e5b7(const char* label, char* buf, unsigned long long buf_size, const ImVec2* size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
+extern "C" bool ImGui_InputTextMultiline__5c703f04cb39e5b7(const char* label, char* buf, unsigned long buf_size, const ImVec2* size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
 	return ImGui::InputTextMultiline(label, buf, buf_size, *size, flags, callback, user_data);
 }
-extern "C" bool ImGui_InputTextWithHint__be7651508dbae4e5(const char* label, const char* hint, char* buf, unsigned long long buf_size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
+extern "C" bool ImGui_InputTextWithHint__be7651508dbae4e5(const char* label, const char* hint, char* buf, unsigned long buf_size, int flags, int (*callback)(ImGuiInputTextCallbackData*), void* user_data) {
 	return ImGui::InputTextWithHint(label, hint, buf, buf_size, flags, callback, user_data);
 }
 extern "C" bool ImGui_InputFloat__2f9ccf037b725ed1(const char* label, float* v, float step, float step_fast, const char* format, int flags) {
@@ -659,12 +641,6 @@ extern "C" bool ImGui_TreeNode__80a9c1696e07455c_2(const void* ptr_id, const cha
 	va_end(__ZPP_args);
 	return __ZPP_result;
 }
-extern "C" bool ImGui_TreeNodeV__3c21e2484267a68a(const char* str_id, const char* fmt, char* args) {
-	return ImGui::TreeNodeV(str_id, fmt, args);
-}
-extern "C" bool ImGui_TreeNodeV__3c21e2484267a68a_1(const void* ptr_id, const char* fmt, char* args) {
-	return ImGui::TreeNodeV(ptr_id, fmt, args);
-}
 extern "C" bool ImGui_TreeNodeEx__42a1e2acbf282485(const char* label, int flags) {
 	return ImGui::TreeNodeEx(label, flags);
 }
@@ -681,12 +657,6 @@ extern "C" bool ImGui_TreeNodeEx__42a1e2acbf282485_2(const void* ptr_id, int fla
 	auto __ZPP_result = ImGui::TreeNodeEx(ptr_id, flags, fmt);
 	va_end(__ZPP_args);
 	return __ZPP_result;
-}
-extern "C" bool ImGui_TreeNodeExV__ffd3bf7a0e94717d(const char* str_id, int flags, const char* fmt, char* args) {
-	return ImGui::TreeNodeExV(str_id, flags, fmt, args);
-}
-extern "C" bool ImGui_TreeNodeExV__ffd3bf7a0e94717d_1(const void* ptr_id, int flags, const char* fmt, char* args) {
-	return ImGui::TreeNodeExV(ptr_id, flags, fmt, args);
 }
 extern "C" void ImGui_TreePush__dea7774114d872d0(const char* str_id) {
 	ImGui::TreePush(str_id);
@@ -802,9 +772,6 @@ extern "C" void ImGui_SetTooltip__d2ed7ef13a15aae0(const char* fmt, ...) {
 	ImGui::SetTooltip(fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_SetTooltipV__a0f2a64e0e655680(const char* fmt, char* args) {
-	ImGui::SetTooltipV(fmt, args);
-}
 extern "C" bool ImGui_BeginItemTooltip__531fce1ba6d5b8f3() {
 	return ImGui::BeginItemTooltip();
 }
@@ -813,9 +780,6 @@ extern "C" void ImGui_SetItemTooltip__7cdd6c788467f187(const char* fmt, ...) {
 	va_start(__ZPP_args, fmt);
 	ImGui::SetItemTooltip(fmt);
 	va_end(__ZPP_args);
-}
-extern "C" void ImGui_SetItemTooltipV__e748cd91d869d2a1(const char* fmt, char* args) {
-	ImGui::SetItemTooltipV(fmt, args);
 }
 extern "C" bool ImGui_BeginPopup__af7decd105d1b4c6(const char* str_id, int flags) {
 	return ImGui::BeginPopup(str_id, flags);
@@ -970,13 +934,10 @@ extern "C" void ImGui_LogText__7232fc82144aa652(const char* fmt, ...) {
 	ImGui::LogText(fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_LogTextV__402bdaca43d29749(const char* fmt, char* args) {
-	ImGui::LogTextV(fmt, args);
-}
 extern "C" bool ImGui_BeginDragDropSource__361a5fddfc48e5d5(int flags) {
 	return ImGui::BeginDragDropSource(flags);
 }
-extern "C" bool ImGui_SetDragDropPayload__ab9655c620dc5c99(const char* type, const void* data, unsigned long long sz, int cond) {
+extern "C" bool ImGui_SetDragDropPayload__ab9655c620dc5c99(const char* type, const void* data, unsigned long sz, int cond) {
 	return ImGui::SetDragDropPayload(type, data, sz, cond);
 }
 extern "C" void ImGui_EndDragDropSource__216a2f7392882be3() {
@@ -1207,13 +1168,13 @@ extern "C" void ImGui_SetClipboardText__26f65c0f131689ec(const char* text) {
 extern "C" void ImGui_LoadIniSettingsFromDisk__38cda985091c2405(const char* ini_filename) {
 	ImGui::LoadIniSettingsFromDisk(ini_filename);
 }
-extern "C" void ImGui_LoadIniSettingsFromMemory__55d39b45163f01c5(const char* ini_data, unsigned long long ini_size) {
+extern "C" void ImGui_LoadIniSettingsFromMemory__55d39b45163f01c5(const char* ini_data, unsigned long ini_size) {
 	ImGui::LoadIniSettingsFromMemory(ini_data, ini_size);
 }
 extern "C" void ImGui_SaveIniSettingsToDisk__4308fa59e6d23842(const char* ini_filename) {
 	ImGui::SaveIniSettingsToDisk(ini_filename);
 }
-extern "C" const char* ImGui_SaveIniSettingsToMemory__8308ea65108965b5(unsigned long long* out_ini_size) {
+extern "C" const char* ImGui_SaveIniSettingsToMemory__8308ea65108965b5(unsigned long* out_ini_size) {
 	return ImGui::SaveIniSettingsToMemory(out_ini_size);
 }
 extern "C" void ImGui_DebugTextEncoding__88b855dfeda6c297(const char* text) {
@@ -1225,7 +1186,7 @@ extern "C" void ImGui_DebugFlashStyleColor__be2b30778c97f0ba(int idx) {
 extern "C" void ImGui_DebugStartItemPicker__c959107c78594aeb() {
 	ImGui::DebugStartItemPicker();
 }
-extern "C" bool ImGui_DebugCheckVersionAndDataLayout__d8eb31902979c556(const char* version_str, unsigned long long sz_io, unsigned long long sz_style, unsigned long long sz_vec2, unsigned long long sz_vec4, unsigned long long sz_drawvert, unsigned long long sz_drawidx) {
+extern "C" bool ImGui_DebugCheckVersionAndDataLayout__d8eb31902979c556(const char* version_str, unsigned long sz_io, unsigned long sz_style, unsigned long sz_vec2, unsigned long sz_vec4, unsigned long sz_drawvert, unsigned long sz_drawidx) {
 	return ImGui::DebugCheckVersionAndDataLayout(version_str, sz_io, sz_style, sz_vec2, sz_vec4, sz_drawvert, sz_drawidx);
 }
 extern "C" void ImGui_DebugLog__7f5d6c7f09c89a1(const char* fmt, ...) {
@@ -1234,16 +1195,13 @@ extern "C" void ImGui_DebugLog__7f5d6c7f09c89a1(const char* fmt, ...) {
 	ImGui::DebugLog(fmt);
 	va_end(__ZPP_args);
 }
-extern "C" void ImGui_DebugLogV__5278711653f9ba1a(const char* fmt, char* args) {
-	ImGui::DebugLogV(fmt, args);
-}
-extern "C" void ImGui_SetAllocatorFunctions__54c5400d9fef432e(void* (*alloc_func)(unsigned long long, void*), void (*free_func)(void*, void*), void* user_data) {
+extern "C" void ImGui_SetAllocatorFunctions__54c5400d9fef432e(void* (*alloc_func)(unsigned long, void*), void (*free_func)(void*, void*), void* user_data) {
 	ImGui::SetAllocatorFunctions(alloc_func, free_func, user_data);
 }
-extern "C" void ImGui_GetAllocatorFunctions__8dea9f4e68db4acc(void* (**p_alloc_func)(unsigned long long, void*), void (**p_free_func)(void*, void*), void** p_user_data) {
+extern "C" void ImGui_GetAllocatorFunctions__8dea9f4e68db4acc(void* (**p_alloc_func)(unsigned long, void*), void (**p_free_func)(void*, void*), void** p_user_data) {
 	ImGui::GetAllocatorFunctions(p_alloc_func, p_free_func, p_user_data);
 }
-extern "C" void* ImGui_MemAlloc__e60dc2713666b50d(unsigned long long size) {
+extern "C" void* ImGui_MemAlloc__e60dc2713666b50d(unsigned long size) {
 	return ImGui::MemAlloc(size);
 }
 extern "C" void ImGui_MemFree__30e36caf65239a1d(void* ptr) {
@@ -1428,9 +1386,6 @@ extern "C" void ImGuiTextBuffer_appendf__425058847a8ffd57(ImGuiTextBuffer* obj, 
 	va_start(__ZPP_args, fmt);
 	obj->appendf(fmt);
 	va_end(__ZPP_args);
-}
-extern "C" void ImGuiTextBuffer_appendfv__764f73c8a8f1dc15(ImGuiTextBuffer* obj, const char* fmt, char* args) {
-	obj->appendfv(fmt, args);
 }
 extern "C" void ImGuiStorage_Clear__aa706db1ef8639b7(ImGuiStorage* obj) {
 	obj->Clear();
@@ -1675,7 +1630,7 @@ extern "C" void ImDrawList_PathBezierQuadraticCurveTo__f4b9cfdeeb8ca1f9(ImDrawLi
 extern "C" void ImDrawList_PathRect__bafae6fef23b3e71(ImDrawList* obj, const ImVec2* rect_min, const ImVec2* rect_max, float rounding, int flags) {
 	obj->PathRect(*rect_min, *rect_max, rounding, flags);
 }
-extern "C" void ImDrawList_AddCallback__384ad06fabe49141(ImDrawList* obj, void (*callback)(const ImDrawList*, const ImDrawCmd*), void* userdata, unsigned long long userdata_size) {
+extern "C" void ImDrawList_AddCallback__384ad06fabe49141(ImDrawList* obj, void (*callback)(const ImDrawList*, const ImDrawCmd*), void* userdata, unsigned long userdata_size) {
 	obj->AddCallback(callback, userdata, userdata_size);
 }
 extern "C" void ImDrawList_AddDrawCmd__aba1aed43e859608(ImDrawList* obj) {
@@ -1804,10 +1759,10 @@ extern "C" void ImTextureData_SetStatus__66df4c23e7a11b1f(ImTextureData* obj, Im
 extern "C" void ImFontGlyphRangesBuilder_Clear__aa706db1ef8639b7(ImFontGlyphRangesBuilder* obj) {
 	obj->Clear();
 }
-extern "C" bool ImFontGlyphRangesBuilder_GetBit__8a77afa12d71618b(ImFontGlyphRangesBuilder* obj, unsigned long long n) {
+extern "C" bool ImFontGlyphRangesBuilder_GetBit__8a77afa12d71618b(ImFontGlyphRangesBuilder* obj, unsigned long n) {
 	return obj->GetBit(n);
 }
-extern "C" void ImFontGlyphRangesBuilder_SetBit__3f56b5396afc37ca(ImFontGlyphRangesBuilder* obj, unsigned long long n) {
+extern "C" void ImFontGlyphRangesBuilder_SetBit__3f56b5396afc37ca(ImFontGlyphRangesBuilder* obj, unsigned long n) {
 	obj->SetBit(n);
 }
 extern "C" void ImFontGlyphRangesBuilder_AddChar__43116d7c072a6a00(ImFontGlyphRangesBuilder* obj, unsigned short c) {
