@@ -18,11 +18,9 @@ pub fn initContext(allocator: std.mem.Allocator, ctx: *writers.Context) !void {
     const stack = try allocator.create(std.array_list.Managed(usize));
     stack.* = .init(allocator);
     try ctx.member_stack.append(stack);
-
-    try ctx.parent_stack.append(.{ .instr_idx = std.math.maxInt(usize), .writer_start = 0, .inner = .root });
 }
 
-pub fn writeFilePrefix(ir: *const IR, writer: *std.Io.Writer) !void {
+pub fn writeFilePrefix(ir: *const IR, _: *writers.Context, writer: *std.Io.Writer) !void {
     var fz = tracy.FnZone.init(@src(), "cpp.writeFilePrefix");
     defer fz.end();
 
@@ -40,7 +38,7 @@ pub fn writeFilePrefix(ir: *const IR, writer: *std.Io.Writer) !void {
     try writer.writeByte('\n');
 }
 
-pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: *std.Io.Writer) writers.IRWriter.WriteInstructionError!void {
+pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: *std.Io.Writer) !void {
     var fz = tracy.FnZone.init(@src(), "cpp.writeInstruction");
     defer fz.end();
 
@@ -57,9 +55,7 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
     };
 
     if (instr.state == .open) {
-        if (ctx.unwind_to_parent) {
-            return;
-        }
+        if (ctx.unwind_to_parent) return;
 
         switch (instr.inner) {
             .Namespace => ctx.ns_stack.append(instr.name) catch @panic("OOM"),
@@ -207,7 +203,7 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
     }
 }
 
-pub fn writeFileSuffix(_: *const IR, writer: *std.Io.Writer) !void {
+pub fn writeFileSuffix(_: *const IR, _: *writers.Context, writer: *std.Io.Writer) !void {
     try writer.writeAll("\n#pragma clang diagnostic pop");
 }
 
@@ -245,7 +241,7 @@ fn formatMemberOrType(
         defer allocator.free(spelling);
 
         if (@import("../writers.zig").untranslateable_types.has(spelling)) {
-            return writers.IRWriter.WriteInstructionError.Revert;
+            return error.Revert;
         }
 
         var kind = @as(c_int, @intCast(@"type".kind));

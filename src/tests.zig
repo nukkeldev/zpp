@@ -56,7 +56,7 @@ fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer
 
     // TODO: #includes for the original file are broken; need to resolve them to absolute paths.
     const ir = try ir_mod.processBytes(allocator, ir_mod.ROOT_FILE, contents, &.{ir_mod.ROOT_FILE}, &.{});
-    try writers.writeToFile(allocator, ir, writer, expected_path_temp_root);
+    try writers.writeToFile(allocator, &ir, writer, expected_path_temp_root);
 
     const output = try std.fs.cwd().readFileAlloc(allocator, expected_path_temp, std.math.maxInt(usize));
     blk: {

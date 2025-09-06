@@ -130,9 +130,9 @@ pub fn main() !void {
         .source_dir = args.dirname(),
     });
 
-    // fz.replace(@src(), "zig");
-    // try writers.writeToFile(arena.allocator(), &ir, writers.ZigWrapper, args.filename());
-    // try writers.checkFile(arena.allocator(), writers.ZigWrapper, args.filename(), {});
+    fz.replace(@src(), "zig");
+    try writers.writeToFile(arena.allocator(), &ir, writers.ZigWrapper, args.filename());
+    try writers.checkFile(arena.allocator(), writers.ZigWrapper, args.filename(), {});
 
     if (args.generate_sandbox) {
         fz.replace(@src(), "copy sandbox");

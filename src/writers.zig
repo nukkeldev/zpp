@@ -40,6 +40,24 @@ pub const Context = struct {
             root,
         },
     };
+
+    pub fn init(allocator: std.mem.Allocator) !Context {
+        var ctx: Context = .{
+            .fwd_decls = .init(allocator),
+            .overload_map = .init(allocator),
+            .ns_stack = .init(allocator),
+            .member_stack = .init(allocator),
+            .parent_stack = .init(allocator),
+        };
+
+        try ctx.parent_stack.append(.{
+            .instr_idx = std.math.maxInt(usize),
+            .writer_start = 0,
+            .inner = .root,
+        });
+
+        return ctx;
+    }
 };
 
 pub const IRWriter = struct {
@@ -53,15 +71,11 @@ pub const IRWriter = struct {
 
     const FormatFilename = *const fn (std.mem.Allocator, []const u8) std.mem.Allocator.Error![:0]const u8;
     const InitContext = *const fn (std.mem.Allocator, *Context) anyerror!void;
-    const WriteFilePrefix = *const fn (*const IR, *std.Io.Writer) anyerror!void;
-    const WriteInstruction = *const fn (*const IR, usize, *Context, *std.Io.Writer) WriteInstructionError!void;
-    const WriteFileSuffix = *const fn (*const IR, *std.Io.Writer) anyerror!void;
+    const WriteFilePrefix = *const fn (*const IR, *Context, *std.Io.Writer) anyerror!void;
+    const WriteInstruction = *const fn (*const IR, usize, *Context, *std.Io.Writer) anyerror!void;
+    const WriteFileSuffix = *const fn (*const IR, *Context, *std.Io.Writer) anyerror!void;
     const PostProcessFile = *const fn (std.mem.Allocator, []const u8) anyerror!void;
     const CheckFile = *const fn (std.mem.Allocator, [:0]const u8, anytype) anyerror!bool;
-
-    pub const WriteInstructionError = error{
-        Revert,
-    } || std.mem.Allocator.Error || std.Io.Writer.Error;
 };
 
 // -- Implementations -- //
@@ -76,12 +90,15 @@ pub const CppWrapper: IRWriter = .{
     .checkFile = cpp.checkFile,
 };
 
-// pub const ZigWrapper: IRWriter = .{
-//     .formatFilename = @import("writers/zig.zig").formatFilename,
-//     .formatFile = @import("writers/zig.zig").formatFile,
-//     .postProcessFile = @import("writers/zig.zig").postProcessFile,
-//     .checkFile = @import("writers/zig.zig").checkFile,
-// };
+const zig = @import("writers/zig.zig");
+pub const ZigWrapper: IRWriter = .{
+    .formatFilename = zig.formatFilename,
+    .writeInstruction = zig.writeInstruction,
+    .writeFilePrefix = zig.writeFilePrefix,
+    .writeFileSuffix = zig.writeFileSuffix,
+    .postProcessFile = zig.postProcessFile,
+    .checkFile = zig.checkFile,
+};
 
 // -- Un-translate-able Types -- //
 
@@ -109,16 +126,9 @@ pub fn writeToFile(
     @memset(&buffer, 0);
     var writer = file.writer(&buffer);
 
-    if (ir_writer.writeFilePrefix) |wfp| try wfp(ir, &writer.interface);
-
-    var ctx: Context = .{
-        .fwd_decls = .init(allocator),
-        .overload_map = .init(allocator),
-        .ns_stack = .init(allocator),
-        .member_stack = .init(allocator),
-        .parent_stack = .init(allocator),
-    };
+    var ctx: Context = try .init(allocator);
     if (ir_writer.initContext) |ic| try ic(allocator, &ctx);
+    if (ir_writer.writeFilePrefix) |wfp| try wfp(ir, &ctx, &writer.interface);
 
     var i: usize = 0;
     while (i < ir.instrs.items.len) : (i += 1) {
@@ -132,7 +142,7 @@ pub fn writeToFile(
         };
     }
 
-    if (ir_writer.writeFileSuffix) |wfs| try wfs(ir, &writer.interface);
+    if (ir_writer.writeFileSuffix) |wfs| try wfs(ir, &ctx, &writer.interface);
 
     try writer.interface.flush();
     file.close();
