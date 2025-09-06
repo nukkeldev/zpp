@@ -124,14 +124,14 @@ pub fn main() !void {
     try out_dir.setAsCwd();
 
     fz.replace(@src(), "c++");
-    try writers.writeToFile(arena.allocator(), ir, writers.CppWrapper, args.filename());
+    try writers.writeToFile(arena.allocator(), &ir, writers.CppWrapper, args.filename());
     try writers.checkFile(arena.allocator(), writers.CppWrapper, args.filename(), .{
         .clang_args = args.clang_args,
         .source_dir = args.dirname(),
     });
 
     fz.replace(@src(), "zig");
-    try writers.writeToFile(arena.allocator(), ir, writers.ZigWrapper, args.filename());
+    try writers.writeToFile(arena.allocator(), &ir, writers.ZigWrapper, args.filename());
     try writers.checkFile(arena.allocator(), writers.ZigWrapper, args.filename(), {});
 
     if (args.generate_sandbox) {

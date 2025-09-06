@@ -19,13 +19,7 @@ pub fn build(b: *std.Build) void {
 
     imgui_mod.addCSourceFile(.{ .file = b.path("zpp-out/imgui.h/imgui.h.cpp") });
 
-    b.addSearchPrefix("D:/SDL");
-    const copy_dll = b.addInstallBinFile(.{ .cwd_relative = "D:/SDL/bin/SDL3.dll" }, "SDL3.dll");
-    b.getInstallStep().dependOn(&copy_dll.step);
-
     imgui_mod.linkSystemLibrary("SDL3", .{});
-    // To resolve ZLS import error.
-    imgui_mod.addSystemIncludePath(.{ .cwd_relative = "D:/SDL/include" });
 
     imgui_mod.addIncludePath(b.path("imgui/"));
     imgui_mod.addCSourceFiles(.{
@@ -51,11 +45,6 @@ pub fn build(b: *std.Build) void {
 
     const run = b.addRunArtifact(exe);
     if (b.args) |args| run.addArgs(args);
-
-    if (target.result.os.tag == .windows) {
-        const PATH = (run.getEnvMap().getPtr("PATH") orelse @panic("Where is your PATH variable..."));
-        PATH.* = b.fmt("{s};D:\\SDL\\bin", .{PATH.*});
-    }
 
     const run_step = b.step("run", "runs the example");
     run_step.dependOn(&run.step);

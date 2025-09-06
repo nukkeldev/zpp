@@ -601,38 +601,20 @@ pub const ImGui = struct {
     pub const Text = ImGui_Text__5e98d1ef5d3f41bd;
     extern fn ImGui_Text__5e98d1ef5d3f41bd(fmt: [*c]const u8, ...) callconv(.c) void;
 
-    pub const TextV = ImGui_TextV__2c72c613835cffdf;
-    extern fn ImGui_TextV__2c72c613835cffdf(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
-
     pub const TextColored = ImGui_TextColored__49b349d1af96e43e;
     extern fn ImGui_TextColored__49b349d1af96e43e(col: *const ImVec4, fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const TextColoredV = ImGui_TextColoredV__5b9a62df7a068eb3;
-    extern fn ImGui_TextColoredV__5b9a62df7a068eb3(col: *const ImVec4, fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
 
     pub const TextDisabled = ImGui_TextDisabled__92ec324b4be7a6f2;
     extern fn ImGui_TextDisabled__92ec324b4be7a6f2(fmt: [*c]const u8, ...) callconv(.c) void;
 
-    pub const TextDisabledV = ImGui_TextDisabledV__50d5260b03138928;
-    extern fn ImGui_TextDisabledV__50d5260b03138928(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
-
     pub const TextWrapped = ImGui_TextWrapped__ed4a12dc9ab5f371;
     extern fn ImGui_TextWrapped__ed4a12dc9ab5f371(fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const TextWrappedV = ImGui_TextWrappedV__d77e855d2ecbecb2;
-    extern fn ImGui_TextWrappedV__d77e855d2ecbecb2(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
 
     pub const LabelText = ImGui_LabelText__1c776b0da8834f2a;
     extern fn ImGui_LabelText__1c776b0da8834f2a(label: [*c]const u8, fmt: [*c]const u8, ...) callconv(.c) void;
 
-    pub const LabelTextV = ImGui_LabelTextV__3d1b1739b4df6cf6;
-    extern fn ImGui_LabelTextV__3d1b1739b4df6cf6(label: [*c]const u8, fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
-
     pub const BulletText = ImGui_BulletText__ff1531d7aa2f61e4;
     extern fn ImGui_BulletText__ff1531d7aa2f61e4(fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const BulletTextV = ImGui_BulletTextV__aadf1dfd679856c6;
-    extern fn ImGui_BulletTextV__aadf1dfd679856c6(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
 
     pub const SeparatorText = ImGui_SeparatorText__73af9b61ffe008a9;
     extern fn ImGui_SeparatorText__73af9b61ffe008a9(label: [*c]const u8) callconv(.c) void;
@@ -847,12 +829,6 @@ pub const ImGui = struct {
     pub const TreeNode_2 = ImGui_TreeNode__80a9c1696e07455c_2;
     extern fn ImGui_TreeNode__80a9c1696e07455c_2(ptr_id: *const void, fmt: [*c]const u8, ...) callconv(.c) bool;
 
-    pub const TreeNodeV = ImGui_TreeNodeV__3c21e2484267a68a;
-    extern fn ImGui_TreeNodeV__3c21e2484267a68a(str_id: [*c]const u8, fmt: [*c]const u8, args: [*c]u8) callconv(.c) bool;
-
-    pub const TreeNodeV_1 = ImGui_TreeNodeV__3c21e2484267a68a_1;
-    extern fn ImGui_TreeNodeV__3c21e2484267a68a_1(ptr_id: *const void, fmt: [*c]const u8, args: [*c]u8) callconv(.c) bool;
-
     pub const TreeNodeEx = ImGui_TreeNodeEx__42a1e2acbf282485;
     extern fn ImGui_TreeNodeEx__42a1e2acbf282485(label: [*c]const u8, flags: i32) callconv(.c) bool;
 
@@ -861,12 +837,6 @@ pub const ImGui = struct {
 
     pub const TreeNodeEx_2 = ImGui_TreeNodeEx__42a1e2acbf282485_2;
     extern fn ImGui_TreeNodeEx__42a1e2acbf282485_2(ptr_id: *const void, flags: i32, fmt: [*c]const u8, ...) callconv(.c) bool;
-
-    pub const TreeNodeExV = ImGui_TreeNodeExV__ffd3bf7a0e94717d;
-    extern fn ImGui_TreeNodeExV__ffd3bf7a0e94717d(str_id: [*c]const u8, flags: i32, fmt: [*c]const u8, args: [*c]u8) callconv(.c) bool;
-
-    pub const TreeNodeExV_1 = ImGui_TreeNodeExV__ffd3bf7a0e94717d_1;
-    extern fn ImGui_TreeNodeExV__ffd3bf7a0e94717d_1(ptr_id: *const void, flags: i32, fmt: [*c]const u8, args: [*c]u8) callconv(.c) bool;
 
     pub const TreePush = ImGui_TreePush__dea7774114d872d0;
     extern fn ImGui_TreePush__dea7774114d872d0(str_id: [*c]const u8) callconv(.c) void;
@@ -979,17 +949,11 @@ pub const ImGui = struct {
     pub const SetTooltip = ImGui_SetTooltip__d2ed7ef13a15aae0;
     extern fn ImGui_SetTooltip__d2ed7ef13a15aae0(fmt: [*c]const u8, ...) callconv(.c) void;
 
-    pub const SetTooltipV = ImGui_SetTooltipV__a0f2a64e0e655680;
-    extern fn ImGui_SetTooltipV__a0f2a64e0e655680(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
-
     pub const BeginItemTooltip = ImGui_BeginItemTooltip__531fce1ba6d5b8f3;
     extern fn ImGui_BeginItemTooltip__531fce1ba6d5b8f3() callconv(.c) bool;
 
     pub const SetItemTooltip = ImGui_SetItemTooltip__7cdd6c788467f187;
     extern fn ImGui_SetItemTooltip__7cdd6c788467f187(fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const SetItemTooltipV = ImGui_SetItemTooltipV__e748cd91d869d2a1;
-    extern fn ImGui_SetItemTooltipV__e748cd91d869d2a1(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
 
     pub const BeginPopup = ImGui_BeginPopup__af7decd105d1b4c6;
     extern fn ImGui_BeginPopup__af7decd105d1b4c6(str_id: [*c]const u8, flags: i32) callconv(.c) bool;
@@ -1140,9 +1104,6 @@ pub const ImGui = struct {
 
     pub const LogText = ImGui_LogText__7232fc82144aa652;
     extern fn ImGui_LogText__7232fc82144aa652(fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const LogTextV = ImGui_LogTextV__402bdaca43d29749;
-    extern fn ImGui_LogTextV__402bdaca43d29749(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
 
     pub const BeginDragDropSource = ImGui_BeginDragDropSource__361a5fddfc48e5d5;
     extern fn ImGui_BeginDragDropSource__361a5fddfc48e5d5(flags: i32) callconv(.c) bool;
@@ -1402,9 +1363,6 @@ pub const ImGui = struct {
     pub const DebugLog = ImGui_DebugLog__7f5d6c7f09c89a1;
     extern fn ImGui_DebugLog__7f5d6c7f09c89a1(fmt: [*c]const u8, ...) callconv(.c) void;
 
-    pub const DebugLogV = ImGui_DebugLogV__5278711653f9ba1a;
-    extern fn ImGui_DebugLogV__5278711653f9ba1a(fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
-
     pub const SetAllocatorFunctions = ImGui_SetAllocatorFunctions__54c5400d9fef432e;
     extern fn ImGui_SetAllocatorFunctions__54c5400d9fef432e(alloc_func: [*c]*const fn (u64, *void) callconv(.c) *void, free_func: [*c]*const fn (*void, *void) callconv(.c) void, user_data: *void) callconv(.c) void;
 
@@ -1470,8 +1428,8 @@ pub const ImGui = struct {
     }
 };
 
-pub const ImGuiWindowFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiWindowFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiWindowFlags_None: ImGuiWindowFlags_ = .{ .data = 0 };
     pub const ImGuiWindowFlags_NoTitleBar: ImGuiWindowFlags_ = .{ .data = 1 };
     pub const ImGuiWindowFlags_NoResize: ImGuiWindowFlags_ = .{ .data = 2 };
@@ -1504,8 +1462,8 @@ pub const ImGuiWindowFlags_ = packed struct(i32) {
     pub const ImGuiWindowFlags_AlwaysUseWindowPadding: ImGuiWindowFlags_ = .{ .data = 1073741824 };
 };
 
-pub const ImGuiChildFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiChildFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiChildFlags_None: ImGuiChildFlags_ = .{ .data = 0 };
     pub const ImGuiChildFlags_Borders: ImGuiChildFlags_ = .{ .data = 1 };
     pub const ImGuiChildFlags_AlwaysUseWindowPadding: ImGuiChildFlags_ = .{ .data = 2 };
@@ -1519,8 +1477,8 @@ pub const ImGuiChildFlags_ = packed struct(i32) {
     pub const ImGuiChildFlags_Border: ImGuiChildFlags_ = .{ .data = 1 };
 };
 
-pub const ImGuiItemFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiItemFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiItemFlags_None: ImGuiItemFlags_ = .{ .data = 0 };
     pub const ImGuiItemFlags_NoTabStop: ImGuiItemFlags_ = .{ .data = 1 };
     pub const ImGuiItemFlags_NoNav: ImGuiItemFlags_ = .{ .data = 2 };
@@ -1530,8 +1488,8 @@ pub const ImGuiItemFlags_ = packed struct(i32) {
     pub const ImGuiItemFlags_AllowDuplicateId: ImGuiItemFlags_ = .{ .data = 32 };
 };
 
-pub const ImGuiInputTextFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiInputTextFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiInputTextFlags_None: ImGuiInputTextFlags_ = .{ .data = 0 };
     pub const ImGuiInputTextFlags_CharsDecimal: ImGuiInputTextFlags_ = .{ .data = 1 };
     pub const ImGuiInputTextFlags_CharsHexadecimal: ImGuiInputTextFlags_ = .{ .data = 2 };
@@ -1559,8 +1517,8 @@ pub const ImGuiInputTextFlags_ = packed struct(i32) {
     pub const ImGuiInputTextFlags_CallbackEdit: ImGuiInputTextFlags_ = .{ .data = 8388608 };
 };
 
-pub const ImGuiTreeNodeFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTreeNodeFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTreeNodeFlags_None: ImGuiTreeNodeFlags_ = .{ .data = 0 };
     pub const ImGuiTreeNodeFlags_Selected: ImGuiTreeNodeFlags_ = .{ .data = 1 };
     pub const ImGuiTreeNodeFlags_Framed: ImGuiTreeNodeFlags_ = .{ .data = 2 };
@@ -1588,8 +1546,8 @@ pub const ImGuiTreeNodeFlags_ = packed struct(i32) {
     pub const ImGuiTreeNodeFlags_AllowItemOverlap: ImGuiTreeNodeFlags_ = .{ .data = 4 };
 };
 
-pub const ImGuiPopupFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiPopupFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiPopupFlags_None: ImGuiPopupFlags_ = .{ .data = 0 };
     pub const ImGuiPopupFlags_MouseButtonLeft: ImGuiPopupFlags_ = .{ .data = 0 };
     pub const ImGuiPopupFlags_MouseButtonRight: ImGuiPopupFlags_ = .{ .data = 1 };
@@ -1604,8 +1562,8 @@ pub const ImGuiPopupFlags_ = packed struct(i32) {
     pub const ImGuiPopupFlags_AnyPopup: ImGuiPopupFlags_ = .{ .data = 3072 };
 };
 
-pub const ImGuiSelectableFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiSelectableFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiSelectableFlags_None: ImGuiSelectableFlags_ = .{ .data = 0 };
     pub const ImGuiSelectableFlags_NoAutoClosePopups: ImGuiSelectableFlags_ = .{ .data = 1 };
     pub const ImGuiSelectableFlags_SpanAllColumns: ImGuiSelectableFlags_ = .{ .data = 2 };
@@ -1617,8 +1575,8 @@ pub const ImGuiSelectableFlags_ = packed struct(i32) {
     pub const ImGuiSelectableFlags_AllowItemOverlap: ImGuiSelectableFlags_ = .{ .data = 16 };
 };
 
-pub const ImGuiComboFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiComboFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiComboFlags_None: ImGuiComboFlags_ = .{ .data = 0 };
     pub const ImGuiComboFlags_PopupAlignLeft: ImGuiComboFlags_ = .{ .data = 1 };
     pub const ImGuiComboFlags_HeightSmall: ImGuiComboFlags_ = .{ .data = 2 };
@@ -1631,8 +1589,8 @@ pub const ImGuiComboFlags_ = packed struct(i32) {
     pub const ImGuiComboFlags_HeightMask_: ImGuiComboFlags_ = .{ .data = 30 };
 };
 
-pub const ImGuiTabBarFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTabBarFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTabBarFlags_None: ImGuiTabBarFlags_ = .{ .data = 0 };
     pub const ImGuiTabBarFlags_Reorderable: ImGuiTabBarFlags_ = .{ .data = 1 };
     pub const ImGuiTabBarFlags_AutoSelectNewTabs: ImGuiTabBarFlags_ = .{ .data = 2 };
@@ -1649,8 +1607,8 @@ pub const ImGuiTabBarFlags_ = packed struct(i32) {
     pub const ImGuiTabBarFlags_FittingPolicyResizeDown: ImGuiTabBarFlags_ = .{ .data = 256 };
 };
 
-pub const ImGuiTabItemFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTabItemFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTabItemFlags_None: ImGuiTabItemFlags_ = .{ .data = 0 };
     pub const ImGuiTabItemFlags_UnsavedDocument: ImGuiTabItemFlags_ = .{ .data = 1 };
     pub const ImGuiTabItemFlags_SetSelected: ImGuiTabItemFlags_ = .{ .data = 2 };
@@ -1663,8 +1621,8 @@ pub const ImGuiTabItemFlags_ = packed struct(i32) {
     pub const ImGuiTabItemFlags_NoAssumedClosure: ImGuiTabItemFlags_ = .{ .data = 256 };
 };
 
-pub const ImGuiFocusedFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiFocusedFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiFocusedFlags_None: ImGuiFocusedFlags_ = .{ .data = 0 };
     pub const ImGuiFocusedFlags_ChildWindows: ImGuiFocusedFlags_ = .{ .data = 1 };
     pub const ImGuiFocusedFlags_RootWindow: ImGuiFocusedFlags_ = .{ .data = 2 };
@@ -1673,8 +1631,8 @@ pub const ImGuiFocusedFlags_ = packed struct(i32) {
     pub const ImGuiFocusedFlags_RootAndChildWindows: ImGuiFocusedFlags_ = .{ .data = 3 };
 };
 
-pub const ImGuiHoveredFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiHoveredFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiHoveredFlags_None: ImGuiHoveredFlags_ = .{ .data = 0 };
     pub const ImGuiHoveredFlags_ChildWindows: ImGuiHoveredFlags_ = .{ .data = 1 };
     pub const ImGuiHoveredFlags_RootWindow: ImGuiHoveredFlags_ = .{ .data = 2 };
@@ -1697,8 +1655,8 @@ pub const ImGuiHoveredFlags_ = packed struct(i32) {
     pub const ImGuiHoveredFlags_NoSharedDelay: ImGuiHoveredFlags_ = .{ .data = 131072 };
 };
 
-pub const ImGuiDragDropFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiDragDropFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiDragDropFlags_None: ImGuiDragDropFlags_ = .{ .data = 0 };
     pub const ImGuiDragDropFlags_SourceNoPreviewTooltip: ImGuiDragDropFlags_ = .{ .data = 1 };
     pub const ImGuiDragDropFlags_SourceNoDisableHover: ImGuiDragDropFlags_ = .{ .data = 2 };
@@ -1715,8 +1673,8 @@ pub const ImGuiDragDropFlags_ = packed struct(i32) {
     pub const ImGuiDragDropFlags_SourceAutoExpirePayload: ImGuiDragDropFlags_ = .{ .data = 32 };
 };
 
-pub const ImGuiDataType_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiDataType_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiDataType_S8: ImGuiDataType_ = .{ .data = 0 };
     pub const ImGuiDataType_U8: ImGuiDataType_ = .{ .data = 1 };
     pub const ImGuiDataType_S16: ImGuiDataType_ = .{ .data = 2 };
@@ -1924,8 +1882,8 @@ pub const ImGuiKey = packed struct(i32) {
     pub const ImGuiKey_ModSuper: ImGuiKey = .{ .data = 32768 };
 };
 
-pub const ImGuiInputFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiInputFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiInputFlags_None: ImGuiInputFlags_ = .{ .data = 0 };
     pub const ImGuiInputFlags_Repeat: ImGuiInputFlags_ = .{ .data = 1 };
     pub const ImGuiInputFlags_RouteActive: ImGuiInputFlags_ = .{ .data = 1024 };
@@ -1939,8 +1897,8 @@ pub const ImGuiInputFlags_ = packed struct(i32) {
     pub const ImGuiInputFlags_Tooltip: ImGuiInputFlags_ = .{ .data = 262144 };
 };
 
-pub const ImGuiConfigFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiConfigFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiConfigFlags_None: ImGuiConfigFlags_ = .{ .data = 0 };
     pub const ImGuiConfigFlags_NavEnableKeyboard: ImGuiConfigFlags_ = .{ .data = 1 };
     pub const ImGuiConfigFlags_NavEnableGamepad: ImGuiConfigFlags_ = .{ .data = 2 };
@@ -1953,8 +1911,8 @@ pub const ImGuiConfigFlags_ = packed struct(i32) {
     pub const ImGuiConfigFlags_NavNoCaptureKeyboard: ImGuiConfigFlags_ = .{ .data = 8 };
 };
 
-pub const ImGuiBackendFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiBackendFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiBackendFlags_None: ImGuiBackendFlags_ = .{ .data = 0 };
     pub const ImGuiBackendFlags_HasGamepad: ImGuiBackendFlags_ = .{ .data = 1 };
     pub const ImGuiBackendFlags_HasMouseCursors: ImGuiBackendFlags_ = .{ .data = 2 };
@@ -1963,8 +1921,8 @@ pub const ImGuiBackendFlags_ = packed struct(i32) {
     pub const ImGuiBackendFlags_RendererHasTextures: ImGuiBackendFlags_ = .{ .data = 16 };
 };
 
-pub const ImGuiCol_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiCol_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiCol_Text: ImGuiCol_ = .{ .data = 0 };
     pub const ImGuiCol_TextDisabled: ImGuiCol_ = .{ .data = 1 };
     pub const ImGuiCol_WindowBg: ImGuiCol_ = .{ .data = 2 };
@@ -2030,8 +1988,8 @@ pub const ImGuiCol_ = packed struct(i32) {
     pub const ImGuiCol_NavHighlight: ImGuiCol_ = .{ .data = 54 };
 };
 
-pub const ImGuiStyleVar_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiStyleVar_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiStyleVar_Alpha: ImGuiStyleVar_ = .{ .data = 0 };
     pub const ImGuiStyleVar_DisabledAlpha: ImGuiStyleVar_ = .{ .data = 1 };
     pub const ImGuiStyleVar_WindowPadding: ImGuiStyleVar_ = .{ .data = 2 };
@@ -2074,8 +2032,8 @@ pub const ImGuiStyleVar_ = packed struct(i32) {
     pub const ImGuiStyleVar_COUNT: ImGuiStyleVar_ = .{ .data = 39 };
 };
 
-pub const ImGuiButtonFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiButtonFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiButtonFlags_None: ImGuiButtonFlags_ = .{ .data = 0 };
     pub const ImGuiButtonFlags_MouseButtonLeft: ImGuiButtonFlags_ = .{ .data = 1 };
     pub const ImGuiButtonFlags_MouseButtonRight: ImGuiButtonFlags_ = .{ .data = 2 };
@@ -2084,8 +2042,8 @@ pub const ImGuiButtonFlags_ = packed struct(i32) {
     pub const ImGuiButtonFlags_EnableNav: ImGuiButtonFlags_ = .{ .data = 8 };
 };
 
-pub const ImGuiColorEditFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiColorEditFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiColorEditFlags_None: ImGuiColorEditFlags_ = .{ .data = 0 };
     pub const ImGuiColorEditFlags_NoAlpha: ImGuiColorEditFlags_ = .{ .data = 2 };
     pub const ImGuiColorEditFlags_NoPicker: ImGuiColorEditFlags_ = .{ .data = 4 };
@@ -2120,8 +2078,8 @@ pub const ImGuiColorEditFlags_ = packed struct(i32) {
     pub const ImGuiColorEditFlags_AlphaPreview: ImGuiColorEditFlags_ = .{ .data = 0 };
 };
 
-pub const ImGuiSliderFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiSliderFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiSliderFlags_None: ImGuiSliderFlags_ = .{ .data = 0 };
     pub const ImGuiSliderFlags_Logarithmic: ImGuiSliderFlags_ = .{ .data = 32 };
     pub const ImGuiSliderFlags_NoRoundToFormat: ImGuiSliderFlags_ = .{ .data = 64 };
@@ -2134,8 +2092,8 @@ pub const ImGuiSliderFlags_ = packed struct(i32) {
     pub const ImGuiSliderFlags_InvalidMask_: ImGuiSliderFlags_ = .{ .data = 1879048207 };
 };
 
-pub const ImGuiMouseButton_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiMouseButton_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiMouseButton_Left: ImGuiMouseButton_ = .{ .data = 0 };
     pub const ImGuiMouseButton_Right: ImGuiMouseButton_ = .{ .data = 1 };
     pub const ImGuiMouseButton_Middle: ImGuiMouseButton_ = .{ .data = 2 };
@@ -2167,8 +2125,8 @@ pub const ImGuiMouseSource = packed struct(i32) {
     pub const ImGuiMouseSource_COUNT: ImGuiMouseSource = .{ .data = 3 };
 };
 
-pub const ImGuiCond_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiCond_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiCond_None: ImGuiCond_ = .{ .data = 0 };
     pub const ImGuiCond_Always: ImGuiCond_ = .{ .data = 1 };
     pub const ImGuiCond_Once: ImGuiCond_ = .{ .data = 2 };
@@ -2176,8 +2134,8 @@ pub const ImGuiCond_ = packed struct(i32) {
     pub const ImGuiCond_Appearing: ImGuiCond_ = .{ .data = 8 };
 };
 
-pub const ImGuiTableFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTableFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTableFlags_None: ImGuiTableFlags_ = .{ .data = 0 };
     pub const ImGuiTableFlags_Resizable: ImGuiTableFlags_ = .{ .data = 1 };
     pub const ImGuiTableFlags_Reorderable: ImGuiTableFlags_ = .{ .data = 2 };
@@ -2217,8 +2175,8 @@ pub const ImGuiTableFlags_ = packed struct(i32) {
     pub const ImGuiTableFlags_SizingMask_: ImGuiTableFlags_ = .{ .data = 57344 };
 };
 
-pub const ImGuiTableColumnFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTableColumnFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTableColumnFlags_None: ImGuiTableColumnFlags_ = .{ .data = 0 };
     pub const ImGuiTableColumnFlags_Disabled: ImGuiTableColumnFlags_ = .{ .data = 1 };
     pub const ImGuiTableColumnFlags_DefaultHide: ImGuiTableColumnFlags_ = .{ .data = 2 };
@@ -2249,14 +2207,14 @@ pub const ImGuiTableColumnFlags_ = packed struct(i32) {
     pub const ImGuiTableColumnFlags_NoDirectResize_: ImGuiTableColumnFlags_ = .{ .data = 1073741824 };
 };
 
-pub const ImGuiTableRowFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTableRowFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTableRowFlags_None: ImGuiTableRowFlags_ = .{ .data = 0 };
     pub const ImGuiTableRowFlags_Headers: ImGuiTableRowFlags_ = .{ .data = 1 };
 };
 
-pub const ImGuiTableBgTarget_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiTableBgTarget_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiTableBgTarget_None: ImGuiTableBgTarget_ = .{ .data = 0 };
     pub const ImGuiTableBgTarget_RowBg0: ImGuiTableBgTarget_ = .{ .data = 1 };
     pub const ImGuiTableBgTarget_RowBg1: ImGuiTableBgTarget_ = .{ .data = 2 };
@@ -3053,49 +3011,49 @@ pub const ImGuiIO = extern struct {
     extern fn ImGuiIO_AddKeyEvent__79cb6b13b9087850(self: *@This(), key: ImGuiKey, down: bool) callconv(.c) void;
 
     pub const AddKeyAnalogEvent = ImGuiIO_AddKeyAnalogEvent__91a59c752b2c8f69;
-    extern fn ImGuiIO_AddKeyAnalogEvent__91a59c752b2c8f69(self: *@This(), key: ImGuiKey, down: bool, v: f32) callconv(.c) void;
+    extern fn ImGuiIO_AddKeyAnalogEvent__91a59c752b2c8f69(key: ImGuiKey, down: bool, v: f32) callconv(.c) void;
 
     pub const AddMousePosEvent = ImGuiIO_AddMousePosEvent__6a5ae49852237982;
-    extern fn ImGuiIO_AddMousePosEvent__6a5ae49852237982(self: *@This(), x: f32, y: f32) callconv(.c) void;
+    extern fn ImGuiIO_AddMousePosEvent__6a5ae49852237982(x: f32, y: f32) callconv(.c) void;
 
     pub const AddMouseButtonEvent = ImGuiIO_AddMouseButtonEvent__873f64368d0800ad;
-    extern fn ImGuiIO_AddMouseButtonEvent__873f64368d0800ad(self: *@This(), button: i32, down: bool) callconv(.c) void;
+    extern fn ImGuiIO_AddMouseButtonEvent__873f64368d0800ad(button: i32, down: bool) callconv(.c) void;
 
     pub const AddMouseWheelEvent = ImGuiIO_AddMouseWheelEvent__61413644d99c04e2;
-    extern fn ImGuiIO_AddMouseWheelEvent__61413644d99c04e2(self: *@This(), wheel_x: f32, wheel_y: f32) callconv(.c) void;
+    extern fn ImGuiIO_AddMouseWheelEvent__61413644d99c04e2(wheel_x: f32, wheel_y: f32) callconv(.c) void;
 
     pub const AddMouseSourceEvent = ImGuiIO_AddMouseSourceEvent__b4f7ab21a6d86864;
-    extern fn ImGuiIO_AddMouseSourceEvent__b4f7ab21a6d86864(self: *@This(), source: ImGuiMouseSource) callconv(.c) void;
+    extern fn ImGuiIO_AddMouseSourceEvent__b4f7ab21a6d86864(source: ImGuiMouseSource) callconv(.c) void;
 
     pub const AddFocusEvent = ImGuiIO_AddFocusEvent__41192bb31b77ed20;
-    extern fn ImGuiIO_AddFocusEvent__41192bb31b77ed20(self: *@This(), focused: bool) callconv(.c) void;
+    extern fn ImGuiIO_AddFocusEvent__41192bb31b77ed20(focused: bool) callconv(.c) void;
 
     pub const AddInputCharacter = ImGuiIO_AddInputCharacter__26e0c42aa5e46e8;
-    extern fn ImGuiIO_AddInputCharacter__26e0c42aa5e46e8(self: *@This(), c: u32) callconv(.c) void;
+    extern fn ImGuiIO_AddInputCharacter__26e0c42aa5e46e8(c: u32) callconv(.c) void;
 
     pub const AddInputCharacterUTF16 = ImGuiIO_AddInputCharacterUTF16__2169d52432cb4dcb;
-    extern fn ImGuiIO_AddInputCharacterUTF16__2169d52432cb4dcb(self: *@This(), c: u16) callconv(.c) void;
+    extern fn ImGuiIO_AddInputCharacterUTF16__2169d52432cb4dcb(c: u16) callconv(.c) void;
 
     pub const AddInputCharactersUTF8 = ImGuiIO_AddInputCharactersUTF8__3c58d6f975e77b50;
-    extern fn ImGuiIO_AddInputCharactersUTF8__3c58d6f975e77b50(self: *@This(), str: [*c]const u8) callconv(.c) void;
+    extern fn ImGuiIO_AddInputCharactersUTF8__3c58d6f975e77b50(str: [*c]const u8) callconv(.c) void;
 
     pub const SetKeyEventNativeData = ImGuiIO_SetKeyEventNativeData__a63fe37d8a604e48;
-    extern fn ImGuiIO_SetKeyEventNativeData__a63fe37d8a604e48(self: *@This(), key: ImGuiKey, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) callconv(.c) void;
+    extern fn ImGuiIO_SetKeyEventNativeData__a63fe37d8a604e48(key: ImGuiKey, native_keycode: i32, native_scancode: i32, native_legacy_index: i32) callconv(.c) void;
 
     pub const SetAppAcceptingEvents = ImGuiIO_SetAppAcceptingEvents__30fc01cc7fd18bc0;
-    extern fn ImGuiIO_SetAppAcceptingEvents__30fc01cc7fd18bc0(self: *@This(), accepting_events: bool) callconv(.c) void;
+    extern fn ImGuiIO_SetAppAcceptingEvents__30fc01cc7fd18bc0(accepting_events: bool) callconv(.c) void;
 
     pub const ClearEventsQueue = ImGuiIO_ClearEventsQueue__41d5a36029509f68;
-    extern fn ImGuiIO_ClearEventsQueue__41d5a36029509f68(self: *@This()) callconv(.c) void;
+    extern fn ImGuiIO_ClearEventsQueue__41d5a36029509f68() callconv(.c) void;
 
     pub const ClearInputKeys = ImGuiIO_ClearInputKeys__f830a232402b8df3;
-    extern fn ImGuiIO_ClearInputKeys__f830a232402b8df3(self: *@This()) callconv(.c) void;
+    extern fn ImGuiIO_ClearInputKeys__f830a232402b8df3() callconv(.c) void;
 
     pub const ClearInputMouse = ImGuiIO_ClearInputMouse__aa06d0a2639d5a2d;
-    extern fn ImGuiIO_ClearInputMouse__aa06d0a2639d5a2d(self: *@This()) callconv(.c) void;
+    extern fn ImGuiIO_ClearInputMouse__aa06d0a2639d5a2d() callconv(.c) void;
 
     pub const ClearInputCharacters = ImGuiIO_ClearInputCharacters__4f34a7dd4974c46b;
-    extern fn ImGuiIO_ClearInputCharacters__4f34a7dd4974c46b(self: *@This()) callconv(.c) void;
+    extern fn ImGuiIO_ClearInputCharacters__4f34a7dd4974c46b() callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 3032 or @alignOf(@This()) != 8) {
@@ -3842,16 +3800,16 @@ pub const ImGuiInputTextCallbackData = extern struct {
     extern fn ImGuiInputTextCallbackData_DeleteChars__fdf490243fc521e6(self: *@This(), pos: i32, bytes_count: i32) callconv(.c) void;
 
     pub const InsertChars = ImGuiInputTextCallbackData_InsertChars__ab3b97528f670601;
-    extern fn ImGuiInputTextCallbackData_InsertChars__ab3b97528f670601(self: *@This(), pos: i32, text: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
+    extern fn ImGuiInputTextCallbackData_InsertChars__ab3b97528f670601(pos: i32, text: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
 
     pub const SelectAll = ImGuiInputTextCallbackData_SelectAll__3c575d8b4bf3d558;
-    extern fn ImGuiInputTextCallbackData_SelectAll__3c575d8b4bf3d558(self: *@This()) callconv(.c) void;
+    extern fn ImGuiInputTextCallbackData_SelectAll__3c575d8b4bf3d558() callconv(.c) void;
 
     pub const ClearSelection = ImGuiInputTextCallbackData_ClearSelection__585ce22603f7fed8;
-    extern fn ImGuiInputTextCallbackData_ClearSelection__585ce22603f7fed8(self: *@This()) callconv(.c) void;
+    extern fn ImGuiInputTextCallbackData_ClearSelection__585ce22603f7fed8() callconv(.c) void;
 
     pub const HasSelection = ImGuiInputTextCallbackData_HasSelection__66682cf13e16f85;
-    extern fn ImGuiInputTextCallbackData_HasSelection__66682cf13e16f85(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiInputTextCallbackData_HasSelection__66682cf13e16f85() callconv(.c) bool;
 
     comptime {
         if (@sizeOf(@This()) != 64 or @alignOf(@This()) != 8) {
@@ -4016,13 +3974,13 @@ pub const ImGuiPayload = extern struct {
     extern fn ImGuiPayload_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
 
     pub const IsDataType = ImGuiPayload_IsDataType__bf7ca46f24b22f34;
-    extern fn ImGuiPayload_IsDataType__bf7ca46f24b22f34(self: *@This(), type: [*c]const u8) callconv(.c) bool;
+    extern fn ImGuiPayload_IsDataType__bf7ca46f24b22f34(type: [*c]const u8) callconv(.c) bool;
 
     pub const IsPreview = ImGuiPayload_IsPreview__b9e002b2013be0bb;
-    extern fn ImGuiPayload_IsPreview__b9e002b2013be0bb(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiPayload_IsPreview__b9e002b2013be0bb() callconv(.c) bool;
 
     pub const IsDelivery = ImGuiPayload_IsDelivery__34549633d149173c;
-    extern fn ImGuiPayload_IsDelivery__34549633d149173c(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiPayload_IsDelivery__34549633d149173c() callconv(.c) bool;
 
     comptime {
         if (@sizeOf(@This()) != 64 or @alignOf(@This()) != 8) {
@@ -4123,16 +4081,16 @@ pub const ImGuiTextFilter = extern struct {
     extern fn ImGuiTextFilter_Draw__1246f0071f7e07f4(self: *@This(), label: [*c]const u8, width: f32) callconv(.c) bool;
 
     pub const PassFilter = ImGuiTextFilter_PassFilter__fd6512fbb92515eb;
-    extern fn ImGuiTextFilter_PassFilter__fd6512fbb92515eb(self: *@This(), text: [*c]const u8, text_end: [*c]const u8) callconv(.c) bool;
+    extern fn ImGuiTextFilter_PassFilter__fd6512fbb92515eb(text: [*c]const u8, text_end: [*c]const u8) callconv(.c) bool;
 
     pub const Build = ImGuiTextFilter_Build__de679d4a386ff4fc;
-    extern fn ImGuiTextFilter_Build__de679d4a386ff4fc(self: *@This()) callconv(.c) void;
+    extern fn ImGuiTextFilter_Build__de679d4a386ff4fc() callconv(.c) void;
 
     pub const Clear = ImGuiTextFilter_Clear__aa706db1ef8639b7;
-    extern fn ImGuiTextFilter_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
+    extern fn ImGuiTextFilter_Clear__aa706db1ef8639b7() callconv(.c) void;
 
     pub const IsActive = ImGuiTextFilter_IsActive__acea8eb7ca92eb30;
-    extern fn ImGuiTextFilter_IsActive__acea8eb7ca92eb30(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiTextFilter_IsActive__acea8eb7ca92eb30() callconv(.c) bool;
 
     pub const ImGuiTextRange = extern struct {
         b: [*c]const u8,
@@ -4141,7 +4099,7 @@ pub const ImGuiTextFilter = extern struct {
         extern fn ImGuiTextFilter_ImGuiTextRange_empty__d69f37fa6e695e58(self: *@This()) callconv(.c) bool;
 
         pub const split = ImGuiTextFilter_ImGuiTextRange_split__65a48554f361a691;
-        extern fn ImGuiTextFilter_ImGuiTextRange_split__65a48554f361a691(self: *@This(), separator: u8, out: [*c][16]u8) callconv(.c) void;
+        extern fn ImGuiTextFilter_ImGuiTextRange_split__65a48554f361a691(separator: u8, out: [*c][16]u8) callconv(.c) void;
 
         comptime {
             if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
@@ -4210,34 +4168,31 @@ pub const ImGuiTextBuffer = extern struct {
     extern fn ImGuiTextBuffer_begin__462655cb005141ae(self: *@This()) callconv(.c) [*c]const u8;
 
     pub const end = ImGuiTextBuffer_end__335ba0e3df4d897e;
-    extern fn ImGuiTextBuffer_end__335ba0e3df4d897e(self: *@This()) callconv(.c) [*c]const u8;
+    extern fn ImGuiTextBuffer_end__335ba0e3df4d897e() callconv(.c) [*c]const u8;
 
     pub const size = ImGuiTextBuffer_size__11f57f7cb29f816;
-    extern fn ImGuiTextBuffer_size__11f57f7cb29f816(self: *@This()) callconv(.c) i32;
+    extern fn ImGuiTextBuffer_size__11f57f7cb29f816() callconv(.c) i32;
 
     pub const empty = ImGuiTextBuffer_empty__d69f37fa6e695e58;
-    extern fn ImGuiTextBuffer_empty__d69f37fa6e695e58(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiTextBuffer_empty__d69f37fa6e695e58() callconv(.c) bool;
 
     pub const clear = ImGuiTextBuffer_clear__ec8367d57559a9c1;
-    extern fn ImGuiTextBuffer_clear__ec8367d57559a9c1(self: *@This()) callconv(.c) void;
+    extern fn ImGuiTextBuffer_clear__ec8367d57559a9c1() callconv(.c) void;
 
     pub const resize = ImGuiTextBuffer_resize__3fedcedd914d771;
-    extern fn ImGuiTextBuffer_resize__3fedcedd914d771(self: *@This(), size: i32) callconv(.c) void;
+    extern fn ImGuiTextBuffer_resize__3fedcedd914d771(size: i32) callconv(.c) void;
 
     pub const reserve = ImGuiTextBuffer_reserve__a2b1dee6afc83005;
-    extern fn ImGuiTextBuffer_reserve__a2b1dee6afc83005(self: *@This(), capacity: i32) callconv(.c) void;
+    extern fn ImGuiTextBuffer_reserve__a2b1dee6afc83005(capacity: i32) callconv(.c) void;
 
     pub const c_str = ImGuiTextBuffer_c_str__64e7f71e33123c47;
-    extern fn ImGuiTextBuffer_c_str__64e7f71e33123c47(self: *@This()) callconv(.c) [*c]const u8;
+    extern fn ImGuiTextBuffer_c_str__64e7f71e33123c47() callconv(.c) [*c]const u8;
 
     pub const append = ImGuiTextBuffer_append__552938241af60409;
-    extern fn ImGuiTextBuffer_append__552938241af60409(self: *@This(), str: [*c]const u8, str_end: [*c]const u8) callconv(.c) void;
+    extern fn ImGuiTextBuffer_append__552938241af60409(str: [*c]const u8, str_end: [*c]const u8) callconv(.c) void;
 
     pub const appendf = ImGuiTextBuffer_appendf__425058847a8ffd57;
-    extern fn ImGuiTextBuffer_appendf__425058847a8ffd57(self: *@This(), fmt: [*c]const u8, ...) callconv(.c) void;
-
-    pub const appendfv = ImGuiTextBuffer_appendfv__764f73c8a8f1dc15;
-    extern fn ImGuiTextBuffer_appendfv__764f73c8a8f1dc15(self: *@This(), fmt: [*c]const u8, args: [*c]u8) callconv(.c) void;
+    extern fn ImGuiTextBuffer_appendf__425058847a8ffd57(fmt: [*c]const u8, ...) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
@@ -4324,46 +4279,46 @@ pub const ImGuiStorage = extern struct {
     extern fn ImGuiStorage_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
 
     pub const GetInt = ImGuiStorage_GetInt__b7dee219ce20e2e2;
-    extern fn ImGuiStorage_GetInt__b7dee219ce20e2e2(self: *@This(), key: u32, default_val: i32) callconv(.c) i32;
+    extern fn ImGuiStorage_GetInt__b7dee219ce20e2e2(key: u32, default_val: i32) callconv(.c) i32;
 
     pub const SetInt = ImGuiStorage_SetInt__7337203fa47c55e2;
-    extern fn ImGuiStorage_SetInt__7337203fa47c55e2(self: *@This(), key: u32, val: i32) callconv(.c) void;
+    extern fn ImGuiStorage_SetInt__7337203fa47c55e2(key: u32, val: i32) callconv(.c) void;
 
     pub const GetBool = ImGuiStorage_GetBool__5c653f5b949fd7bf;
-    extern fn ImGuiStorage_GetBool__5c653f5b949fd7bf(self: *@This(), key: u32, default_val: bool) callconv(.c) bool;
+    extern fn ImGuiStorage_GetBool__5c653f5b949fd7bf(key: u32, default_val: bool) callconv(.c) bool;
 
     pub const SetBool = ImGuiStorage_SetBool__7f6b0f60c9f6f96d;
-    extern fn ImGuiStorage_SetBool__7f6b0f60c9f6f96d(self: *@This(), key: u32, val: bool) callconv(.c) void;
+    extern fn ImGuiStorage_SetBool__7f6b0f60c9f6f96d(key: u32, val: bool) callconv(.c) void;
 
     pub const GetFloat = ImGuiStorage_GetFloat__97877b30c9330996;
-    extern fn ImGuiStorage_GetFloat__97877b30c9330996(self: *@This(), key: u32, default_val: f32) callconv(.c) f32;
+    extern fn ImGuiStorage_GetFloat__97877b30c9330996(key: u32, default_val: f32) callconv(.c) f32;
 
     pub const SetFloat = ImGuiStorage_SetFloat__989824410c1c797b;
-    extern fn ImGuiStorage_SetFloat__989824410c1c797b(self: *@This(), key: u32, val: f32) callconv(.c) void;
+    extern fn ImGuiStorage_SetFloat__989824410c1c797b(key: u32, val: f32) callconv(.c) void;
 
     pub const GetVoidPtr = ImGuiStorage_GetVoidPtr__9405e2ae8d404072;
-    extern fn ImGuiStorage_GetVoidPtr__9405e2ae8d404072(self: *@This(), key: u32) callconv(.c) *void;
+    extern fn ImGuiStorage_GetVoidPtr__9405e2ae8d404072(key: u32) callconv(.c) *void;
 
     pub const SetVoidPtr = ImGuiStorage_SetVoidPtr__c1b8c93fb2b2419f;
-    extern fn ImGuiStorage_SetVoidPtr__c1b8c93fb2b2419f(self: *@This(), key: u32, val: *void) callconv(.c) void;
+    extern fn ImGuiStorage_SetVoidPtr__c1b8c93fb2b2419f(key: u32, val: *void) callconv(.c) void;
 
     pub const GetIntRef = ImGuiStorage_GetIntRef__f33a0e33e7959969;
-    extern fn ImGuiStorage_GetIntRef__f33a0e33e7959969(self: *@This(), key: u32, default_val: i32) callconv(.c) [*c]i32;
+    extern fn ImGuiStorage_GetIntRef__f33a0e33e7959969(key: u32, default_val: i32) callconv(.c) [*c]i32;
 
     pub const GetBoolRef = ImGuiStorage_GetBoolRef__85033a02c7cc9dc3;
-    extern fn ImGuiStorage_GetBoolRef__85033a02c7cc9dc3(self: *@This(), key: u32, default_val: bool) callconv(.c) [*c]bool;
+    extern fn ImGuiStorage_GetBoolRef__85033a02c7cc9dc3(key: u32, default_val: bool) callconv(.c) [*c]bool;
 
     pub const GetFloatRef = ImGuiStorage_GetFloatRef__255f9ac951c31f26;
-    extern fn ImGuiStorage_GetFloatRef__255f9ac951c31f26(self: *@This(), key: u32, default_val: f32) callconv(.c) [*c]f32;
+    extern fn ImGuiStorage_GetFloatRef__255f9ac951c31f26(key: u32, default_val: f32) callconv(.c) [*c]f32;
 
     pub const GetVoidPtrRef = ImGuiStorage_GetVoidPtrRef__548a15cef2a47f27;
-    extern fn ImGuiStorage_GetVoidPtrRef__548a15cef2a47f27(self: *@This(), key: u32, default_val: *void) callconv(.c) [*c]*void;
+    extern fn ImGuiStorage_GetVoidPtrRef__548a15cef2a47f27(key: u32, default_val: *void) callconv(.c) [*c]*void;
 
     pub const BuildSortByKey = ImGuiStorage_BuildSortByKey__42586a5e1f02fc8c;
-    extern fn ImGuiStorage_BuildSortByKey__42586a5e1f02fc8c(self: *@This()) callconv(.c) void;
+    extern fn ImGuiStorage_BuildSortByKey__42586a5e1f02fc8c() callconv(.c) void;
 
     pub const SetAllInt = ImGuiStorage_SetAllInt__a875cd23b8275381;
-    extern fn ImGuiStorage_SetAllInt__a875cd23b8275381(self: *@This(), val: i32) callconv(.c) void;
+    extern fn ImGuiStorage_SetAllInt__a875cd23b8275381(val: i32) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
@@ -4385,8 +4340,8 @@ pub const ImGuiStorage = extern struct {
     }
 };
 
-pub const ImGuiListClipperFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiListClipperFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiListClipperFlags_None: ImGuiListClipperFlags_ = .{ .data = 0 };
     pub const ImGuiListClipperFlags_NoSetTableRowCounters: ImGuiListClipperFlags_ = .{ .data = 1 };
 };
@@ -4405,22 +4360,22 @@ pub const ImGuiListClipper = extern struct {
     extern fn ImGuiListClipper_Begin__5ca733c608c9f722(self: *@This(), items_count: i32, items_height: f32) callconv(.c) void;
 
     pub const End = ImGuiListClipper_End__891dd9019e6ec9af;
-    extern fn ImGuiListClipper_End__891dd9019e6ec9af(self: *@This()) callconv(.c) void;
+    extern fn ImGuiListClipper_End__891dd9019e6ec9af() callconv(.c) void;
 
     pub const Step = ImGuiListClipper_Step__298eadb463bb49ff;
-    extern fn ImGuiListClipper_Step__298eadb463bb49ff(self: *@This()) callconv(.c) bool;
+    extern fn ImGuiListClipper_Step__298eadb463bb49ff() callconv(.c) bool;
 
     pub const IncludeItemByIndex = ImGuiListClipper_IncludeItemByIndex__f08e56562db59244;
-    extern fn ImGuiListClipper_IncludeItemByIndex__f08e56562db59244(self: *@This(), item_index: i32) callconv(.c) void;
+    extern fn ImGuiListClipper_IncludeItemByIndex__f08e56562db59244(item_index: i32) callconv(.c) void;
 
     pub const IncludeItemsByIndex = ImGuiListClipper_IncludeItemsByIndex__d90805bfe22570c5;
-    extern fn ImGuiListClipper_IncludeItemsByIndex__d90805bfe22570c5(self: *@This(), item_begin: i32, item_end: i32) callconv(.c) void;
+    extern fn ImGuiListClipper_IncludeItemsByIndex__d90805bfe22570c5(item_begin: i32, item_end: i32) callconv(.c) void;
 
     pub const SeekCursorForItem = ImGuiListClipper_SeekCursorForItem__183810b578d0a352;
-    extern fn ImGuiListClipper_SeekCursorForItem__183810b578d0a352(self: *@This(), item_index: i32) callconv(.c) void;
+    extern fn ImGuiListClipper_SeekCursorForItem__183810b578d0a352(item_index: i32) callconv(.c) void;
 
     pub const IncludeRangeByIndices = ImGuiListClipper_IncludeRangeByIndices__9c5532868506f0e3;
-    extern fn ImGuiListClipper_IncludeRangeByIndices__9c5532868506f0e3(self: *@This(), item_begin: i32, item_end: i32) callconv(.c) void;
+    extern fn ImGuiListClipper_IncludeRangeByIndices__9c5532868506f0e3(item_begin: i32, item_end: i32) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 56 or @alignOf(@This()) != 8) {
@@ -4504,7 +4459,7 @@ pub const ImColor = extern struct {
     extern fn ImColor_SetHSV__29d163b7760fb9a9(self: *@This(), h: f32, s: f32, v: f32, a: f32) callconv(.c) void;
 
     pub const HSV = ImColor_HSV__d3b13a422d2b177d;
-    extern fn ImColor_HSV__d3b13a422d2b177d(self: *@This(), h: f32, s: f32, v: f32, a: f32, zpp_out: *ImColor) callconv(.c) void;
+    extern fn ImColor_HSV__d3b13a422d2b177d(h: f32, s: f32, v: f32, a: f32, zpp_out: *ImColor) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 4) {
@@ -4526,8 +4481,8 @@ pub const ImColor = extern struct {
     }
 };
 
-pub const ImGuiMultiSelectFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiMultiSelectFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiMultiSelectFlags_None: ImGuiMultiSelectFlags_ = .{ .data = 0 };
     pub const ImGuiMultiSelectFlags_SingleSelect: ImGuiMultiSelectFlags_ = .{ .data = 1 };
     pub const ImGuiMultiSelectFlags_NoSelectAll: ImGuiMultiSelectFlags_ = .{ .data = 2 };
@@ -4609,8 +4564,8 @@ pub const ImGuiMultiSelectIO = extern struct {
     }
 };
 
-pub const ImGuiSelectionRequestType = packed struct(i32) {
-    data: i32,
+pub const ImGuiSelectionRequestType = packed struct(u32) {
+    data: u32,
     pub const ImGuiSelectionRequestType_None: ImGuiSelectionRequestType = .{ .data = 0 };
     pub const ImGuiSelectionRequestType_SetAll: ImGuiSelectionRequestType = .{ .data = 1 };
     pub const ImGuiSelectionRequestType_SetRange: ImGuiSelectionRequestType = .{ .data = 2 };
@@ -4681,22 +4636,22 @@ pub const ImGuiSelectionBasicStorage = extern struct {
     extern fn ImGuiSelectionBasicStorage_ApplyRequests__1cadbca16391c47d(self: *@This(), ms_io: [*c]ImGuiMultiSelectIO) callconv(.c) void;
 
     pub const Contains = ImGuiSelectionBasicStorage_Contains__70c9d2abcdd2a6c9;
-    extern fn ImGuiSelectionBasicStorage_Contains__70c9d2abcdd2a6c9(self: *@This(), id: u32) callconv(.c) bool;
+    extern fn ImGuiSelectionBasicStorage_Contains__70c9d2abcdd2a6c9(id: u32) callconv(.c) bool;
 
     pub const Clear = ImGuiSelectionBasicStorage_Clear__aa706db1ef8639b7;
-    extern fn ImGuiSelectionBasicStorage_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
+    extern fn ImGuiSelectionBasicStorage_Clear__aa706db1ef8639b7() callconv(.c) void;
 
     pub const Swap = ImGuiSelectionBasicStorage_Swap__9022e627a89fdced;
-    extern fn ImGuiSelectionBasicStorage_Swap__9022e627a89fdced(self: *@This(), r: *ImGuiSelectionBasicStorage) callconv(.c) void;
+    extern fn ImGuiSelectionBasicStorage_Swap__9022e627a89fdced(r: *ImGuiSelectionBasicStorage) callconv(.c) void;
 
     pub const SetItemSelected = ImGuiSelectionBasicStorage_SetItemSelected__1a3b9a3fa1bad707;
-    extern fn ImGuiSelectionBasicStorage_SetItemSelected__1a3b9a3fa1bad707(self: *@This(), id: u32, selected: bool) callconv(.c) void;
+    extern fn ImGuiSelectionBasicStorage_SetItemSelected__1a3b9a3fa1bad707(id: u32, selected: bool) callconv(.c) void;
 
     pub const GetNextSelectedItem = ImGuiSelectionBasicStorage_GetNextSelectedItem__902e533fd4abd820;
-    extern fn ImGuiSelectionBasicStorage_GetNextSelectedItem__902e533fd4abd820(self: *@This(), opaque_it: [*c]*void, out_id: [*c]u32) callconv(.c) bool;
+    extern fn ImGuiSelectionBasicStorage_GetNextSelectedItem__902e533fd4abd820(opaque_it: [*c]*void, out_id: [*c]u32) callconv(.c) bool;
 
     pub const GetStorageIdFromIndex = ImGuiSelectionBasicStorage_GetStorageIdFromIndex__f91951ae0c34400f;
-    extern fn ImGuiSelectionBasicStorage_GetStorageIdFromIndex__f91951ae0c34400f(self: *@This(), idx: i32) callconv(.c) u32;
+    extern fn ImGuiSelectionBasicStorage_GetStorageIdFromIndex__f91951ae0c34400f(idx: i32) callconv(.c) u32;
 
     comptime {
         if (@sizeOf(@This()) != 48 or @alignOf(@This()) != 8) {
@@ -4993,16 +4948,16 @@ pub const ImDrawListSplitter = extern struct {
     extern fn ImDrawListSplitter_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
 
     pub const ClearFreeMemory = ImDrawListSplitter_ClearFreeMemory__ce21b858142da81f;
-    extern fn ImDrawListSplitter_ClearFreeMemory__ce21b858142da81f(self: *@This()) callconv(.c) void;
+    extern fn ImDrawListSplitter_ClearFreeMemory__ce21b858142da81f() callconv(.c) void;
 
     pub const Split = ImDrawListSplitter_Split__7a48201b3dc34681;
-    extern fn ImDrawListSplitter_Split__7a48201b3dc34681(self: *@This(), draw_list: [*c]ImDrawList, count: i32) callconv(.c) void;
+    extern fn ImDrawListSplitter_Split__7a48201b3dc34681(draw_list: [*c]ImDrawList, count: i32) callconv(.c) void;
 
     pub const Merge = ImDrawListSplitter_Merge__e1d95aa46fab9139;
-    extern fn ImDrawListSplitter_Merge__e1d95aa46fab9139(self: *@This(), draw_list: [*c]ImDrawList) callconv(.c) void;
+    extern fn ImDrawListSplitter_Merge__e1d95aa46fab9139(draw_list: [*c]ImDrawList) callconv(.c) void;
 
     pub const SetCurrentChannel = ImDrawListSplitter_SetCurrentChannel__968a9af2909008a3;
-    extern fn ImDrawListSplitter_SetCurrentChannel__968a9af2909008a3(self: *@This(), draw_list: [*c]ImDrawList, channel_idx: i32) callconv(.c) void;
+    extern fn ImDrawListSplitter_SetCurrentChannel__968a9af2909008a3(draw_list: [*c]ImDrawList, channel_idx: i32) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 24 or @alignOf(@This()) != 8) {
@@ -5038,8 +4993,8 @@ pub const ImDrawListSplitter = extern struct {
     }
 };
 
-pub const ImDrawFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImDrawFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImDrawFlags_None: ImDrawFlags_ = .{ .data = 0 };
     pub const ImDrawFlags_Closed: ImDrawFlags_ = .{ .data = 1 };
     pub const ImDrawFlags_RoundCornersTopLeft: ImDrawFlags_ = .{ .data = 16 };
@@ -5056,8 +5011,8 @@ pub const ImDrawFlags_ = packed struct(i32) {
     pub const ImDrawFlags_RoundCornersMask_: ImDrawFlags_ = .{ .data = 496 };
 };
 
-pub const ImDrawListFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImDrawListFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImDrawListFlags_None: ImDrawListFlags_ = .{ .data = 0 };
     pub const ImDrawListFlags_AntiAliasedLines: ImDrawListFlags_ = .{ .data = 1 };
     pub const ImDrawListFlags_AntiAliasedLinesUseTex: ImDrawListFlags_ = .{ .data = 2 };
@@ -5086,214 +5041,214 @@ pub const ImDrawList = extern struct {
     extern fn ImDrawList_PushClipRect__f943809f83598e77(self: *@This(), clip_rect_min: *const ImVec2, clip_rect_max: *const ImVec2, intersect_with_current_clip_rect: bool) callconv(.c) void;
 
     pub const PushClipRectFullScreen = ImDrawList_PushClipRectFullScreen__d87d2b69a83ebfcb;
-    extern fn ImDrawList_PushClipRectFullScreen__d87d2b69a83ebfcb(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_PushClipRectFullScreen__d87d2b69a83ebfcb() callconv(.c) void;
 
     pub const PopClipRect = ImDrawList_PopClipRect__6f450f6b6bf04dd1;
-    extern fn ImDrawList_PopClipRect__6f450f6b6bf04dd1(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_PopClipRect__6f450f6b6bf04dd1() callconv(.c) void;
 
     pub const PushTexture = ImDrawList_PushTexture__43e31c7b414568d1;
-    extern fn ImDrawList_PushTexture__43e31c7b414568d1(self: *@This(), tex_ref: ImTextureRef) callconv(.c) void;
+    extern fn ImDrawList_PushTexture__43e31c7b414568d1(tex_ref: ImTextureRef) callconv(.c) void;
 
     pub const PopTexture = ImDrawList_PopTexture__ed922f5407e83e5;
-    extern fn ImDrawList_PopTexture__ed922f5407e83e5(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_PopTexture__ed922f5407e83e5() callconv(.c) void;
 
     pub const GetClipRectMin = ImDrawList_GetClipRectMin__e36f40c5045d383f;
-    extern fn ImDrawList_GetClipRectMin__e36f40c5045d383f(self: *@This(), zpp_out: *ImVec2) callconv(.c) void;
+    extern fn ImDrawList_GetClipRectMin__e36f40c5045d383f(zpp_out: *ImVec2) callconv(.c) void;
 
     pub const GetClipRectMax = ImDrawList_GetClipRectMax__79d31aec55c127be;
-    extern fn ImDrawList_GetClipRectMax__79d31aec55c127be(self: *@This(), zpp_out: *ImVec2) callconv(.c) void;
+    extern fn ImDrawList_GetClipRectMax__79d31aec55c127be(zpp_out: *ImVec2) callconv(.c) void;
 
     pub const AddLine = ImDrawList_AddLine__e5f29d4649f0191a;
-    extern fn ImDrawList_AddLine__e5f29d4649f0191a(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddLine__e5f29d4649f0191a(p1: *const ImVec2, p2: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
 
     pub const AddRect = ImDrawList_AddRect__b92b7230f2449f36;
-    extern fn ImDrawList_AddRect__b92b7230f2449f36(self: *@This(), p_min: *const ImVec2, p_max: *const ImVec2, col: u32, rounding: f32, flags: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddRect__b92b7230f2449f36(p_min: *const ImVec2, p_max: *const ImVec2, col: u32, rounding: f32, flags: i32, thickness: f32) callconv(.c) void;
 
     pub const AddRectFilled = ImDrawList_AddRectFilled__4e4b6a12d64394a6;
-    extern fn ImDrawList_AddRectFilled__4e4b6a12d64394a6(self: *@This(), p_min: *const ImVec2, p_max: *const ImVec2, col: u32, rounding: f32, flags: i32) callconv(.c) void;
+    extern fn ImDrawList_AddRectFilled__4e4b6a12d64394a6(p_min: *const ImVec2, p_max: *const ImVec2, col: u32, rounding: f32, flags: i32) callconv(.c) void;
 
     pub const AddRectFilledMultiColor = ImDrawList_AddRectFilledMultiColor__7fb1ac96171fbb0f;
-    extern fn ImDrawList_AddRectFilledMultiColor__7fb1ac96171fbb0f(self: *@This(), p_min: *const ImVec2, p_max: *const ImVec2, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) callconv(.c) void;
+    extern fn ImDrawList_AddRectFilledMultiColor__7fb1ac96171fbb0f(p_min: *const ImVec2, p_max: *const ImVec2, col_upr_left: u32, col_upr_right: u32, col_bot_right: u32, col_bot_left: u32) callconv(.c) void;
 
     pub const AddQuad = ImDrawList_AddQuad__b9567c32701ac821;
-    extern fn ImDrawList_AddQuad__b9567c32701ac821(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddQuad__b9567c32701ac821(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
 
     pub const AddQuadFilled = ImDrawList_AddQuadFilled__32d808355708156;
-    extern fn ImDrawList_AddQuadFilled__32d808355708156(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddQuadFilled__32d808355708156(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const AddTriangle = ImDrawList_AddTriangle__839c1bda5fa36d9b;
-    extern fn ImDrawList_AddTriangle__839c1bda5fa36d9b(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddTriangle__839c1bda5fa36d9b(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32, thickness: f32) callconv(.c) void;
 
     pub const AddTriangleFilled = ImDrawList_AddTriangleFilled__6f3e91feaf4d5835;
-    extern fn ImDrawList_AddTriangleFilled__6f3e91feaf4d5835(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddTriangleFilled__6f3e91feaf4d5835(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const AddCircle = ImDrawList_AddCircle__878885030d60d707;
-    extern fn ImDrawList_AddCircle__878885030d60d707(self: *@This(), center: *const ImVec2, radius: f32, col: u32, num_segments: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddCircle__878885030d60d707(center: *const ImVec2, radius: f32, col: u32, num_segments: i32, thickness: f32) callconv(.c) void;
 
     pub const AddCircleFilled = ImDrawList_AddCircleFilled__687a011974bda59;
-    extern fn ImDrawList_AddCircleFilled__687a011974bda59(self: *@This(), center: *const ImVec2, radius: f32, col: u32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_AddCircleFilled__687a011974bda59(center: *const ImVec2, radius: f32, col: u32, num_segments: i32) callconv(.c) void;
 
     pub const AddNgon = ImDrawList_AddNgon__465ba4b43b357563;
-    extern fn ImDrawList_AddNgon__465ba4b43b357563(self: *@This(), center: *const ImVec2, radius: f32, col: u32, num_segments: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddNgon__465ba4b43b357563(center: *const ImVec2, radius: f32, col: u32, num_segments: i32, thickness: f32) callconv(.c) void;
 
     pub const AddNgonFilled = ImDrawList_AddNgonFilled__5b172f747bbde8f9;
-    extern fn ImDrawList_AddNgonFilled__5b172f747bbde8f9(self: *@This(), center: *const ImVec2, radius: f32, col: u32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_AddNgonFilled__5b172f747bbde8f9(center: *const ImVec2, radius: f32, col: u32, num_segments: i32) callconv(.c) void;
 
     pub const AddEllipse = ImDrawList_AddEllipse__b3611ef6c92a54c7;
-    extern fn ImDrawList_AddEllipse__b3611ef6c92a54c7(self: *@This(), center: *const ImVec2, radius: *const ImVec2, col: u32, rot: f32, num_segments: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddEllipse__b3611ef6c92a54c7(center: *const ImVec2, radius: *const ImVec2, col: u32, rot: f32, num_segments: i32, thickness: f32) callconv(.c) void;
 
     pub const AddEllipseFilled = ImDrawList_AddEllipseFilled__4cc0cea3e9a992c4;
-    extern fn ImDrawList_AddEllipseFilled__4cc0cea3e9a992c4(self: *@This(), center: *const ImVec2, radius: *const ImVec2, col: u32, rot: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_AddEllipseFilled__4cc0cea3e9a992c4(center: *const ImVec2, radius: *const ImVec2, col: u32, rot: f32, num_segments: i32) callconv(.c) void;
 
     pub const AddText = ImDrawList_AddText__848482798a5dab73;
-    extern fn ImDrawList_AddText__848482798a5dab73(self: *@This(), pos: *const ImVec2, col: u32, text_begin: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
+    extern fn ImDrawList_AddText__848482798a5dab73(pos: *const ImVec2, col: u32, text_begin: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
 
     pub const AddText_1 = ImDrawList_AddText__848482798a5dab73_1;
-    extern fn ImDrawList_AddText__848482798a5dab73_1(self: *@This(), font: [*c]ImFont, font_size: f32, pos: *const ImVec2, col: u32, text_begin: [*c]const u8, text_end: [*c]const u8, wrap_width: f32, cpu_fine_clip_rect: [*c]const ImVec4) callconv(.c) void;
+    extern fn ImDrawList_AddText__848482798a5dab73_1(font: [*c]ImFont, font_size: f32, pos: *const ImVec2, col: u32, text_begin: [*c]const u8, text_end: [*c]const u8, wrap_width: f32, cpu_fine_clip_rect: [*c]const ImVec4) callconv(.c) void;
 
     pub const AddBezierCubic = ImDrawList_AddBezierCubic__1b89674b2033b251;
-    extern fn ImDrawList_AddBezierCubic__1b89674b2033b251(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32, thickness: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_AddBezierCubic__1b89674b2033b251(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: u32, thickness: f32, num_segments: i32) callconv(.c) void;
 
     pub const AddBezierQuadratic = ImDrawList_AddBezierQuadratic__b82a27c2a901c507;
-    extern fn ImDrawList_AddBezierQuadratic__b82a27c2a901c507(self: *@This(), p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32, thickness: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_AddBezierQuadratic__b82a27c2a901c507(p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, col: u32, thickness: f32, num_segments: i32) callconv(.c) void;
 
     pub const AddPolyline = ImDrawList_AddPolyline__45bf13b6538ff203;
-    extern fn ImDrawList_AddPolyline__45bf13b6538ff203(self: *@This(), points: [*c]const ImVec2, num_points: i32, col: u32, flags: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_AddPolyline__45bf13b6538ff203(points: [*c]const ImVec2, num_points: i32, col: u32, flags: i32, thickness: f32) callconv(.c) void;
 
     pub const AddConvexPolyFilled = ImDrawList_AddConvexPolyFilled__50f1806a31e400a1;
-    extern fn ImDrawList_AddConvexPolyFilled__50f1806a31e400a1(self: *@This(), points: [*c]const ImVec2, num_points: i32, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddConvexPolyFilled__50f1806a31e400a1(points: [*c]const ImVec2, num_points: i32, col: u32) callconv(.c) void;
 
     pub const AddConcavePolyFilled = ImDrawList_AddConcavePolyFilled__26de669f15d5134f;
-    extern fn ImDrawList_AddConcavePolyFilled__26de669f15d5134f(self: *@This(), points: [*c]const ImVec2, num_points: i32, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddConcavePolyFilled__26de669f15d5134f(points: [*c]const ImVec2, num_points: i32, col: u32) callconv(.c) void;
 
     pub const AddImage = ImDrawList_AddImage__dfc8a724ffe2e724;
-    extern fn ImDrawList_AddImage__dfc8a724ffe2e724(self: *@This(), tex_ref: ImTextureRef, p_min: *const ImVec2, p_max: *const ImVec2, uv_min: *const ImVec2, uv_max: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddImage__dfc8a724ffe2e724(tex_ref: ImTextureRef, p_min: *const ImVec2, p_max: *const ImVec2, uv_min: *const ImVec2, uv_max: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const AddImageQuad = ImDrawList_AddImageQuad__e48b88c8548dfc9f;
-    extern fn ImDrawList_AddImageQuad__e48b88c8548dfc9f(self: *@This(), tex_ref: ImTextureRef, p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, uv1: *const ImVec2, uv2: *const ImVec2, uv3: *const ImVec2, uv4: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_AddImageQuad__e48b88c8548dfc9f(tex_ref: ImTextureRef, p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, uv1: *const ImVec2, uv2: *const ImVec2, uv3: *const ImVec2, uv4: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const AddImageRounded = ImDrawList_AddImageRounded__b271e30ebeb4124;
-    extern fn ImDrawList_AddImageRounded__b271e30ebeb4124(self: *@This(), tex_ref: ImTextureRef, p_min: *const ImVec2, p_max: *const ImVec2, uv_min: *const ImVec2, uv_max: *const ImVec2, col: u32, rounding: f32, flags: i32) callconv(.c) void;
+    extern fn ImDrawList_AddImageRounded__b271e30ebeb4124(tex_ref: ImTextureRef, p_min: *const ImVec2, p_max: *const ImVec2, uv_min: *const ImVec2, uv_max: *const ImVec2, col: u32, rounding: f32, flags: i32) callconv(.c) void;
 
     pub const PathClear = ImDrawList_PathClear__f85c24e187476a18;
-    extern fn ImDrawList_PathClear__f85c24e187476a18(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_PathClear__f85c24e187476a18() callconv(.c) void;
 
     pub const PathLineTo = ImDrawList_PathLineTo__a3eb1bbbced23468;
-    extern fn ImDrawList_PathLineTo__a3eb1bbbced23468(self: *@This(), pos: *const ImVec2) callconv(.c) void;
+    extern fn ImDrawList_PathLineTo__a3eb1bbbced23468(pos: *const ImVec2) callconv(.c) void;
 
     pub const PathLineToMergeDuplicate = ImDrawList_PathLineToMergeDuplicate__420912c4ae0261ad;
-    extern fn ImDrawList_PathLineToMergeDuplicate__420912c4ae0261ad(self: *@This(), pos: *const ImVec2) callconv(.c) void;
+    extern fn ImDrawList_PathLineToMergeDuplicate__420912c4ae0261ad(pos: *const ImVec2) callconv(.c) void;
 
     pub const PathFillConvex = ImDrawList_PathFillConvex__60de4288d08ae8f9;
-    extern fn ImDrawList_PathFillConvex__60de4288d08ae8f9(self: *@This(), col: u32) callconv(.c) void;
+    extern fn ImDrawList_PathFillConvex__60de4288d08ae8f9(col: u32) callconv(.c) void;
 
     pub const PathFillConcave = ImDrawList_PathFillConcave__8dc06ae958038bff;
-    extern fn ImDrawList_PathFillConcave__8dc06ae958038bff(self: *@This(), col: u32) callconv(.c) void;
+    extern fn ImDrawList_PathFillConcave__8dc06ae958038bff(col: u32) callconv(.c) void;
 
     pub const PathStroke = ImDrawList_PathStroke__1c1f8ad71ad46f79;
-    extern fn ImDrawList_PathStroke__1c1f8ad71ad46f79(self: *@This(), col: u32, flags: i32, thickness: f32) callconv(.c) void;
+    extern fn ImDrawList_PathStroke__1c1f8ad71ad46f79(col: u32, flags: i32, thickness: f32) callconv(.c) void;
 
     pub const PathArcTo = ImDrawList_PathArcTo__f61fef08db50711;
-    extern fn ImDrawList_PathArcTo__f61fef08db50711(self: *@This(), center: *const ImVec2, radius: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_PathArcTo__f61fef08db50711(center: *const ImVec2, radius: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
 
     pub const PathArcToFast = ImDrawList_PathArcToFast__56e6c5aa5aae1a0a;
-    extern fn ImDrawList_PathArcToFast__56e6c5aa5aae1a0a(self: *@This(), center: *const ImVec2, radius: f32, a_min_of_12: i32, a_max_of_12: i32) callconv(.c) void;
+    extern fn ImDrawList_PathArcToFast__56e6c5aa5aae1a0a(center: *const ImVec2, radius: f32, a_min_of_12: i32, a_max_of_12: i32) callconv(.c) void;
 
     pub const PathEllipticalArcTo = ImDrawList_PathEllipticalArcTo__2ee4731c43db7aae;
-    extern fn ImDrawList_PathEllipticalArcTo__2ee4731c43db7aae(self: *@This(), center: *const ImVec2, radius: *const ImVec2, rot: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_PathEllipticalArcTo__2ee4731c43db7aae(center: *const ImVec2, radius: *const ImVec2, rot: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
 
     pub const PathBezierCubicCurveTo = ImDrawList_PathBezierCubicCurveTo__eb1a9156bc6363c4;
-    extern fn ImDrawList_PathBezierCubicCurveTo__eb1a9156bc6363c4(self: *@This(), p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_PathBezierCubicCurveTo__eb1a9156bc6363c4(p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, num_segments: i32) callconv(.c) void;
 
     pub const PathBezierQuadraticCurveTo = ImDrawList_PathBezierQuadraticCurveTo__f4b9cfdeeb8ca1f9;
-    extern fn ImDrawList_PathBezierQuadraticCurveTo__f4b9cfdeeb8ca1f9(self: *@This(), p2: *const ImVec2, p3: *const ImVec2, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList_PathBezierQuadraticCurveTo__f4b9cfdeeb8ca1f9(p2: *const ImVec2, p3: *const ImVec2, num_segments: i32) callconv(.c) void;
 
     pub const PathRect = ImDrawList_PathRect__bafae6fef23b3e71;
-    extern fn ImDrawList_PathRect__bafae6fef23b3e71(self: *@This(), rect_min: *const ImVec2, rect_max: *const ImVec2, rounding: f32, flags: i32) callconv(.c) void;
+    extern fn ImDrawList_PathRect__bafae6fef23b3e71(rect_min: *const ImVec2, rect_max: *const ImVec2, rounding: f32, flags: i32) callconv(.c) void;
 
     pub const AddCallback = ImDrawList_AddCallback__384ad06fabe49141;
-    extern fn ImDrawList_AddCallback__384ad06fabe49141(self: *@This(), callback: [*c]*const fn ([*c]const ImDrawList, [*c]const ImDrawCmd) callconv(.c) void, userdata: *void, userdata_size: u64) callconv(.c) void;
+    extern fn ImDrawList_AddCallback__384ad06fabe49141(callback: [*c]*const fn ([*c]const ImDrawList, [*c]const ImDrawCmd) callconv(.c) void, userdata: *void, userdata_size: u64) callconv(.c) void;
 
     pub const AddDrawCmd = ImDrawList_AddDrawCmd__aba1aed43e859608;
-    extern fn ImDrawList_AddDrawCmd__aba1aed43e859608(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_AddDrawCmd__aba1aed43e859608() callconv(.c) void;
 
     pub const CloneOutput = ImDrawList_CloneOutput__4ae38a3463568f9a;
-    extern fn ImDrawList_CloneOutput__4ae38a3463568f9a(self: *@This()) callconv(.c) [*c]ImDrawList;
+    extern fn ImDrawList_CloneOutput__4ae38a3463568f9a() callconv(.c) [*c]ImDrawList;
 
     pub const ChannelsSplit = ImDrawList_ChannelsSplit__8892b3949975d531;
-    extern fn ImDrawList_ChannelsSplit__8892b3949975d531(self: *@This(), count: i32) callconv(.c) void;
+    extern fn ImDrawList_ChannelsSplit__8892b3949975d531(count: i32) callconv(.c) void;
 
     pub const ChannelsMerge = ImDrawList_ChannelsMerge__f9a9c1166094cabb;
-    extern fn ImDrawList_ChannelsMerge__f9a9c1166094cabb(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_ChannelsMerge__f9a9c1166094cabb() callconv(.c) void;
 
     pub const ChannelsSetCurrent = ImDrawList_ChannelsSetCurrent__d3d0f6aa259ab7ea;
-    extern fn ImDrawList_ChannelsSetCurrent__d3d0f6aa259ab7ea(self: *@This(), n: i32) callconv(.c) void;
+    extern fn ImDrawList_ChannelsSetCurrent__d3d0f6aa259ab7ea(n: i32) callconv(.c) void;
 
     pub const PrimReserve = ImDrawList_PrimReserve__342bc32e38b5b148;
-    extern fn ImDrawList_PrimReserve__342bc32e38b5b148(self: *@This(), idx_count: i32, vtx_count: i32) callconv(.c) void;
+    extern fn ImDrawList_PrimReserve__342bc32e38b5b148(idx_count: i32, vtx_count: i32) callconv(.c) void;
 
     pub const PrimUnreserve = ImDrawList_PrimUnreserve__7b4e2ad3ea64f40c;
-    extern fn ImDrawList_PrimUnreserve__7b4e2ad3ea64f40c(self: *@This(), idx_count: i32, vtx_count: i32) callconv(.c) void;
+    extern fn ImDrawList_PrimUnreserve__7b4e2ad3ea64f40c(idx_count: i32, vtx_count: i32) callconv(.c) void;
 
     pub const PrimRect = ImDrawList_PrimRect__6e6ac6f0a4884db9;
-    extern fn ImDrawList_PrimRect__6e6ac6f0a4884db9(self: *@This(), a: *const ImVec2, b: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_PrimRect__6e6ac6f0a4884db9(a: *const ImVec2, b: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const PrimRectUV = ImDrawList_PrimRectUV__a2a24ebfb07b94d;
-    extern fn ImDrawList_PrimRectUV__a2a24ebfb07b94d(self: *@This(), a: *const ImVec2, b: *const ImVec2, uv_a: *const ImVec2, uv_b: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_PrimRectUV__a2a24ebfb07b94d(a: *const ImVec2, b: *const ImVec2, uv_a: *const ImVec2, uv_b: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const PrimQuadUV = ImDrawList_PrimQuadUV__d30891eabc79e402;
-    extern fn ImDrawList_PrimQuadUV__d30891eabc79e402(self: *@This(), a: *const ImVec2, b: *const ImVec2, c: *const ImVec2, d: *const ImVec2, uv_a: *const ImVec2, uv_b: *const ImVec2, uv_c: *const ImVec2, uv_d: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_PrimQuadUV__d30891eabc79e402(a: *const ImVec2, b: *const ImVec2, c: *const ImVec2, d: *const ImVec2, uv_a: *const ImVec2, uv_b: *const ImVec2, uv_c: *const ImVec2, uv_d: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const PrimWriteVtx = ImDrawList_PrimWriteVtx__4ddfb364b0acdfc2;
-    extern fn ImDrawList_PrimWriteVtx__4ddfb364b0acdfc2(self: *@This(), pos: *const ImVec2, uv: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_PrimWriteVtx__4ddfb364b0acdfc2(pos: *const ImVec2, uv: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const PrimWriteIdx = ImDrawList_PrimWriteIdx__e96ae86e45fcc1;
-    extern fn ImDrawList_PrimWriteIdx__e96ae86e45fcc1(self: *@This(), idx: u16) callconv(.c) void;
+    extern fn ImDrawList_PrimWriteIdx__e96ae86e45fcc1(idx: u16) callconv(.c) void;
 
     pub const PrimVtx = ImDrawList_PrimVtx__b5461057807aa2ec;
-    extern fn ImDrawList_PrimVtx__b5461057807aa2ec(self: *@This(), pos: *const ImVec2, uv: *const ImVec2, col: u32) callconv(.c) void;
+    extern fn ImDrawList_PrimVtx__b5461057807aa2ec(pos: *const ImVec2, uv: *const ImVec2, col: u32) callconv(.c) void;
 
     pub const PushTextureID = ImDrawList_PushTextureID__b4da7632fc117bc7;
-    extern fn ImDrawList_PushTextureID__b4da7632fc117bc7(self: *@This(), tex_ref: ImTextureRef) callconv(.c) void;
+    extern fn ImDrawList_PushTextureID__b4da7632fc117bc7(tex_ref: ImTextureRef) callconv(.c) void;
 
     pub const PopTextureID = ImDrawList_PopTextureID__ea204785d1a1ac1;
-    extern fn ImDrawList_PopTextureID__ea204785d1a1ac1(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList_PopTextureID__ea204785d1a1ac1() callconv(.c) void;
 
     pub const _SetDrawListSharedData = ImDrawList__SetDrawListSharedData__c6719a600b5e6741;
-    extern fn ImDrawList__SetDrawListSharedData__c6719a600b5e6741(self: *@This(), data: [*c]ImDrawListSharedData) callconv(.c) void;
+    extern fn ImDrawList__SetDrawListSharedData__c6719a600b5e6741(data: [*c]ImDrawListSharedData) callconv(.c) void;
 
     pub const _ResetForNewFrame = ImDrawList__ResetForNewFrame__6578c0febac9b6a2;
-    extern fn ImDrawList__ResetForNewFrame__6578c0febac9b6a2(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__ResetForNewFrame__6578c0febac9b6a2() callconv(.c) void;
 
     pub const _ClearFreeMemory = ImDrawList__ClearFreeMemory__74631181fcab4cbe;
-    extern fn ImDrawList__ClearFreeMemory__74631181fcab4cbe(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__ClearFreeMemory__74631181fcab4cbe() callconv(.c) void;
 
     pub const _PopUnusedDrawCmd = ImDrawList__PopUnusedDrawCmd__d01695a4d3c4ad81;
-    extern fn ImDrawList__PopUnusedDrawCmd__d01695a4d3c4ad81(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__PopUnusedDrawCmd__d01695a4d3c4ad81() callconv(.c) void;
 
     pub const _TryMergeDrawCmds = ImDrawList__TryMergeDrawCmds__c7a246b9449d011a;
-    extern fn ImDrawList__TryMergeDrawCmds__c7a246b9449d011a(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__TryMergeDrawCmds__c7a246b9449d011a() callconv(.c) void;
 
     pub const _OnChangedClipRect = ImDrawList__OnChangedClipRect__1184a0576cdde196;
-    extern fn ImDrawList__OnChangedClipRect__1184a0576cdde196(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__OnChangedClipRect__1184a0576cdde196() callconv(.c) void;
 
     pub const _OnChangedTexture = ImDrawList__OnChangedTexture__ebfe4305f551877c;
-    extern fn ImDrawList__OnChangedTexture__ebfe4305f551877c(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__OnChangedTexture__ebfe4305f551877c() callconv(.c) void;
 
     pub const _OnChangedVtxOffset = ImDrawList__OnChangedVtxOffset__be1e0722a77784c;
-    extern fn ImDrawList__OnChangedVtxOffset__be1e0722a77784c(self: *@This()) callconv(.c) void;
+    extern fn ImDrawList__OnChangedVtxOffset__be1e0722a77784c() callconv(.c) void;
 
     pub const _SetTexture = ImDrawList__SetTexture__80765940ec7a4f97;
-    extern fn ImDrawList__SetTexture__80765940ec7a4f97(self: *@This(), tex_ref: ImTextureRef) callconv(.c) void;
+    extern fn ImDrawList__SetTexture__80765940ec7a4f97(tex_ref: ImTextureRef) callconv(.c) void;
 
     pub const _CalcCircleAutoSegmentCount = ImDrawList__CalcCircleAutoSegmentCount__3b487c73f8294a71;
-    extern fn ImDrawList__CalcCircleAutoSegmentCount__3b487c73f8294a71(self: *@This(), radius: f32) callconv(.c) i32;
+    extern fn ImDrawList__CalcCircleAutoSegmentCount__3b487c73f8294a71(radius: f32) callconv(.c) i32;
 
     pub const _PathArcToFastEx = ImDrawList__PathArcToFastEx__4f220b277b029cb2;
-    extern fn ImDrawList__PathArcToFastEx__4f220b277b029cb2(self: *@This(), center: *const ImVec2, radius: f32, a_min_sample: i32, a_max_sample: i32, a_step: i32) callconv(.c) void;
+    extern fn ImDrawList__PathArcToFastEx__4f220b277b029cb2(center: *const ImVec2, radius: f32, a_min_sample: i32, a_max_sample: i32, a_step: i32) callconv(.c) void;
 
     pub const _PathArcToN = ImDrawList__PathArcToN__10e351b328809a58;
-    extern fn ImDrawList__PathArcToN__10e351b328809a58(self: *@This(), center: *const ImVec2, radius: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
+    extern fn ImDrawList__PathArcToN__10e351b328809a58(center: *const ImVec2, radius: f32, a_min: f32, a_max: f32, num_segments: i32) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 224 or @alignOf(@This()) != 8) {
@@ -5435,13 +5390,13 @@ pub const ImDrawData = extern struct {
     extern fn ImDrawData_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
 
     pub const AddDrawList = ImDrawData_AddDrawList__f1ddaee64f9bd97;
-    extern fn ImDrawData_AddDrawList__f1ddaee64f9bd97(self: *@This(), draw_list: [*c]ImDrawList) callconv(.c) void;
+    extern fn ImDrawData_AddDrawList__f1ddaee64f9bd97(draw_list: [*c]ImDrawList) callconv(.c) void;
 
     pub const DeIndexAllBuffers = ImDrawData_DeIndexAllBuffers__2c0a6f3ac0af9304;
-    extern fn ImDrawData_DeIndexAllBuffers__2c0a6f3ac0af9304(self: *@This()) callconv(.c) void;
+    extern fn ImDrawData_DeIndexAllBuffers__2c0a6f3ac0af9304() callconv(.c) void;
 
     pub const ScaleClipRects = ImDrawData_ScaleClipRects__3ea013827641bdac;
-    extern fn ImDrawData_ScaleClipRects__3ea013827641bdac(self: *@This(), fb_scale: *const ImVec2) callconv(.c) void;
+    extern fn ImDrawData_ScaleClipRects__3ea013827641bdac(fb_scale: *const ImVec2) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 72 or @alignOf(@This()) != 8) {
@@ -5526,14 +5481,14 @@ pub const ImDrawData = extern struct {
     }
 };
 
-pub const ImTextureFormat = packed struct(i32) {
-    data: i32,
+pub const ImTextureFormat = packed struct(u32) {
+    data: u32,
     pub const ImTextureFormat_RGBA32: ImTextureFormat = .{ .data = 0 };
     pub const ImTextureFormat_Alpha8: ImTextureFormat = .{ .data = 1 };
 };
 
-pub const ImTextureStatus = packed struct(i32) {
-    data: i32,
+pub const ImTextureStatus = packed struct(u32) {
+    data: u32,
     pub const ImTextureStatus_OK: ImTextureStatus = .{ .data = 0 };
     pub const ImTextureStatus_Destroyed: ImTextureStatus = .{ .data = 1 };
     pub const ImTextureStatus_WantCreate: ImTextureStatus = .{ .data = 2 };
@@ -5608,31 +5563,31 @@ pub const ImTextureData = extern struct {
     extern fn ImTextureData_Create__6815f287f374b9b3(self: *@This(), format: ImTextureFormat, w: i32, h: i32) callconv(.c) void;
 
     pub const DestroyPixels = ImTextureData_DestroyPixels__c941557158aa1047;
-    extern fn ImTextureData_DestroyPixels__c941557158aa1047(self: *@This()) callconv(.c) void;
+    extern fn ImTextureData_DestroyPixels__c941557158aa1047() callconv(.c) void;
 
     pub const GetPixels = ImTextureData_GetPixels__a237168ecbc1c9f0;
-    extern fn ImTextureData_GetPixels__a237168ecbc1c9f0(self: *@This()) callconv(.c) *void;
+    extern fn ImTextureData_GetPixels__a237168ecbc1c9f0() callconv(.c) *void;
 
     pub const GetPixelsAt = ImTextureData_GetPixelsAt__9785fcad02c47c96;
-    extern fn ImTextureData_GetPixelsAt__9785fcad02c47c96(self: *@This(), x: i32, y: i32) callconv(.c) *void;
+    extern fn ImTextureData_GetPixelsAt__9785fcad02c47c96(x: i32, y: i32) callconv(.c) *void;
 
     pub const GetSizeInBytes = ImTextureData_GetSizeInBytes__1b2566a4d974fd57;
-    extern fn ImTextureData_GetSizeInBytes__1b2566a4d974fd57(self: *@This()) callconv(.c) i32;
+    extern fn ImTextureData_GetSizeInBytes__1b2566a4d974fd57() callconv(.c) i32;
 
     pub const GetPitch = ImTextureData_GetPitch__a2a1e6e6bd09edc9;
-    extern fn ImTextureData_GetPitch__a2a1e6e6bd09edc9(self: *@This()) callconv(.c) i32;
+    extern fn ImTextureData_GetPitch__a2a1e6e6bd09edc9() callconv(.c) i32;
 
     pub const GetTexRef = ImTextureData_GetTexRef__f44173af51e3f388;
-    extern fn ImTextureData_GetTexRef__f44173af51e3f388(self: *@This(), zpp_out: *ImTextureRef) callconv(.c) void;
+    extern fn ImTextureData_GetTexRef__f44173af51e3f388(zpp_out: *ImTextureRef) callconv(.c) void;
 
     pub const GetTexID = ImTextureData_GetTexID__d8dce782ceb9ab42;
-    extern fn ImTextureData_GetTexID__d8dce782ceb9ab42(self: *@This()) callconv(.c) u64;
+    extern fn ImTextureData_GetTexID__d8dce782ceb9ab42() callconv(.c) u64;
 
     pub const SetTexID = ImTextureData_SetTexID__f4b11e225aef7453;
-    extern fn ImTextureData_SetTexID__f4b11e225aef7453(self: *@This(), tex_id: u64) callconv(.c) void;
+    extern fn ImTextureData_SetTexID__f4b11e225aef7453(tex_id: u64) callconv(.c) void;
 
     pub const SetStatus = ImTextureData_SetStatus__66df4c23e7a11b1f;
-    extern fn ImTextureData_SetStatus__66df4c23e7a11b1f(self: *@This(), status: ImTextureStatus) callconv(.c) void;
+    extern fn ImTextureData_SetStatus__66df4c23e7a11b1f(status: ImTextureStatus) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 88 or @alignOf(@This()) != 8) {
@@ -6107,22 +6062,22 @@ pub const ImFontGlyphRangesBuilder = extern struct {
     extern fn ImFontGlyphRangesBuilder_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
 
     pub const GetBit = ImFontGlyphRangesBuilder_GetBit__8a77afa12d71618b;
-    extern fn ImFontGlyphRangesBuilder_GetBit__8a77afa12d71618b(self: *@This(), n: u64) callconv(.c) bool;
+    extern fn ImFontGlyphRangesBuilder_GetBit__8a77afa12d71618b(n: u64) callconv(.c) bool;
 
     pub const SetBit = ImFontGlyphRangesBuilder_SetBit__3f56b5396afc37ca;
-    extern fn ImFontGlyphRangesBuilder_SetBit__3f56b5396afc37ca(self: *@This(), n: u64) callconv(.c) void;
+    extern fn ImFontGlyphRangesBuilder_SetBit__3f56b5396afc37ca(n: u64) callconv(.c) void;
 
     pub const AddChar = ImFontGlyphRangesBuilder_AddChar__43116d7c072a6a00;
-    extern fn ImFontGlyphRangesBuilder_AddChar__43116d7c072a6a00(self: *@This(), c: u16) callconv(.c) void;
+    extern fn ImFontGlyphRangesBuilder_AddChar__43116d7c072a6a00(c: u16) callconv(.c) void;
 
     pub const AddText = ImFontGlyphRangesBuilder_AddText__848482798a5dab73;
-    extern fn ImFontGlyphRangesBuilder_AddText__848482798a5dab73(self: *@This(), text: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
+    extern fn ImFontGlyphRangesBuilder_AddText__848482798a5dab73(text: [*c]const u8, text_end: [*c]const u8) callconv(.c) void;
 
     pub const AddRanges = ImFontGlyphRangesBuilder_AddRanges__76ae0d6674abb19;
-    extern fn ImFontGlyphRangesBuilder_AddRanges__76ae0d6674abb19(self: *@This(), ranges: [*c]const u16) callconv(.c) void;
+    extern fn ImFontGlyphRangesBuilder_AddRanges__76ae0d6674abb19(ranges: [*c]const u16) callconv(.c) void;
 
     pub const BuildRanges = ImFontGlyphRangesBuilder_BuildRanges__dad8a4bc05e6f61d;
-    extern fn ImFontGlyphRangesBuilder_BuildRanges__dad8a4bc05e6f61d(self: *@This(), out_ranges: [*c][16]u8) callconv(.c) void;
+    extern fn ImFontGlyphRangesBuilder_BuildRanges__dad8a4bc05e6f61d(out_ranges: [*c][16]u8) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
@@ -6208,8 +6163,8 @@ pub const ImFontAtlasRect = extern struct {
     }
 };
 
-pub const ImFontAtlasFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImFontAtlasFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImFontAtlasFlags_None: ImFontAtlasFlags_ = .{ .data = 0 };
     pub const ImFontAtlasFlags_NoPowerOfTwoHeight: ImFontAtlasFlags_ = .{ .data = 1 };
     pub const ImFontAtlasFlags_NoMouseCursors: ImFontAtlasFlags_ = .{ .data = 2 };
@@ -6280,109 +6235,109 @@ pub const ImFontAtlas = extern struct {
     extern fn ImFontAtlas_AddFont__3504dfb7a2b8f1ce(self: *@This(), font_cfg: [*c]const ImFontConfig) callconv(.c) [*c]ImFont;
 
     pub const AddFontDefault = ImFontAtlas_AddFontDefault__aa92a749b610b67d;
-    extern fn ImFontAtlas_AddFontDefault__aa92a749b610b67d(self: *@This(), font_cfg: [*c]const ImFontConfig) callconv(.c) [*c]ImFont;
+    extern fn ImFontAtlas_AddFontDefault__aa92a749b610b67d(font_cfg: [*c]const ImFontConfig) callconv(.c) [*c]ImFont;
 
     pub const AddFontFromFileTTF = ImFontAtlas_AddFontFromFileTTF__bfc044645789c44c;
-    extern fn ImFontAtlas_AddFontFromFileTTF__bfc044645789c44c(self: *@This(), filename: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
+    extern fn ImFontAtlas_AddFontFromFileTTF__bfc044645789c44c(filename: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
 
     pub const AddFontFromMemoryTTF = ImFontAtlas_AddFontFromMemoryTTF__417f5fe6bb858e97;
-    extern fn ImFontAtlas_AddFontFromMemoryTTF__417f5fe6bb858e97(self: *@This(), font_data: *void, font_data_size: i32, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
+    extern fn ImFontAtlas_AddFontFromMemoryTTF__417f5fe6bb858e97(font_data: *void, font_data_size: i32, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
 
     pub const AddFontFromMemoryCompressedTTF = ImFontAtlas_AddFontFromMemoryCompressedTTF__b28bc709bb2c19ff;
-    extern fn ImFontAtlas_AddFontFromMemoryCompressedTTF__b28bc709bb2c19ff(self: *@This(), compressed_font_data: *const void, compressed_font_data_size: i32, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
+    extern fn ImFontAtlas_AddFontFromMemoryCompressedTTF__b28bc709bb2c19ff(compressed_font_data: *const void, compressed_font_data_size: i32, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
 
     pub const AddFontFromMemoryCompressedBase85TTF = ImFontAtlas_AddFontFromMemoryCompressedBase85TTF__94ebacf315467c47;
-    extern fn ImFontAtlas_AddFontFromMemoryCompressedBase85TTF__94ebacf315467c47(self: *@This(), compressed_font_data_base85: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
+    extern fn ImFontAtlas_AddFontFromMemoryCompressedBase85TTF__94ebacf315467c47(compressed_font_data_base85: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const u16) callconv(.c) [*c]ImFont;
 
     pub const RemoveFont = ImFontAtlas_RemoveFont__28dd557238a59589;
-    extern fn ImFontAtlas_RemoveFont__28dd557238a59589(self: *@This(), font: [*c]ImFont) callconv(.c) void;
+    extern fn ImFontAtlas_RemoveFont__28dd557238a59589(font: [*c]ImFont) callconv(.c) void;
 
     pub const Clear = ImFontAtlas_Clear__aa706db1ef8639b7;
-    extern fn ImFontAtlas_Clear__aa706db1ef8639b7(self: *@This()) callconv(.c) void;
+    extern fn ImFontAtlas_Clear__aa706db1ef8639b7() callconv(.c) void;
 
     pub const CompactCache = ImFontAtlas_CompactCache__df8f6899c763d1af;
-    extern fn ImFontAtlas_CompactCache__df8f6899c763d1af(self: *@This()) callconv(.c) void;
+    extern fn ImFontAtlas_CompactCache__df8f6899c763d1af() callconv(.c) void;
 
     pub const SetFontLoader = ImFontAtlas_SetFontLoader__e1ba4f3b5cc35623;
-    extern fn ImFontAtlas_SetFontLoader__e1ba4f3b5cc35623(self: *@This(), font_loader: [*c]const ImFontLoader) callconv(.c) void;
+    extern fn ImFontAtlas_SetFontLoader__e1ba4f3b5cc35623(font_loader: [*c]const ImFontLoader) callconv(.c) void;
 
     pub const ClearInputData = ImFontAtlas_ClearInputData__5abe8253f6c3fbe8;
-    extern fn ImFontAtlas_ClearInputData__5abe8253f6c3fbe8(self: *@This()) callconv(.c) void;
+    extern fn ImFontAtlas_ClearInputData__5abe8253f6c3fbe8() callconv(.c) void;
 
     pub const ClearFonts = ImFontAtlas_ClearFonts__3235ca9b50cf3a32;
-    extern fn ImFontAtlas_ClearFonts__3235ca9b50cf3a32(self: *@This()) callconv(.c) void;
+    extern fn ImFontAtlas_ClearFonts__3235ca9b50cf3a32() callconv(.c) void;
 
     pub const ClearTexData = ImFontAtlas_ClearTexData__93855d5a25041cc1;
-    extern fn ImFontAtlas_ClearTexData__93855d5a25041cc1(self: *@This()) callconv(.c) void;
+    extern fn ImFontAtlas_ClearTexData__93855d5a25041cc1() callconv(.c) void;
 
     pub const Build = ImFontAtlas_Build__de679d4a386ff4fc;
-    extern fn ImFontAtlas_Build__de679d4a386ff4fc(self: *@This()) callconv(.c) bool;
+    extern fn ImFontAtlas_Build__de679d4a386ff4fc() callconv(.c) bool;
 
     pub const GetTexDataAsAlpha8 = ImFontAtlas_GetTexDataAsAlpha8__61a6bc7f293381c;
-    extern fn ImFontAtlas_GetTexDataAsAlpha8__61a6bc7f293381c(self: *@This(), out_pixels: [*c][*c]u8, out_width: [*c]i32, out_height: [*c]i32, out_bytes_per_pixel: [*c]i32) callconv(.c) void;
+    extern fn ImFontAtlas_GetTexDataAsAlpha8__61a6bc7f293381c(out_pixels: [*c][*c]u8, out_width: [*c]i32, out_height: [*c]i32, out_bytes_per_pixel: [*c]i32) callconv(.c) void;
 
     pub const GetTexDataAsRGBA32 = ImFontAtlas_GetTexDataAsRGBA32__11f26cb7ebc7f93d;
-    extern fn ImFontAtlas_GetTexDataAsRGBA32__11f26cb7ebc7f93d(self: *@This(), out_pixels: [*c][*c]u8, out_width: [*c]i32, out_height: [*c]i32, out_bytes_per_pixel: [*c]i32) callconv(.c) void;
+    extern fn ImFontAtlas_GetTexDataAsRGBA32__11f26cb7ebc7f93d(out_pixels: [*c][*c]u8, out_width: [*c]i32, out_height: [*c]i32, out_bytes_per_pixel: [*c]i32) callconv(.c) void;
 
     pub const SetTexID = ImFontAtlas_SetTexID__f4b11e225aef7453;
-    extern fn ImFontAtlas_SetTexID__f4b11e225aef7453(self: *@This(), id: u64) callconv(.c) void;
+    extern fn ImFontAtlas_SetTexID__f4b11e225aef7453(id: u64) callconv(.c) void;
 
     pub const SetTexID_1 = ImFontAtlas_SetTexID__f4b11e225aef7453_1;
-    extern fn ImFontAtlas_SetTexID__f4b11e225aef7453_1(self: *@This(), id: ImTextureRef) callconv(.c) void;
+    extern fn ImFontAtlas_SetTexID__f4b11e225aef7453_1(id: ImTextureRef) callconv(.c) void;
 
     pub const IsBuilt = ImFontAtlas_IsBuilt__abe08410d1b1d7f5;
-    extern fn ImFontAtlas_IsBuilt__abe08410d1b1d7f5(self: *@This()) callconv(.c) bool;
+    extern fn ImFontAtlas_IsBuilt__abe08410d1b1d7f5() callconv(.c) bool;
 
     pub const GetGlyphRangesDefault = ImFontAtlas_GetGlyphRangesDefault__f405bd87eb41c95d;
-    extern fn ImFontAtlas_GetGlyphRangesDefault__f405bd87eb41c95d(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesDefault__f405bd87eb41c95d() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesGreek = ImFontAtlas_GetGlyphRangesGreek__45cb3bc65122d76c;
-    extern fn ImFontAtlas_GetGlyphRangesGreek__45cb3bc65122d76c(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesGreek__45cb3bc65122d76c() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesKorean = ImFontAtlas_GetGlyphRangesKorean__1caf6cf050c754c7;
-    extern fn ImFontAtlas_GetGlyphRangesKorean__1caf6cf050c754c7(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesKorean__1caf6cf050c754c7() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesJapanese = ImFontAtlas_GetGlyphRangesJapanese__214f718fd2dc6b63;
-    extern fn ImFontAtlas_GetGlyphRangesJapanese__214f718fd2dc6b63(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesJapanese__214f718fd2dc6b63() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesChineseFull = ImFontAtlas_GetGlyphRangesChineseFull__3d19063db60bc499;
-    extern fn ImFontAtlas_GetGlyphRangesChineseFull__3d19063db60bc499(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesChineseFull__3d19063db60bc499() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesChineseSimplifiedCommon = ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon__b3ee7c42e19351df;
-    extern fn ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon__b3ee7c42e19351df(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon__b3ee7c42e19351df() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesCyrillic = ImFontAtlas_GetGlyphRangesCyrillic__b322855bbe15bc3f;
-    extern fn ImFontAtlas_GetGlyphRangesCyrillic__b322855bbe15bc3f(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesCyrillic__b322855bbe15bc3f() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesThai = ImFontAtlas_GetGlyphRangesThai__3c455ea1eade49a2;
-    extern fn ImFontAtlas_GetGlyphRangesThai__3c455ea1eade49a2(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesThai__3c455ea1eade49a2() callconv(.c) [*c]const u16;
 
     pub const GetGlyphRangesVietnamese = ImFontAtlas_GetGlyphRangesVietnamese__af48f69f6994ef9e;
-    extern fn ImFontAtlas_GetGlyphRangesVietnamese__af48f69f6994ef9e(self: *@This()) callconv(.c) [*c]const u16;
+    extern fn ImFontAtlas_GetGlyphRangesVietnamese__af48f69f6994ef9e() callconv(.c) [*c]const u16;
 
     pub const AddCustomRect = ImFontAtlas_AddCustomRect__569870caf69a189d;
-    extern fn ImFontAtlas_AddCustomRect__569870caf69a189d(self: *@This(), width: i32, height: i32, out_r: [*c]ImFontAtlasRect) callconv(.c) i32;
+    extern fn ImFontAtlas_AddCustomRect__569870caf69a189d(width: i32, height: i32, out_r: [*c]ImFontAtlasRect) callconv(.c) i32;
 
     pub const RemoveCustomRect = ImFontAtlas_RemoveCustomRect__77a5657dbf9966f9;
-    extern fn ImFontAtlas_RemoveCustomRect__77a5657dbf9966f9(self: *@This(), id: i32) callconv(.c) void;
+    extern fn ImFontAtlas_RemoveCustomRect__77a5657dbf9966f9(id: i32) callconv(.c) void;
 
     pub const GetCustomRect = ImFontAtlas_GetCustomRect__30c59bb437482c0b;
-    extern fn ImFontAtlas_GetCustomRect__30c59bb437482c0b(self: *@This(), id: i32, out_r: [*c]ImFontAtlasRect) callconv(.c) bool;
+    extern fn ImFontAtlas_GetCustomRect__30c59bb437482c0b(id: i32, out_r: [*c]ImFontAtlasRect) callconv(.c) bool;
 
     pub const AddCustomRectRegular = ImFontAtlas_AddCustomRectRegular__8ceed3824b4618b4;
-    extern fn ImFontAtlas_AddCustomRectRegular__8ceed3824b4618b4(self: *@This(), w: i32, h: i32) callconv(.c) i32;
+    extern fn ImFontAtlas_AddCustomRectRegular__8ceed3824b4618b4(w: i32, h: i32) callconv(.c) i32;
 
     pub const GetCustomRectByIndex = ImFontAtlas_GetCustomRectByIndex__799892f980a7c7c2;
-    extern fn ImFontAtlas_GetCustomRectByIndex__799892f980a7c7c2(self: *@This(), id: i32) callconv(.c) [*c]const ImFontAtlasRect;
+    extern fn ImFontAtlas_GetCustomRectByIndex__799892f980a7c7c2(id: i32) callconv(.c) [*c]const ImFontAtlasRect;
 
     pub const CalcCustomRectUV = ImFontAtlas_CalcCustomRectUV__165ff4e66316c75a;
-    extern fn ImFontAtlas_CalcCustomRectUV__165ff4e66316c75a(self: *@This(), r: [*c]const ImFontAtlasRect, out_uv_min: [*c]ImVec2, out_uv_max: [*c]ImVec2) callconv(.c) void;
+    extern fn ImFontAtlas_CalcCustomRectUV__165ff4e66316c75a(r: [*c]const ImFontAtlasRect, out_uv_min: [*c]ImVec2, out_uv_max: [*c]ImVec2) callconv(.c) void;
 
     pub const AddCustomRectFontGlyph = ImFontAtlas_AddCustomRectFontGlyph__993cdb411105bca1;
-    extern fn ImFontAtlas_AddCustomRectFontGlyph__993cdb411105bca1(self: *@This(), font: [*c]ImFont, codepoint: u16, w: i32, h: i32, advance_x: f32, offset: *const ImVec2) callconv(.c) i32;
+    extern fn ImFontAtlas_AddCustomRectFontGlyph__993cdb411105bca1(font: [*c]ImFont, codepoint: u16, w: i32, h: i32, advance_x: f32, offset: *const ImVec2) callconv(.c) i32;
 
     pub const AddCustomRectFontGlyphForSize = ImFontAtlas_AddCustomRectFontGlyphForSize__cff8b5cf22ca7a84;
-    extern fn ImFontAtlas_AddCustomRectFontGlyphForSize__cff8b5cf22ca7a84(self: *@This(), font: [*c]ImFont, font_size: f32, codepoint: u16, w: i32, h: i32, advance_x: f32, offset: *const ImVec2) callconv(.c) i32;
+    extern fn ImFontAtlas_AddCustomRectFontGlyphForSize__cff8b5cf22ca7a84(font: [*c]ImFont, font_size: f32, codepoint: u16, w: i32, h: i32, advance_x: f32, offset: *const ImVec2) callconv(.c) i32;
 
     comptime {
         if (@sizeOf(@This()) != 760 or @alignOf(@This()) != 8) {
@@ -6626,16 +6581,16 @@ pub const ImFontBaked = extern struct {
     extern fn ImFontBaked_ClearOutputData__68964c7b491f8bee(self: *@This()) callconv(.c) void;
 
     pub const FindGlyph = ImFontBaked_FindGlyph__99ad9972a05dcf82;
-    extern fn ImFontBaked_FindGlyph__99ad9972a05dcf82(self: *@This(), c: u16) callconv(.c) [*c]ImFontGlyph;
+    extern fn ImFontBaked_FindGlyph__99ad9972a05dcf82(c: u16) callconv(.c) [*c]ImFontGlyph;
 
     pub const FindGlyphNoFallback = ImFontBaked_FindGlyphNoFallback__abc53cb078c6bebb;
-    extern fn ImFontBaked_FindGlyphNoFallback__abc53cb078c6bebb(self: *@This(), c: u16) callconv(.c) [*c]ImFontGlyph;
+    extern fn ImFontBaked_FindGlyphNoFallback__abc53cb078c6bebb(c: u16) callconv(.c) [*c]ImFontGlyph;
 
     pub const GetCharAdvance = ImFontBaked_GetCharAdvance__cc516c0cddc23e9d;
-    extern fn ImFontBaked_GetCharAdvance__cc516c0cddc23e9d(self: *@This(), c: u16) callconv(.c) f32;
+    extern fn ImFontBaked_GetCharAdvance__cc516c0cddc23e9d(c: u16) callconv(.c) f32;
 
     pub const IsGlyphLoaded = ImFontBaked_IsGlyphLoaded__f6f5f37ce6143357;
-    extern fn ImFontBaked_IsGlyphLoaded__f6f5f37ce6143357(self: *@This(), c: u16) callconv(.c) bool;
+    extern fn ImFontBaked_IsGlyphLoaded__f6f5f37ce6143357(c: u16) callconv(.c) bool;
 
     comptime {
         if (@sizeOf(@This()) != 104 or @alignOf(@This()) != 8) {
@@ -6769,8 +6724,8 @@ pub const ImFontBaked = extern struct {
     }
 };
 
-pub const ImFontFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImFontFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImFontFlags_None: ImFontFlags_ = .{ .data = 0 };
     pub const ImFontFlags_NoLoadError: ImFontFlags_ = .{ .data = 2 };
     pub const ImFontFlags_NoLoadGlyphs: ImFontFlags_ = .{ .data = 4 };
@@ -6795,37 +6750,37 @@ pub const ImFont = extern struct {
     extern fn ImFont_IsGlyphInFont__b652ed393d46a31(self: *@This(), c: u16) callconv(.c) bool;
 
     pub const IsLoaded = ImFont_IsLoaded__de633d6ebf5022a6;
-    extern fn ImFont_IsLoaded__de633d6ebf5022a6(self: *@This()) callconv(.c) bool;
+    extern fn ImFont_IsLoaded__de633d6ebf5022a6() callconv(.c) bool;
 
     pub const GetDebugName = ImFont_GetDebugName__ca8cbd11364d9628;
-    extern fn ImFont_GetDebugName__ca8cbd11364d9628(self: *@This()) callconv(.c) [*c]const u8;
+    extern fn ImFont_GetDebugName__ca8cbd11364d9628() callconv(.c) [*c]const u8;
 
     pub const GetFontBaked = ImFont_GetFontBaked__3f06989c0a78b9d3;
-    extern fn ImFont_GetFontBaked__3f06989c0a78b9d3(self: *@This(), font_size: f32, density: f32) callconv(.c) [*c]ImFontBaked;
+    extern fn ImFont_GetFontBaked__3f06989c0a78b9d3(font_size: f32, density: f32) callconv(.c) [*c]ImFontBaked;
 
     pub const CalcTextSizeA = ImFont_CalcTextSizeA__e01ae6cd65e15255;
-    extern fn ImFont_CalcTextSizeA__e01ae6cd65e15255(self: *@This(), size: f32, max_width: f32, wrap_width: f32, text_begin: [*c]const u8, text_end: [*c]const u8, remaining: [*c][*c]const u8, zpp_out: *ImVec2) callconv(.c) void;
+    extern fn ImFont_CalcTextSizeA__e01ae6cd65e15255(size: f32, max_width: f32, wrap_width: f32, text_begin: [*c]const u8, text_end: [*c]const u8, remaining: [*c][*c]const u8, zpp_out: *ImVec2) callconv(.c) void;
 
     pub const CalcWordWrapPosition = ImFont_CalcWordWrapPosition__d3b860bc05d518f;
-    extern fn ImFont_CalcWordWrapPosition__d3b860bc05d518f(self: *@This(), size: f32, text: [*c]const u8, text_end: [*c]const u8, wrap_width: f32) callconv(.c) [*c]const u8;
+    extern fn ImFont_CalcWordWrapPosition__d3b860bc05d518f(size: f32, text: [*c]const u8, text_end: [*c]const u8, wrap_width: f32) callconv(.c) [*c]const u8;
 
     pub const RenderChar = ImFont_RenderChar__268664220e0c2b9d;
-    extern fn ImFont_RenderChar__268664220e0c2b9d(self: *@This(), draw_list: [*c]ImDrawList, size: f32, pos: *const ImVec2, col: u32, c: u16, cpu_fine_clip: [*c]const ImVec4) callconv(.c) void;
+    extern fn ImFont_RenderChar__268664220e0c2b9d(draw_list: [*c]ImDrawList, size: f32, pos: *const ImVec2, col: u32, c: u16, cpu_fine_clip: [*c]const ImVec4) callconv(.c) void;
 
     pub const RenderText = ImFont_RenderText__2f7284397a11bb8b;
-    extern fn ImFont_RenderText__2f7284397a11bb8b(self: *@This(), draw_list: [*c]ImDrawList, size: f32, pos: *const ImVec2, col: u32, clip_rect: *const ImVec4, text_begin: [*c]const u8, text_end: [*c]const u8, wrap_width: f32, cpu_fine_clip: bool) callconv(.c) void;
+    extern fn ImFont_RenderText__2f7284397a11bb8b(draw_list: [*c]ImDrawList, size: f32, pos: *const ImVec2, col: u32, clip_rect: *const ImVec4, text_begin: [*c]const u8, text_end: [*c]const u8, wrap_width: f32, cpu_fine_clip: bool) callconv(.c) void;
 
     pub const CalcWordWrapPositionA = ImFont_CalcWordWrapPositionA__727eaee323664d2e;
-    extern fn ImFont_CalcWordWrapPositionA__727eaee323664d2e(self: *@This(), scale: f32, text: [*c]const u8, text_end: [*c]const u8, wrap_width: f32) callconv(.c) [*c]const u8;
+    extern fn ImFont_CalcWordWrapPositionA__727eaee323664d2e(scale: f32, text: [*c]const u8, text_end: [*c]const u8, wrap_width: f32) callconv(.c) [*c]const u8;
 
     pub const ClearOutputData = ImFont_ClearOutputData__68964c7b491f8bee;
-    extern fn ImFont_ClearOutputData__68964c7b491f8bee(self: *@This()) callconv(.c) void;
+    extern fn ImFont_ClearOutputData__68964c7b491f8bee() callconv(.c) void;
 
     pub const AddRemapChar = ImFont_AddRemapChar__3a1c2b108bd2e780;
-    extern fn ImFont_AddRemapChar__3a1c2b108bd2e780(self: *@This(), from_codepoint: u16, to_codepoint: u16) callconv(.c) void;
+    extern fn ImFont_AddRemapChar__3a1c2b108bd2e780(from_codepoint: u16, to_codepoint: u16) callconv(.c) void;
 
     pub const IsGlyphRangeUnused = ImFont_IsGlyphRangeUnused__9167c1a8dba68c5d;
-    extern fn ImFont_IsGlyphRangeUnused__9167c1a8dba68c5d(self: *@This(), c_begin: u32, c_last: u32) callconv(.c) bool;
+    extern fn ImFont_IsGlyphRangeUnused__9167c1a8dba68c5d(c_begin: u32, c_last: u32) callconv(.c) bool;
 
     comptime {
         if (@sizeOf(@This()) != 80 or @alignOf(@This()) != 8) {
@@ -6931,8 +6886,8 @@ pub const ImFont = extern struct {
     }
 };
 
-pub const ImGuiViewportFlags_ = packed struct(i32) {
-    data: i32,
+pub const ImGuiViewportFlags_ = packed struct(u32) {
+    data: u32,
     pub const ImGuiViewportFlags_None: ImGuiViewportFlags_ = .{ .data = 0 };
     pub const ImGuiViewportFlags_IsPlatformWindow: ImGuiViewportFlags_ = .{ .data = 1 };
     pub const ImGuiViewportFlags_IsPlatformMonitor: ImGuiViewportFlags_ = .{ .data = 2 };
@@ -6953,7 +6908,7 @@ pub const ImGuiViewport = extern struct {
     extern fn ImGuiViewport_GetCenter__44e6a1ebdf9ac158(self: *@This(), zpp_out: *ImVec2) callconv(.c) void;
 
     pub const GetWorkCenter = ImGuiViewport_GetWorkCenter__2b750b38a4cf3594;
-    extern fn ImGuiViewport_GetWorkCenter__2b750b38a4cf3594(self: *@This(), zpp_out: *ImVec2) callconv(.c) void;
+    extern fn ImGuiViewport_GetWorkCenter__2b750b38a4cf3594(zpp_out: *ImVec2) callconv(.c) void;
 
     comptime {
         if (@sizeOf(@This()) != 64 or @alignOf(@This()) != 8) {
@@ -7227,8 +7182,8 @@ extern fn ImGui_ImplSDL3_NewFrame__37c6d7cd43a25335() callconv(.c) void;
 pub const ImGui_ImplSDL3_ProcessEvent = ImGui_ImplSDL3_ProcessEvent__decfc6687eb97b8e;
 extern fn ImGui_ImplSDL3_ProcessEvent__decfc6687eb97b8e(event: [*c]const SDL_Event) callconv(.c) bool;
 
-pub const ImGui_ImplSDL3_GamepadMode = packed struct(i32) {
-    data: i32,
+pub const ImGui_ImplSDL3_GamepadMode = packed struct(u32) {
+    data: u32,
     pub const ImGui_ImplSDL3_GamepadMode_AutoFirst: ImGui_ImplSDL3_GamepadMode = .{ .data = 0 };
     pub const ImGui_ImplSDL3_GamepadMode_AutoAll: ImGui_ImplSDL3_GamepadMode = .{ .data = 1 };
     pub const ImGui_ImplSDL3_GamepadMode_Manual: ImGui_ImplSDL3_GamepadMode = .{ .data = 2 };

@@ -8,19 +8,22 @@ const c = ffi.c;
 const ir_mod = @import("../ir.zig");
 const IR = ir_mod.IR;
 
+const writers = @import("../writers.zig");
+
 const log = std.log.scoped(.cpp_wrapper);
 
 // -- Formatting -- //
 
-var revert_last_instruction: bool = false;
+pub fn initContext(allocator: std.mem.Allocator, ctx: *writers.Context) !void {
+    const stack = try allocator.create(std.array_list.Managed(usize));
+    stack.* = .init(allocator);
+    try ctx.member_stack.append(stack);
+}
 
-pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
-    var fz = tracy.FnZone.init(@src(), "cpp.formatFile");
+pub fn writeFilePrefix(ir: *const IR, _: *writers.Context, writer: *std.Io.Writer) !void {
+    var fz = tracy.FnZone.init(@src(), "cpp.writeFilePrefix");
     defer fz.end();
 
-    const allocator = ir.arena.allocator();
-
-    // Write the preamble of the file.
     try writer.writeAll(@import("../writers.zig").PREAMBLE ++
         \\
         \\
@@ -33,166 +36,174 @@ pub fn formatFile(ir: IR, writer: *std.Io.Writer) std.Io.Writer.Error!void {
     );
     for (ir.paths) |path| if (!std.mem.eql(u8, path, ir_mod.ROOT_FILE)) try writer.print("#include \"{s}\"\n", .{std.fs.path.basename(path)});
     try writer.writeByte('\n');
+}
 
-    // Initialize context.
-    var overload_map: std.StringHashMap(usize) = .init(allocator);
-    var ns_stack: std.array_list.Managed([]const u8) = .init(allocator);
-    var fn_params: std.array_list.Managed(usize) = .init(allocator);
-    // TODO: Add the writer's .end to the context.
-    var ctx_stack: std.array_list.Managed(union(enum) {
-        struct_like: c.CXType,
-        ignore_members,
-        function: usize,
-        root,
-    }) = .init(allocator);
-    ctx_stack.append(.root) catch @panic("OOM");
+pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: *std.Io.Writer) !void {
+    var fz = tracy.FnZone.init(@src(), "cpp.writeInstruction");
+    defer fz.end();
 
-    // Write instructions.
-    var i: usize = 0;
-    var writer_offset: usize = writer.end;
-    while (i < ir.instrs.items.len) : (i += 1) {
-        var fz2 = tracy.FnZone.init(@src(), "instruction write");
-        defer fz2.end();
+    const allocator = ir.arena.allocator();
 
-        writer_offset = writer.end;
+    const instr = ir.instrs.items[i];
+    const unique_name = instr.getUniqueName(allocator, ctx.ns_stack.items) catch @panic("OOM");
 
-        const instr = ir.instrs.items[i];
-        const unique_name = instr.getUniqueName(allocator, ns_stack.items) catch @panic("OOM");
+    const parent = ctx.parent_stack.getLast();
+    var partial_new_parent: writers.Context.Parent = .{
+        .instr_idx = i,
+        .writer_start = writer.end,
+        .inner = undefined,
+    };
 
-        if (instr.state == .open) {
-            switch (instr.inner) {
-                .Namespace => ns_stack.append(instr.name) catch @panic("OOM"),
-                .Function => {
-                    const start = writer.end;
+    if (instr.state == .open) {
+        if (ctx.unwind_to_parent) return;
 
-                    try writer.writeAll("extern \"C\" ");
+        switch (instr.inner) {
+            .Namespace => ctx.ns_stack.append(instr.name) catch @panic("OOM"),
+            .Function => {
+                try writer.writeAll("extern \"C\" ");
 
-                    const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
-                    switch (return_type.kind) {
-                        c.CXType_Record => try writer.writeAll("void"),
-                        else => try formatMemberOrType(return_type, allocator, writer, .{}),
-                    }
-                    try writer.print(" {s}", .{unique_name});
+                const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
+                switch (return_type.kind) {
+                    c.CXType_Record => try writer.writeAll("void"),
+                    else => try formatMemberOrType(return_type, allocator, writer, .{}),
+                }
+                try writer.print(" {s}", .{unique_name});
 
-                    {
-                        const overload_ptr = (overload_map.getOrPutValue(unique_name, 0) catch @panic("OOM")).value_ptr;
-                        defer overload_ptr.* += 1;
-                        if (overload_ptr.* > 0) try writer.print("_{}", .{overload_ptr.*});
-                    }
-                    try writer.writeByte('(');
+                {
+                    const overload_ptr = (try ctx.overload_map.getOrPutValue(unique_name, 0)).value_ptr;
+                    defer overload_ptr.* += 1;
+                    if (overload_ptr.* > 0) try writer.print("_{}", .{overload_ptr.*});
+                }
+                try writer.writeByte('(');
 
-                    if (ctx_stack.getLast() == .struct_like) {
-                        try formatMemberOrType(ctx_stack.getLast().struct_like, allocator, writer, .{
+                switch (parent.inner) {
+                    .@"struct", .@"union" => {
+                        const cx_type = c.clang_getCursorType(ir.instrs.items[parent.instr_idx].cursor);
+                        try formatMemberOrType(cx_type, allocator, writer, .{
                             .name_opt = "obj",
                             .fake_pointer = true,
                         });
                         if (ir.instrs.items[i + 1].inner == .Member or return_type.kind == c.CXType_Record) try writer.writeAll(", ");
-                    }
+                    },
+                    else => {},
+                }
 
-                    ctx_stack.append(.{ .function = start }) catch @panic("OOM");
-                },
-                .Member => |m| if (ctx_stack.getLast() == .function) {
-                    try formatMemberOrType(m, allocator, writer, .{ .name_opt = instr.name });
-                    if (ir.instrs.items[i + 1].inner == .Member) try writer.writeAll(", ");
+                partial_new_parent.inner = .function;
+                try ctx.parent_stack.append(partial_new_parent);
+            },
+            .Member => |m| if (parent.inner == .function) {
+                try formatMemberOrType(m, allocator, writer, .{ .name_opt = instr.name });
+                if (ir.instrs.items[i + 1].inner == .Member) try writer.writeAll(", ");
 
-                    fn_params.append(i) catch @panic("OOM");
-                },
-                .Struct, .Enum, .Union => {
-                    ns_stack.append(instr.name) catch @panic("OOM");
-                    ctx_stack.append(.{ .struct_like = c.clang_getCursorType(instr.cursor) }) catch @panic("OOM");
-                },
-                .Value, .Typedef => ctx_stack.append(.ignore_members) catch @panic("OOM"),
-            }
-        } else {
-            switch (instr.inner) {
-                .Namespace => _ = ns_stack.pop(),
-                .Function => {
-                    const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
-                    const variadic = c.clang_Cursor_isVariadic(instr.cursor) != 0;
+                try ctx.member_stack.getLast().append(i);
+            },
+            .Struct, .Enum, .Union => {
+                try ctx.ns_stack.append(instr.name);
 
-                    const use_out_param = return_type.kind == c.CXType_Record;
-                    const needs_to_return = return_type.kind != c.CXType_Void;
+                partial_new_parent.inner = .{ .@"struct" = 0 };
+                try ctx.parent_stack.append(partial_new_parent);
+            },
+            .Value, .Typedef => {
+                partial_new_parent.inner = .ignore_members;
+                try ctx.parent_stack.append(partial_new_parent);
+            },
+        }
+    } else {
+        const parent_start = ctx.parent_stack.getLast().writer_start;
+        switch (instr.inner) {
+            .Namespace => _ = ctx.ns_stack.pop(),
+            .Function => {
+                const return_type = c.clang_getCanonicalType(c.clang_getCursorResultType(instr.cursor));
+                const variadic = c.clang_Cursor_isVariadic(instr.cursor) != 0;
 
+                const use_out_param = return_type.kind == c.CXType_Record;
+                const needs_to_return = return_type.kind != c.CXType_Void;
+
+                const fn_params = ctx.member_stack.getLast();
+
+                if (use_out_param) {
+                    if (fn_params.items.len > 0) try writer.writeAll(", ");
+
+                    // TODO: Avoid name collisions.
+                    try formatMemberOrType(return_type, allocator, writer, .{
+                        .name_opt = "zpp_out",
+                        .fake_pointer = true,
+                    });
+                }
+
+                if (variadic) {
+                    if (fn_params.items.len == 0) @panic("Please see a doctor.");
+                    try writer.writeAll(", ...) {\n");
+                    try writer.print(
+                        "\tva_list __ZPP_args;\n\tva_start(__ZPP_args, {s});\n\t",
+                        .{if (use_out_param) "zpp_out" else ir.instrs.items[fn_params.getLast()].name},
+                    );
+                } else {
+                    try writer.writeAll(") {\n\t");
+                }
+
+                if (needs_to_return) {
                     if (use_out_param) {
-                        if (fn_params.items.len > 0) try writer.writeAll(", ");
-
-                        // TODO: Avoid name collisions.
-                        try formatMemberOrType(return_type, allocator, writer, .{
-                            .name_opt = "zpp_out",
-                            .fake_pointer = true,
-                        });
-                    }
-
-                    if (variadic) {
-                        if (fn_params.items.len == 0) @panic("Please see a doctor.");
-                        try writer.writeAll(", ...) {\n");
-                        try writer.print(
-                            "\tva_list __ZPP_args;\n\tva_start(__ZPP_args, {s});\n\t",
-                            .{if (use_out_param) "zpp_out" else ir.instrs.items[fn_params.getLast()].name},
-                        );
+                        try writer.writeAll("*zpp_out = ");
+                    } else if (variadic) {
+                        try writer.writeAll("auto __ZPP_result = ");
                     } else {
-                        try writer.writeAll(") {\n\t");
+                        try writer.writeAll("return ");
                     }
+                }
 
-                    if (needs_to_return) {
-                        if (use_out_param) {
-                            try writer.writeAll("*zpp_out = ");
-                        } else if (variadic) {
-                            try writer.writeAll("auto __ZPP_result = ");
-                        } else {
-                            try writer.writeAll("return ");
-                        }
-                    }
+                switch (return_type.kind) {
+                    c.CXType_LValueReference => try writer.writeAll("&"),
+                    else => {},
+                }
 
-                    switch (return_type.kind) {
-                        c.CXType_LValueReference => try writer.writeAll("&"),
+                const grandparent = ctx.parent_stack.items[ctx.parent_stack.items.len - 2];
+                if (ctx.parent_stack.items.len > 1 and (grandparent.inner == .@"struct" or grandparent.inner == .@"union")) {
+                    try writer.writeAll("obj->");
+                } else {
+                    for (ctx.ns_stack.items) |n| try writer.print("{s}::", .{n});
+                }
+                try writer.print("{s}(", .{instr.name});
+
+                for (fn_params.items, 0..) |p, j| {
+                    const m = ir.instrs.items[p];
+                    switch (m.inner.Member.kind) {
+                        c.CXType_LValueReference => try writer.writeByte('*'),
                         else => {},
                     }
 
-                    if (ctx_stack.items.len > 1 and ctx_stack.items[ctx_stack.items.len - 2] == .struct_like) {
-                        try writer.writeAll("obj->");
-                    } else {
-                        for (ns_stack.items) |n| try writer.print("{s}::", .{n});
-                    }
-                    try writer.print("{s}(", .{instr.name});
+                    try writer.writeAll(m.name);
+                    if (j < fn_params.items.len - 1) try writer.writeAll(", ");
+                }
+                fn_params.clearAndFree();
 
-                    for (fn_params.items, 0..) |p, j| {
-                        const m = ir.instrs.items[p];
-                        switch (m.inner.Member.kind) {
-                            c.CXType_LValueReference => try writer.writeByte('*'),
-                            else => {},
-                        }
+                try writer.writeAll(");\n");
+                if (variadic) try writer.writeAll("\tva_end(__ZPP_args);\n");
+                if (needs_to_return and variadic and !use_out_param) try writer.writeAll("\treturn __ZPP_result;\n");
+                try writer.writeAll("}\n");
 
-                        try writer.writeAll(m.name);
-                        if (j < fn_params.items.len - 1) try writer.writeAll(", ");
-                    }
-                    fn_params.clearAndFree();
+                _ = ctx.parent_stack.pop();
+            },
+            .Struct, .Enum, .Union => {
+                ctx.member_stack.getLast().clearAndFree();
+                _ = ctx.ns_stack.pop();
+                _ = ctx.parent_stack.pop();
+            },
+            .Typedef => {
+                ctx.member_stack.getLast().clearAndFree();
+                _ = ctx.parent_stack.pop();
+            },
+            .Member, .Value => unreachable,
+        }
 
-                    try writer.writeAll(");\n");
-                    if (variadic) try writer.writeAll("\tva_end(__ZPP_args);\n");
-                    if (needs_to_return and variadic and !use_out_param) try writer.writeAll("\treturn __ZPP_result;\n");
-                    try writer.writeAll("}\n");
-
-                    const end = ctx_stack.pop().?.function;
-                    if (revert_last_instruction) {
-                        writer.end = end;
-                        revert_last_instruction = false;
-                    }
-                },
-                .Struct, .Enum, .Union => {
-                    fn_params.clearAndFree();
-                    _ = ns_stack.pop();
-                    _ = ctx_stack.pop();
-                },
-                .Typedef => {
-                    fn_params.clearAndFree();
-                    _ = ctx_stack.pop();
-                },
-                .Member, .Value => unreachable,
-            }
+        if (ctx.unwind_to_parent) {
+            writer.end = parent_start;
+            ctx.unwind_to_parent = false;
         }
     }
+}
 
+pub fn writeFileSuffix(_: *const IR, _: *writers.Context, writer: *std.Io.Writer) !void {
     try writer.writeAll("\n#pragma clang diagnostic pop");
 }
 
@@ -208,7 +219,7 @@ const FormatTypeArgs = struct {
     have_pointers_been_written: ?*bool = null,
 };
 
-fn __formatMemberOrType(
+fn formatMemberOrType(
     @"type": c.CXType,
     allocator: std.mem.Allocator,
     writer: *std.Io.Writer,
@@ -230,16 +241,14 @@ fn __formatMemberOrType(
         defer allocator.free(spelling);
 
         if (@import("../writers.zig").untranslateable_types.has(spelling)) {
-            log.err("Cannot translate type: '{s}'", .{spelling});
-            revert_last_instruction = true;
-            return;
+            return error.Revert;
         }
 
         var kind = @as(c_int, @intCast(@"type".kind));
         if (args.fake_pointer) kind = c.CXType_Pointer;
 
         const out = inner: switch (kind) {
-            c.CXType_Elaborated => return __formatMemberOrType(c.clang_getCanonicalType(@"type"), allocator, writer, args),
+            c.CXType_Elaborated => return formatMemberOrType(c.clang_getCanonicalType(@"type"), allocator, writer, args),
 
             c.CXType_Void,
             //
@@ -284,7 +293,7 @@ fn __formatMemberOrType(
 
                 var have_pointers_been_written = false;
                 if (pointee_args.have_pointers_been_written == null) pointee_args.have_pointers_been_written = &have_pointers_been_written;
-                try __formatMemberOrType(pointee, allocator, writer, pointee_args);
+                try formatMemberOrType(pointee, allocator, writer, pointee_args);
 
                 if (!pointee_args.have_pointers_been_written.?.*) {
                     try writer.writeByte('*');
@@ -301,13 +310,13 @@ fn __formatMemberOrType(
                 elm_args.name_opt = null;
                 elm_args.override_const = false;
 
-                try __formatMemberOrType(c.clang_getArrayElementType(@"type"), allocator, writer, elm_args);
+                try formatMemberOrType(c.clang_getArrayElementType(@"type"), allocator, writer, elm_args);
                 break :outer;
             },
 
             c.CXType_FunctionProto => {
                 // TODO: handle pointer return types
-                try __formatMemberOrType(c.clang_getResultType(@"type"), allocator, writer, .{});
+                try formatMemberOrType(c.clang_getResultType(@"type"), allocator, writer, .{});
                 try writer.writeAll(" (");
 
                 for (0..args.pointee_depth) |_| try writer.writeByte('*');
@@ -318,7 +327,7 @@ fn __formatMemberOrType(
                 const n_params = c.clang_getNumArgTypes(@"type");
                 const variadic = c.clang_isFunctionTypeVariadic(@"type") != 0;
                 for (0..@intCast(n_params)) |i| {
-                    try __formatMemberOrType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{});
+                    try formatMemberOrType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{});
                     if (i < n_params - 1 or variadic) try writer.writeAll(", ");
                 }
                 if (variadic) try writer.writeAll("...");
@@ -358,28 +367,13 @@ fn __formatMemberOrType(
     }
 }
 
-fn formatMemberOrType(
-    @"type": c.CXType,
-    allocator: std.mem.Allocator,
-    writer: *std.Io.Writer,
-    args: FormatTypeArgs,
-) std.Io.Writer.Error!void {
-    __formatMemberOrType(@"type", allocator, writer, args) catch |e| switch (e) {
-        std.Io.Writer.Error.WriteFailed => return std.Io.Writer.Error.WriteFailed,
-        else => {
-            log.err("Type Formatting Error: {}", .{e});
-            return std.Io.Writer.Error.WriteFailed;
-        },
-    };
-}
-
 // -- Other Writing Functions -- //
 
 pub fn formatFilename(allocator: std.mem.Allocator, filename: []const u8) std.mem.Allocator.Error![:0]const u8 {
     return std.fmt.allocPrintSentinel(allocator, "{s}.cpp", .{filename}, 0);
 }
 
-pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) std.mem.Allocator.Error!bool {
+pub fn checkFile(allocator: std.mem.Allocator, path: [:0]const u8, args: anytype) !bool {
     var fz = tracy.FnZone.init(@src(), "cpp.checkFile");
     defer fz.end();
 
