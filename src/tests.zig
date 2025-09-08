@@ -5,7 +5,7 @@ const writers = @import("writers.zig");
 
 const log = std.log.scoped(.tests);
 
-const SOURCE = "tests/";
+var SOURCE: []const u8 = undefined;
 
 test "integration tests" {
     std.testing.log_level = .info;
@@ -14,6 +14,9 @@ test "integration tests" {
     defer arena.deinit();
 
     const allocator = arena.allocator();
+
+    SOURCE = try std.fs.cwd().realpathAlloc(allocator, "tests/");
+    log.info("Testing Root: {s}", .{SOURCE});
 
     var dir = try std.fs.cwd().openDir(SOURCE, .{ .iterate = true, .access_sub_paths = false });
     defer dir.close();
@@ -28,20 +31,19 @@ test "integration tests" {
     }
 
     for (tests.items) |test_name| {
-        const header_path = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, test_name, "/", test_name, ".hpp" }, 0);
+        const header_path = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, "/", test_name, "/", test_name, ".hpp" }, 0);
         try compareToExpected(allocator, test_name, writers.CppWrapper, header_path);
         try compareToExpected(allocator, test_name, writers.ZigWrapper, header_path);
     }
 }
 
-fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer: writers.IRWriter, header_path: []const u8) !void {
-    const path_final = try writer.formatFilename(allocator, try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, test_name, "/", test_name }, 0));
-    const expected_path_temp_root = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, test_name, "/", test_name, ".bkp" }, 0);
+fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer: writers.IRWriter, header_path: [:0]const u8) !void {
+    const path_final = try writer.formatFilename(allocator, try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, "/", test_name, "/", test_name }, 0));
+    const expected_path_temp_root = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, "/", test_name, "/", test_name, ".bkp" }, 0);
     const expected_path_temp = try writer.formatFilename(allocator, expected_path_temp_root);
 
     const tag = path_final[std.mem.lastIndexOfScalar(u8, path_final, '.').? + 1 ..];
 
-    const contents = try std.fs.cwd().readFileAlloc(allocator, header_path, std.math.maxInt(usize));
     const expected_opt: ?[]const u8 = blk: {
         const expected = std.fs.cwd().readFileAlloc(allocator, path_final, std.math.maxInt(usize)) catch |e| switch (e) {
             error.FileNotFound => {
@@ -55,7 +57,7 @@ fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer
     };
 
     // TODO: #includes for the original file are broken; need to resolve them to absolute paths.
-    const ir = try ir_mod.processBytes(allocator, ir_mod.ROOT_FILE, contents, &.{ir_mod.ROOT_FILE}, &.{});
+    const ir = try ir_mod.processFiles(allocator, &.{header_path}, &.{});
     try writers.writeToFile(allocator, &ir, writer, expected_path_temp_root);
 
     const output = try std.fs.cwd().readFileAlloc(allocator, expected_path_temp, std.math.maxInt(usize));

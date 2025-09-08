@@ -5,6 +5,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-security"
 
+#include "supported.hpp"
 
 extern "C" void ret_void__efeffba39ae7af53() {
 	ret_void();

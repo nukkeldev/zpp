@@ -92,38 +92,4 @@ pub fn build(b: *std.Build) void {
     const run_unit_tests = b.addRunArtifact(unit_tests);
     const unit_tests_step = b.step("test", "Run unit tests");
     unit_tests_step.dependOn(&run_unit_tests.step);
-
-    // Integration Test(s)
-
-    // const run_supported_gen = b.addRunArtifact(exe);
-    // run_supported_gen.addFileArg(b.path("src/embed/testing/supported.hpp"));
-    // run_supported_gen.addArg("-x");
-    // run_supported_gen.addArg("-std=c++17");
-
-    // const supported_test_mod = b.createModule(.{
-    //     .root_source_file = b.path("src/embed/testing/supported.zig"),
-    //     .target = target,
-    //     .optimize = optimize,
-    //     // .link_libcpp = true,
-    //     .link_libc = true,
-    // });
-
-    // supported_test_mod.addIncludePath(b.path("src/embed/testing"));
-    // supported_test_mod.addCSourceFile(.{ .file = b.path("zpp-out/supported.hpp/supported.hpp.cpp"), .language = .cpp });
-
-    // supported_test_mod.addAnonymousImport("zpp-bindings", .{
-    //     .root_source_file = b.path("zpp-out/supported.hpp/supported.hpp.zig"),
-    //     .target = target,
-    //     .optimize = optimize,
-    // });
-
-    // const supported_test_exe = b.addExecutable(.{
-    //     .name = "supported-test",
-    //     .root_module = supported_test_mod,
-    // });
-    // supported_test_exe.step.dependOn(&run_supported_gen.step);
-    // const run_supported_test = b.addRunArtifact(supported_test_exe);
-
-    // const run_supported_test_step = b.step("test-support", "Runs the supported features integration test");
-    // run_supported_test_step.dependOn(&run_supported_test.step);
 }

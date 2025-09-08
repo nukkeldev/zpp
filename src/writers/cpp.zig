@@ -204,7 +204,7 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
 }
 
 pub fn writeFileSuffix(_: *const IR, _: *writers.Context, writer: *std.Io.Writer) !void {
-    try writer.writeAll("\n#pragma clang diagnostic pop");
+    try writer.writeAll("\n#pragma clang diagnostic pop\n");
 }
 
 // -- Member & Type Formatting -- //

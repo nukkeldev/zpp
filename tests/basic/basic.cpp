@@ -5,6 +5,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wformat-security"
 
+#include "basic.hpp"
 
 extern "C" void f__faff92fe25589f8c(int p1, char p2) {
 	f(p1, p2);
