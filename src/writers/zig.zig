@@ -493,6 +493,9 @@ fn formatType(
         => {
             const decl = c.clang_getTypeDeclaration(@"type");
             const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, c.clang_getCursorLocation(decl));
+
+            if (!std.fs.path.isAbsolute(location.file)) log.err("Type declaration location refers to a relative path! This is a bug.", .{});
+
             if (c.clang_Type_getNumTemplateArguments(@"type") > 0 or !args.hashed_paths.contains(location.file)) {
                 continue :inner -2;
             } else {

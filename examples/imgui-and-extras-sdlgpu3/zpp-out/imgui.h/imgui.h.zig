@@ -7152,6 +7152,1327 @@ pub const ImGuiPlatformImeData = extern struct {
 
 pub const ImFontAtlasCustomRect = ImFontAtlasRect;
 
+pub const ImAxis = i32;
+
+pub const ImPlotFlags = i32;
+
+pub const ImPlotAxisFlags = i32;
+
+pub const ImPlotSubplotFlags = i32;
+
+pub const ImPlotLegendFlags = i32;
+
+pub const ImPlotMouseTextFlags = i32;
+
+pub const ImPlotDragToolFlags = i32;
+
+pub const ImPlotColormapScaleFlags = i32;
+
+pub const ImPlotItemFlags = i32;
+
+pub const ImPlotLineFlags = i32;
+
+pub const ImPlotScatterFlags = i32;
+
+pub const ImPlotStairsFlags = i32;
+
+pub const ImPlotShadedFlags = i32;
+
+pub const ImPlotBarsFlags = i32;
+
+pub const ImPlotBarGroupsFlags = i32;
+
+pub const ImPlotErrorBarsFlags = i32;
+
+pub const ImPlotStemsFlags = i32;
+
+pub const ImPlotInfLinesFlags = i32;
+
+pub const ImPlotPieChartFlags = i32;
+
+pub const ImPlotHeatmapFlags = i32;
+
+pub const ImPlotHistogramFlags = i32;
+
+pub const ImPlotDigitalFlags = i32;
+
+pub const ImPlotImageFlags = i32;
+
+pub const ImPlotTextFlags = i32;
+
+pub const ImPlotDummyFlags = i32;
+
+pub const ImPlotCond = i32;
+
+pub const ImPlotCol = i32;
+
+pub const ImPlotStyleVar = i32;
+
+pub const ImPlotScale = i32;
+
+pub const ImPlotMarker = i32;
+
+pub const ImPlotColormap = i32;
+
+pub const ImPlotLocation = i32;
+
+pub const ImPlotBin = i32;
+
+pub const ImAxis_ = packed struct(u32) {
+    data: u32,
+    pub const ImAxis_X1: ImAxis_ = .{ .data = 0 };
+    pub const ImAxis_X2: ImAxis_ = .{ .data = 1 };
+    pub const ImAxis_X3: ImAxis_ = .{ .data = 2 };
+    pub const ImAxis_Y1: ImAxis_ = .{ .data = 3 };
+    pub const ImAxis_Y2: ImAxis_ = .{ .data = 4 };
+    pub const ImAxis_Y3: ImAxis_ = .{ .data = 5 };
+    pub const ImAxis_COUNT: ImAxis_ = .{ .data = 6 };
+};
+
+pub const ImPlotFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotFlags_None: ImPlotFlags_ = .{ .data = 0 };
+    pub const ImPlotFlags_NoTitle: ImPlotFlags_ = .{ .data = 1 };
+    pub const ImPlotFlags_NoLegend: ImPlotFlags_ = .{ .data = 2 };
+    pub const ImPlotFlags_NoMouseText: ImPlotFlags_ = .{ .data = 4 };
+    pub const ImPlotFlags_NoInputs: ImPlotFlags_ = .{ .data = 8 };
+    pub const ImPlotFlags_NoMenus: ImPlotFlags_ = .{ .data = 16 };
+    pub const ImPlotFlags_NoBoxSelect: ImPlotFlags_ = .{ .data = 32 };
+    pub const ImPlotFlags_NoFrame: ImPlotFlags_ = .{ .data = 64 };
+    pub const ImPlotFlags_Equal: ImPlotFlags_ = .{ .data = 128 };
+    pub const ImPlotFlags_Crosshairs: ImPlotFlags_ = .{ .data = 256 };
+    pub const ImPlotFlags_CanvasOnly: ImPlotFlags_ = .{ .data = 55 };
+};
+
+pub const ImPlotAxisFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotAxisFlags_None: ImPlotAxisFlags_ = .{ .data = 0 };
+    pub const ImPlotAxisFlags_NoLabel: ImPlotAxisFlags_ = .{ .data = 1 };
+    pub const ImPlotAxisFlags_NoGridLines: ImPlotAxisFlags_ = .{ .data = 2 };
+    pub const ImPlotAxisFlags_NoTickMarks: ImPlotAxisFlags_ = .{ .data = 4 };
+    pub const ImPlotAxisFlags_NoTickLabels: ImPlotAxisFlags_ = .{ .data = 8 };
+    pub const ImPlotAxisFlags_NoInitialFit: ImPlotAxisFlags_ = .{ .data = 16 };
+    pub const ImPlotAxisFlags_NoMenus: ImPlotAxisFlags_ = .{ .data = 32 };
+    pub const ImPlotAxisFlags_NoSideSwitch: ImPlotAxisFlags_ = .{ .data = 64 };
+    pub const ImPlotAxisFlags_NoHighlight: ImPlotAxisFlags_ = .{ .data = 128 };
+    pub const ImPlotAxisFlags_Opposite: ImPlotAxisFlags_ = .{ .data = 256 };
+    pub const ImPlotAxisFlags_Foreground: ImPlotAxisFlags_ = .{ .data = 512 };
+    pub const ImPlotAxisFlags_Invert: ImPlotAxisFlags_ = .{ .data = 1024 };
+    pub const ImPlotAxisFlags_AutoFit: ImPlotAxisFlags_ = .{ .data = 2048 };
+    pub const ImPlotAxisFlags_RangeFit: ImPlotAxisFlags_ = .{ .data = 4096 };
+    pub const ImPlotAxisFlags_PanStretch: ImPlotAxisFlags_ = .{ .data = 8192 };
+    pub const ImPlotAxisFlags_LockMin: ImPlotAxisFlags_ = .{ .data = 16384 };
+    pub const ImPlotAxisFlags_LockMax: ImPlotAxisFlags_ = .{ .data = 32768 };
+    pub const ImPlotAxisFlags_Lock: ImPlotAxisFlags_ = .{ .data = 49152 };
+    pub const ImPlotAxisFlags_NoDecorations: ImPlotAxisFlags_ = .{ .data = 15 };
+    pub const ImPlotAxisFlags_AuxDefault: ImPlotAxisFlags_ = .{ .data = 258 };
+};
+
+pub const ImPlotSubplotFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotSubplotFlags_None: ImPlotSubplotFlags_ = .{ .data = 0 };
+    pub const ImPlotSubplotFlags_NoTitle: ImPlotSubplotFlags_ = .{ .data = 1 };
+    pub const ImPlotSubplotFlags_NoLegend: ImPlotSubplotFlags_ = .{ .data = 2 };
+    pub const ImPlotSubplotFlags_NoMenus: ImPlotSubplotFlags_ = .{ .data = 4 };
+    pub const ImPlotSubplotFlags_NoResize: ImPlotSubplotFlags_ = .{ .data = 8 };
+    pub const ImPlotSubplotFlags_NoAlign: ImPlotSubplotFlags_ = .{ .data = 16 };
+    pub const ImPlotSubplotFlags_ShareItems: ImPlotSubplotFlags_ = .{ .data = 32 };
+    pub const ImPlotSubplotFlags_LinkRows: ImPlotSubplotFlags_ = .{ .data = 64 };
+    pub const ImPlotSubplotFlags_LinkCols: ImPlotSubplotFlags_ = .{ .data = 128 };
+    pub const ImPlotSubplotFlags_LinkAllX: ImPlotSubplotFlags_ = .{ .data = 256 };
+    pub const ImPlotSubplotFlags_LinkAllY: ImPlotSubplotFlags_ = .{ .data = 512 };
+    pub const ImPlotSubplotFlags_ColMajor: ImPlotSubplotFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotLegendFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotLegendFlags_None: ImPlotLegendFlags_ = .{ .data = 0 };
+    pub const ImPlotLegendFlags_NoButtons: ImPlotLegendFlags_ = .{ .data = 1 };
+    pub const ImPlotLegendFlags_NoHighlightItem: ImPlotLegendFlags_ = .{ .data = 2 };
+    pub const ImPlotLegendFlags_NoHighlightAxis: ImPlotLegendFlags_ = .{ .data = 4 };
+    pub const ImPlotLegendFlags_NoMenus: ImPlotLegendFlags_ = .{ .data = 8 };
+    pub const ImPlotLegendFlags_Outside: ImPlotLegendFlags_ = .{ .data = 16 };
+    pub const ImPlotLegendFlags_Horizontal: ImPlotLegendFlags_ = .{ .data = 32 };
+    pub const ImPlotLegendFlags_Sort: ImPlotLegendFlags_ = .{ .data = 64 };
+};
+
+pub const ImPlotMouseTextFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotMouseTextFlags_None: ImPlotMouseTextFlags_ = .{ .data = 0 };
+    pub const ImPlotMouseTextFlags_NoAuxAxes: ImPlotMouseTextFlags_ = .{ .data = 1 };
+    pub const ImPlotMouseTextFlags_NoFormat: ImPlotMouseTextFlags_ = .{ .data = 2 };
+    pub const ImPlotMouseTextFlags_ShowAlways: ImPlotMouseTextFlags_ = .{ .data = 4 };
+};
+
+pub const ImPlotDragToolFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotDragToolFlags_None: ImPlotDragToolFlags_ = .{ .data = 0 };
+    pub const ImPlotDragToolFlags_NoCursors: ImPlotDragToolFlags_ = .{ .data = 1 };
+    pub const ImPlotDragToolFlags_NoFit: ImPlotDragToolFlags_ = .{ .data = 2 };
+    pub const ImPlotDragToolFlags_NoInputs: ImPlotDragToolFlags_ = .{ .data = 4 };
+    pub const ImPlotDragToolFlags_Delayed: ImPlotDragToolFlags_ = .{ .data = 8 };
+};
+
+pub const ImPlotColormapScaleFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotColormapScaleFlags_None: ImPlotColormapScaleFlags_ = .{ .data = 0 };
+    pub const ImPlotColormapScaleFlags_NoLabel: ImPlotColormapScaleFlags_ = .{ .data = 1 };
+    pub const ImPlotColormapScaleFlags_Opposite: ImPlotColormapScaleFlags_ = .{ .data = 2 };
+    pub const ImPlotColormapScaleFlags_Invert: ImPlotColormapScaleFlags_ = .{ .data = 4 };
+};
+
+pub const ImPlotItemFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotItemFlags_None: ImPlotItemFlags_ = .{ .data = 0 };
+    pub const ImPlotItemFlags_NoLegend: ImPlotItemFlags_ = .{ .data = 1 };
+    pub const ImPlotItemFlags_NoFit: ImPlotItemFlags_ = .{ .data = 2 };
+};
+
+pub const ImPlotLineFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotLineFlags_None: ImPlotLineFlags_ = .{ .data = 0 };
+    pub const ImPlotLineFlags_Segments: ImPlotLineFlags_ = .{ .data = 1024 };
+    pub const ImPlotLineFlags_Loop: ImPlotLineFlags_ = .{ .data = 2048 };
+    pub const ImPlotLineFlags_SkipNaN: ImPlotLineFlags_ = .{ .data = 4096 };
+    pub const ImPlotLineFlags_NoClip: ImPlotLineFlags_ = .{ .data = 8192 };
+    pub const ImPlotLineFlags_Shaded: ImPlotLineFlags_ = .{ .data = 16384 };
+};
+
+pub const ImPlotScatterFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotScatterFlags_None: ImPlotScatterFlags_ = .{ .data = 0 };
+    pub const ImPlotScatterFlags_NoClip: ImPlotScatterFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotStairsFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotStairsFlags_None: ImPlotStairsFlags_ = .{ .data = 0 };
+    pub const ImPlotStairsFlags_PreStep: ImPlotStairsFlags_ = .{ .data = 1024 };
+    pub const ImPlotStairsFlags_Shaded: ImPlotStairsFlags_ = .{ .data = 2048 };
+};
+
+pub const ImPlotShadedFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotShadedFlags_None: ImPlotShadedFlags_ = .{ .data = 0 };
+};
+
+pub const ImPlotBarsFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotBarsFlags_None: ImPlotBarsFlags_ = .{ .data = 0 };
+    pub const ImPlotBarsFlags_Horizontal: ImPlotBarsFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotBarGroupsFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotBarGroupsFlags_None: ImPlotBarGroupsFlags_ = .{ .data = 0 };
+    pub const ImPlotBarGroupsFlags_Horizontal: ImPlotBarGroupsFlags_ = .{ .data = 1024 };
+    pub const ImPlotBarGroupsFlags_Stacked: ImPlotBarGroupsFlags_ = .{ .data = 2048 };
+};
+
+pub const ImPlotErrorBarsFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotErrorBarsFlags_None: ImPlotErrorBarsFlags_ = .{ .data = 0 };
+    pub const ImPlotErrorBarsFlags_Horizontal: ImPlotErrorBarsFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotStemsFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotStemsFlags_None: ImPlotStemsFlags_ = .{ .data = 0 };
+    pub const ImPlotStemsFlags_Horizontal: ImPlotStemsFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotInfLinesFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotInfLinesFlags_None: ImPlotInfLinesFlags_ = .{ .data = 0 };
+    pub const ImPlotInfLinesFlags_Horizontal: ImPlotInfLinesFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotPieChartFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotPieChartFlags_None: ImPlotPieChartFlags_ = .{ .data = 0 };
+    pub const ImPlotPieChartFlags_Normalize: ImPlotPieChartFlags_ = .{ .data = 1024 };
+    pub const ImPlotPieChartFlags_IgnoreHidden: ImPlotPieChartFlags_ = .{ .data = 2048 };
+    pub const ImPlotPieChartFlags_Exploding: ImPlotPieChartFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlotHeatmapFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotHeatmapFlags_None: ImPlotHeatmapFlags_ = .{ .data = 0 };
+    pub const ImPlotHeatmapFlags_ColMajor: ImPlotHeatmapFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotHistogramFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotHistogramFlags_None: ImPlotHistogramFlags_ = .{ .data = 0 };
+    pub const ImPlotHistogramFlags_Horizontal: ImPlotHistogramFlags_ = .{ .data = 1024 };
+    pub const ImPlotHistogramFlags_Cumulative: ImPlotHistogramFlags_ = .{ .data = 2048 };
+    pub const ImPlotHistogramFlags_Density: ImPlotHistogramFlags_ = .{ .data = 4096 };
+    pub const ImPlotHistogramFlags_NoOutliers: ImPlotHistogramFlags_ = .{ .data = 8192 };
+    pub const ImPlotHistogramFlags_ColMajor: ImPlotHistogramFlags_ = .{ .data = 16384 };
+};
+
+pub const ImPlotDigitalFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotDigitalFlags_None: ImPlotDigitalFlags_ = .{ .data = 0 };
+};
+
+pub const ImPlotImageFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotImageFlags_None: ImPlotImageFlags_ = .{ .data = 0 };
+};
+
+pub const ImPlotTextFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotTextFlags_None: ImPlotTextFlags_ = .{ .data = 0 };
+    pub const ImPlotTextFlags_Vertical: ImPlotTextFlags_ = .{ .data = 1024 };
+};
+
+pub const ImPlotDummyFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotDummyFlags_None: ImPlotDummyFlags_ = .{ .data = 0 };
+};
+
+pub const ImPlotCond_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotCond_None: ImPlotCond_ = .{ .data = 0 };
+    pub const ImPlotCond_Always: ImPlotCond_ = .{ .data = 1 };
+    pub const ImPlotCond_Once: ImPlotCond_ = .{ .data = 2 };
+};
+
+pub const ImPlotCol_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotCol_Line: ImPlotCol_ = .{ .data = 0 };
+    pub const ImPlotCol_Fill: ImPlotCol_ = .{ .data = 1 };
+    pub const ImPlotCol_MarkerOutline: ImPlotCol_ = .{ .data = 2 };
+    pub const ImPlotCol_MarkerFill: ImPlotCol_ = .{ .data = 3 };
+    pub const ImPlotCol_ErrorBar: ImPlotCol_ = .{ .data = 4 };
+    pub const ImPlotCol_FrameBg: ImPlotCol_ = .{ .data = 5 };
+    pub const ImPlotCol_PlotBg: ImPlotCol_ = .{ .data = 6 };
+    pub const ImPlotCol_PlotBorder: ImPlotCol_ = .{ .data = 7 };
+    pub const ImPlotCol_LegendBg: ImPlotCol_ = .{ .data = 8 };
+    pub const ImPlotCol_LegendBorder: ImPlotCol_ = .{ .data = 9 };
+    pub const ImPlotCol_LegendText: ImPlotCol_ = .{ .data = 10 };
+    pub const ImPlotCol_TitleText: ImPlotCol_ = .{ .data = 11 };
+    pub const ImPlotCol_InlayText: ImPlotCol_ = .{ .data = 12 };
+    pub const ImPlotCol_AxisText: ImPlotCol_ = .{ .data = 13 };
+    pub const ImPlotCol_AxisGrid: ImPlotCol_ = .{ .data = 14 };
+    pub const ImPlotCol_AxisTick: ImPlotCol_ = .{ .data = 15 };
+    pub const ImPlotCol_AxisBg: ImPlotCol_ = .{ .data = 16 };
+    pub const ImPlotCol_AxisBgHovered: ImPlotCol_ = .{ .data = 17 };
+    pub const ImPlotCol_AxisBgActive: ImPlotCol_ = .{ .data = 18 };
+    pub const ImPlotCol_Selection: ImPlotCol_ = .{ .data = 19 };
+    pub const ImPlotCol_Crosshairs: ImPlotCol_ = .{ .data = 20 };
+    pub const ImPlotCol_COUNT: ImPlotCol_ = .{ .data = 21 };
+};
+
+pub const ImPlotStyleVar_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotStyleVar_LineWeight: ImPlotStyleVar_ = .{ .data = 0 };
+    pub const ImPlotStyleVar_Marker: ImPlotStyleVar_ = .{ .data = 1 };
+    pub const ImPlotStyleVar_MarkerSize: ImPlotStyleVar_ = .{ .data = 2 };
+    pub const ImPlotStyleVar_MarkerWeight: ImPlotStyleVar_ = .{ .data = 3 };
+    pub const ImPlotStyleVar_FillAlpha: ImPlotStyleVar_ = .{ .data = 4 };
+    pub const ImPlotStyleVar_ErrorBarSize: ImPlotStyleVar_ = .{ .data = 5 };
+    pub const ImPlotStyleVar_ErrorBarWeight: ImPlotStyleVar_ = .{ .data = 6 };
+    pub const ImPlotStyleVar_DigitalBitHeight: ImPlotStyleVar_ = .{ .data = 7 };
+    pub const ImPlotStyleVar_DigitalBitGap: ImPlotStyleVar_ = .{ .data = 8 };
+    pub const ImPlotStyleVar_PlotBorderSize: ImPlotStyleVar_ = .{ .data = 9 };
+    pub const ImPlotStyleVar_MinorAlpha: ImPlotStyleVar_ = .{ .data = 10 };
+    pub const ImPlotStyleVar_MajorTickLen: ImPlotStyleVar_ = .{ .data = 11 };
+    pub const ImPlotStyleVar_MinorTickLen: ImPlotStyleVar_ = .{ .data = 12 };
+    pub const ImPlotStyleVar_MajorTickSize: ImPlotStyleVar_ = .{ .data = 13 };
+    pub const ImPlotStyleVar_MinorTickSize: ImPlotStyleVar_ = .{ .data = 14 };
+    pub const ImPlotStyleVar_MajorGridSize: ImPlotStyleVar_ = .{ .data = 15 };
+    pub const ImPlotStyleVar_MinorGridSize: ImPlotStyleVar_ = .{ .data = 16 };
+    pub const ImPlotStyleVar_PlotPadding: ImPlotStyleVar_ = .{ .data = 17 };
+    pub const ImPlotStyleVar_LabelPadding: ImPlotStyleVar_ = .{ .data = 18 };
+    pub const ImPlotStyleVar_LegendPadding: ImPlotStyleVar_ = .{ .data = 19 };
+    pub const ImPlotStyleVar_LegendInnerPadding: ImPlotStyleVar_ = .{ .data = 20 };
+    pub const ImPlotStyleVar_LegendSpacing: ImPlotStyleVar_ = .{ .data = 21 };
+    pub const ImPlotStyleVar_MousePosPadding: ImPlotStyleVar_ = .{ .data = 22 };
+    pub const ImPlotStyleVar_AnnotationPadding: ImPlotStyleVar_ = .{ .data = 23 };
+    pub const ImPlotStyleVar_FitPadding: ImPlotStyleVar_ = .{ .data = 24 };
+    pub const ImPlotStyleVar_PlotDefaultSize: ImPlotStyleVar_ = .{ .data = 25 };
+    pub const ImPlotStyleVar_PlotMinSize: ImPlotStyleVar_ = .{ .data = 26 };
+    pub const ImPlotStyleVar_COUNT: ImPlotStyleVar_ = .{ .data = 27 };
+};
+
+pub const ImPlotScale_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotScale_Linear: ImPlotScale_ = .{ .data = 0 };
+    pub const ImPlotScale_Time: ImPlotScale_ = .{ .data = 1 };
+    pub const ImPlotScale_Log10: ImPlotScale_ = .{ .data = 2 };
+    pub const ImPlotScale_SymLog: ImPlotScale_ = .{ .data = 3 };
+};
+
+pub const ImPlotMarker_ = packed struct(i32) {
+    data: i32,
+    pub const ImPlotMarker_None: ImPlotMarker_ = .{ .data = -1 };
+    pub const ImPlotMarker_Circle: ImPlotMarker_ = .{ .data = 0 };
+    pub const ImPlotMarker_Square: ImPlotMarker_ = .{ .data = 1 };
+    pub const ImPlotMarker_Diamond: ImPlotMarker_ = .{ .data = 2 };
+    pub const ImPlotMarker_Up: ImPlotMarker_ = .{ .data = 3 };
+    pub const ImPlotMarker_Down: ImPlotMarker_ = .{ .data = 4 };
+    pub const ImPlotMarker_Left: ImPlotMarker_ = .{ .data = 5 };
+    pub const ImPlotMarker_Right: ImPlotMarker_ = .{ .data = 6 };
+    pub const ImPlotMarker_Cross: ImPlotMarker_ = .{ .data = 7 };
+    pub const ImPlotMarker_Plus: ImPlotMarker_ = .{ .data = 8 };
+    pub const ImPlotMarker_Asterisk: ImPlotMarker_ = .{ .data = 9 };
+    pub const ImPlotMarker_COUNT: ImPlotMarker_ = .{ .data = 10 };
+};
+
+pub const ImPlotColormap_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotColormap_Deep: ImPlotColormap_ = .{ .data = 0 };
+    pub const ImPlotColormap_Dark: ImPlotColormap_ = .{ .data = 1 };
+    pub const ImPlotColormap_Pastel: ImPlotColormap_ = .{ .data = 2 };
+    pub const ImPlotColormap_Paired: ImPlotColormap_ = .{ .data = 3 };
+    pub const ImPlotColormap_Viridis: ImPlotColormap_ = .{ .data = 4 };
+    pub const ImPlotColormap_Plasma: ImPlotColormap_ = .{ .data = 5 };
+    pub const ImPlotColormap_Hot: ImPlotColormap_ = .{ .data = 6 };
+    pub const ImPlotColormap_Cool: ImPlotColormap_ = .{ .data = 7 };
+    pub const ImPlotColormap_Pink: ImPlotColormap_ = .{ .data = 8 };
+    pub const ImPlotColormap_Jet: ImPlotColormap_ = .{ .data = 9 };
+    pub const ImPlotColormap_Twilight: ImPlotColormap_ = .{ .data = 10 };
+    pub const ImPlotColormap_RdBu: ImPlotColormap_ = .{ .data = 11 };
+    pub const ImPlotColormap_BrBG: ImPlotColormap_ = .{ .data = 12 };
+    pub const ImPlotColormap_PiYG: ImPlotColormap_ = .{ .data = 13 };
+    pub const ImPlotColormap_Spectral: ImPlotColormap_ = .{ .data = 14 };
+    pub const ImPlotColormap_Greys: ImPlotColormap_ = .{ .data = 15 };
+};
+
+pub const ImPlotLocation_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotLocation_Center: ImPlotLocation_ = .{ .data = 0 };
+    pub const ImPlotLocation_North: ImPlotLocation_ = .{ .data = 1 };
+    pub const ImPlotLocation_South: ImPlotLocation_ = .{ .data = 2 };
+    pub const ImPlotLocation_West: ImPlotLocation_ = .{ .data = 4 };
+    pub const ImPlotLocation_East: ImPlotLocation_ = .{ .data = 8 };
+    pub const ImPlotLocation_NorthWest: ImPlotLocation_ = .{ .data = 5 };
+    pub const ImPlotLocation_NorthEast: ImPlotLocation_ = .{ .data = 9 };
+    pub const ImPlotLocation_SouthWest: ImPlotLocation_ = .{ .data = 6 };
+    pub const ImPlotLocation_SouthEast: ImPlotLocation_ = .{ .data = 10 };
+};
+
+pub const ImPlotBin_ = packed struct(i32) {
+    data: i32,
+    pub const ImPlotBin_Sqrt: ImPlotBin_ = .{ .data = -1 };
+    pub const ImPlotBin_Sturges: ImPlotBin_ = .{ .data = -2 };
+    pub const ImPlotBin_Rice: ImPlotBin_ = .{ .data = -3 };
+    pub const ImPlotBin_Scott: ImPlotBin_ = .{ .data = -4 };
+};
+
+pub const ImPlotPoint = extern struct {
+    x: f64,
+    y: f64,
+    comptime {
+        if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlotPoint' to be 16 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_x = @TypeOf(this.x);
+            if (@sizeOf(T_x) != 8 or @alignOf(T_x) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'x' to be 8 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_x),
+                    @alignOf(T_x),
+                }));
+            }
+            const T_y = @TypeOf(this.y);
+            if (@sizeOf(T_y) != 8 or @alignOf(T_y) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'y' to be 8 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_y),
+                    @alignOf(T_y),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlotRange = extern struct {
+    Min: f64,
+    Max: f64,
+    pub const Contains = ImPlotRange_Contains__70c9d2abcdd2a6c9;
+    extern fn ImPlotRange_Contains__70c9d2abcdd2a6c9(self: *@This(), value: f64) callconv(.c) bool;
+
+    pub const Size = ImPlotRange_Size__48afdcdc06b831dd;
+    extern fn ImPlotRange_Size__48afdcdc06b831dd() callconv(.c) f64;
+
+    pub const Clamp = ImPlotRange_Clamp__e322bcc86982e601;
+    extern fn ImPlotRange_Clamp__e322bcc86982e601(value: f64) callconv(.c) f64;
+
+    comptime {
+        if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 8) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlotRange' to be 16 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Min = @TypeOf(this.Min);
+            if (@sizeOf(T_Min) != 8 or @alignOf(T_Min) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Min' to be 8 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Min),
+                    @alignOf(T_Min),
+                }));
+            }
+            const T_Max = @TypeOf(this.Max);
+            if (@sizeOf(T_Max) != 8 or @alignOf(T_Max) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Max' to be 8 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Max),
+                    @alignOf(T_Max),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlotRect = extern struct {
+    X: ImPlotRange,
+    Y: ImPlotRange,
+    pub const Contains = ImPlotRect_Contains__70c9d2abcdd2a6c9;
+    extern fn ImPlotRect_Contains__70c9d2abcdd2a6c9(self: *@This(), p: *const ImPlotPoint) callconv(.c) bool;
+
+    pub const Contains_1 = ImPlotRect_Contains__70c9d2abcdd2a6c9_1;
+    extern fn ImPlotRect_Contains__70c9d2abcdd2a6c9_1(x: f64, y: f64) callconv(.c) bool;
+
+    pub const Size = ImPlotRect_Size__48afdcdc06b831dd;
+    extern fn ImPlotRect_Size__48afdcdc06b831dd(zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const Clamp = ImPlotRect_Clamp__e322bcc86982e601;
+    extern fn ImPlotRect_Clamp__e322bcc86982e601(p: *const ImPlotPoint, zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const Clamp_1 = ImPlotRect_Clamp__e322bcc86982e601_1;
+    extern fn ImPlotRect_Clamp__e322bcc86982e601_1(x: f64, y: f64, zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const Min = ImPlotRect_Min__56bb671e995cd4e4;
+    extern fn ImPlotRect_Min__56bb671e995cd4e4(zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const Max = ImPlotRect_Max__167ad4910c2d2713;
+    extern fn ImPlotRect_Max__167ad4910c2d2713(zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    comptime {
+        if (@sizeOf(@This()) != 32 or @alignOf(@This()) != 8) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlotRect' to be 32 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_X = @TypeOf(this.X);
+            if (@sizeOf(T_X) != 16 or @alignOf(T_X) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'X' to be 16 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_X),
+                    @alignOf(T_X),
+                }));
+            }
+            const T_Y = @TypeOf(this.Y);
+            if (@sizeOf(T_Y) != 16 or @alignOf(T_Y) != 8) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Y' to be 16 bytes with 8 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Y),
+                    @alignOf(T_Y),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlotStyle = extern struct {
+    LineWeight: f32,
+    Marker: i32,
+    MarkerSize: f32,
+    MarkerWeight: f32,
+    FillAlpha: f32,
+    ErrorBarSize: f32,
+    ErrorBarWeight: f32,
+    DigitalBitHeight: f32,
+    DigitalBitGap: f32,
+    PlotBorderSize: f32,
+    MinorAlpha: f32,
+    MajorTickLen: ImVec2,
+    MinorTickLen: ImVec2,
+    MajorTickSize: ImVec2,
+    MinorTickSize: ImVec2,
+    MajorGridSize: ImVec2,
+    MinorGridSize: ImVec2,
+    PlotPadding: ImVec2,
+    LabelPadding: ImVec2,
+    LegendPadding: ImVec2,
+    LegendInnerPadding: ImVec2,
+    LegendSpacing: ImVec2,
+    MousePosPadding: ImVec2,
+    AnnotationPadding: ImVec2,
+    FitPadding: ImVec2,
+    PlotDefaultSize: ImVec2,
+    PlotMinSize: ImVec2,
+    Colors: [21]ImVec4,
+    Colormap: i32,
+    UseLocalTime: bool,
+    UseISO8601: bool,
+    Use24HourClock: bool,
+    comptime {
+        if (@sizeOf(@This()) != 516 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlotStyle' to be 516 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_LineWeight = @TypeOf(this.LineWeight);
+            if (@sizeOf(T_LineWeight) != 4 or @alignOf(T_LineWeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LineWeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LineWeight),
+                    @alignOf(T_LineWeight),
+                }));
+            }
+            const T_Marker = @TypeOf(this.Marker);
+            if (@sizeOf(T_Marker) != 4 or @alignOf(T_Marker) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Marker' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Marker),
+                    @alignOf(T_Marker),
+                }));
+            }
+            const T_MarkerSize = @TypeOf(this.MarkerSize);
+            if (@sizeOf(T_MarkerSize) != 4 or @alignOf(T_MarkerSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MarkerSize' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MarkerSize),
+                    @alignOf(T_MarkerSize),
+                }));
+            }
+            const T_MarkerWeight = @TypeOf(this.MarkerWeight);
+            if (@sizeOf(T_MarkerWeight) != 4 or @alignOf(T_MarkerWeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MarkerWeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MarkerWeight),
+                    @alignOf(T_MarkerWeight),
+                }));
+            }
+            const T_FillAlpha = @TypeOf(this.FillAlpha);
+            if (@sizeOf(T_FillAlpha) != 4 or @alignOf(T_FillAlpha) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'FillAlpha' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_FillAlpha),
+                    @alignOf(T_FillAlpha),
+                }));
+            }
+            const T_ErrorBarSize = @TypeOf(this.ErrorBarSize);
+            if (@sizeOf(T_ErrorBarSize) != 4 or @alignOf(T_ErrorBarSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'ErrorBarSize' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_ErrorBarSize),
+                    @alignOf(T_ErrorBarSize),
+                }));
+            }
+            const T_ErrorBarWeight = @TypeOf(this.ErrorBarWeight);
+            if (@sizeOf(T_ErrorBarWeight) != 4 or @alignOf(T_ErrorBarWeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'ErrorBarWeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_ErrorBarWeight),
+                    @alignOf(T_ErrorBarWeight),
+                }));
+            }
+            const T_DigitalBitHeight = @TypeOf(this.DigitalBitHeight);
+            if (@sizeOf(T_DigitalBitHeight) != 4 or @alignOf(T_DigitalBitHeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'DigitalBitHeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_DigitalBitHeight),
+                    @alignOf(T_DigitalBitHeight),
+                }));
+            }
+            const T_DigitalBitGap = @TypeOf(this.DigitalBitGap);
+            if (@sizeOf(T_DigitalBitGap) != 4 or @alignOf(T_DigitalBitGap) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'DigitalBitGap' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_DigitalBitGap),
+                    @alignOf(T_DigitalBitGap),
+                }));
+            }
+            const T_PlotBorderSize = @TypeOf(this.PlotBorderSize);
+            if (@sizeOf(T_PlotBorderSize) != 4 or @alignOf(T_PlotBorderSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotBorderSize' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotBorderSize),
+                    @alignOf(T_PlotBorderSize),
+                }));
+            }
+            const T_MinorAlpha = @TypeOf(this.MinorAlpha);
+            if (@sizeOf(T_MinorAlpha) != 4 or @alignOf(T_MinorAlpha) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MinorAlpha' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MinorAlpha),
+                    @alignOf(T_MinorAlpha),
+                }));
+            }
+            const T_MajorTickLen = @TypeOf(this.MajorTickLen);
+            if (@sizeOf(T_MajorTickLen) != 8 or @alignOf(T_MajorTickLen) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MajorTickLen' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MajorTickLen),
+                    @alignOf(T_MajorTickLen),
+                }));
+            }
+            const T_MinorTickLen = @TypeOf(this.MinorTickLen);
+            if (@sizeOf(T_MinorTickLen) != 8 or @alignOf(T_MinorTickLen) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MinorTickLen' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MinorTickLen),
+                    @alignOf(T_MinorTickLen),
+                }));
+            }
+            const T_MajorTickSize = @TypeOf(this.MajorTickSize);
+            if (@sizeOf(T_MajorTickSize) != 8 or @alignOf(T_MajorTickSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MajorTickSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MajorTickSize),
+                    @alignOf(T_MajorTickSize),
+                }));
+            }
+            const T_MinorTickSize = @TypeOf(this.MinorTickSize);
+            if (@sizeOf(T_MinorTickSize) != 8 or @alignOf(T_MinorTickSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MinorTickSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MinorTickSize),
+                    @alignOf(T_MinorTickSize),
+                }));
+            }
+            const T_MajorGridSize = @TypeOf(this.MajorGridSize);
+            if (@sizeOf(T_MajorGridSize) != 8 or @alignOf(T_MajorGridSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MajorGridSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MajorGridSize),
+                    @alignOf(T_MajorGridSize),
+                }));
+            }
+            const T_MinorGridSize = @TypeOf(this.MinorGridSize);
+            if (@sizeOf(T_MinorGridSize) != 8 or @alignOf(T_MinorGridSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MinorGridSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MinorGridSize),
+                    @alignOf(T_MinorGridSize),
+                }));
+            }
+            const T_PlotPadding = @TypeOf(this.PlotPadding);
+            if (@sizeOf(T_PlotPadding) != 8 or @alignOf(T_PlotPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotPadding),
+                    @alignOf(T_PlotPadding),
+                }));
+            }
+            const T_LabelPadding = @TypeOf(this.LabelPadding);
+            if (@sizeOf(T_LabelPadding) != 8 or @alignOf(T_LabelPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LabelPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LabelPadding),
+                    @alignOf(T_LabelPadding),
+                }));
+            }
+            const T_LegendPadding = @TypeOf(this.LegendPadding);
+            if (@sizeOf(T_LegendPadding) != 8 or @alignOf(T_LegendPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendPadding),
+                    @alignOf(T_LegendPadding),
+                }));
+            }
+            const T_LegendInnerPadding = @TypeOf(this.LegendInnerPadding);
+            if (@sizeOf(T_LegendInnerPadding) != 8 or @alignOf(T_LegendInnerPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendInnerPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendInnerPadding),
+                    @alignOf(T_LegendInnerPadding),
+                }));
+            }
+            const T_LegendSpacing = @TypeOf(this.LegendSpacing);
+            if (@sizeOf(T_LegendSpacing) != 8 or @alignOf(T_LegendSpacing) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendSpacing' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendSpacing),
+                    @alignOf(T_LegendSpacing),
+                }));
+            }
+            const T_MousePosPadding = @TypeOf(this.MousePosPadding);
+            if (@sizeOf(T_MousePosPadding) != 8 or @alignOf(T_MousePosPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MousePosPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MousePosPadding),
+                    @alignOf(T_MousePosPadding),
+                }));
+            }
+            const T_AnnotationPadding = @TypeOf(this.AnnotationPadding);
+            if (@sizeOf(T_AnnotationPadding) != 8 or @alignOf(T_AnnotationPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'AnnotationPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_AnnotationPadding),
+                    @alignOf(T_AnnotationPadding),
+                }));
+            }
+            const T_FitPadding = @TypeOf(this.FitPadding);
+            if (@sizeOf(T_FitPadding) != 8 or @alignOf(T_FitPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'FitPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_FitPadding),
+                    @alignOf(T_FitPadding),
+                }));
+            }
+            const T_PlotDefaultSize = @TypeOf(this.PlotDefaultSize);
+            if (@sizeOf(T_PlotDefaultSize) != 8 or @alignOf(T_PlotDefaultSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotDefaultSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotDefaultSize),
+                    @alignOf(T_PlotDefaultSize),
+                }));
+            }
+            const T_PlotMinSize = @TypeOf(this.PlotMinSize);
+            if (@sizeOf(T_PlotMinSize) != 8 or @alignOf(T_PlotMinSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotMinSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotMinSize),
+                    @alignOf(T_PlotMinSize),
+                }));
+            }
+            const T_Colors = @TypeOf(this.Colors);
+            if (@sizeOf(T_Colors) != 336 or @alignOf(T_Colors) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Colors' to be 336 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Colors),
+                    @alignOf(T_Colors),
+                }));
+            }
+            const T_Colormap = @TypeOf(this.Colormap);
+            if (@sizeOf(T_Colormap) != 4 or @alignOf(T_Colormap) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Colormap' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Colormap),
+                    @alignOf(T_Colormap),
+                }));
+            }
+            const T_UseLocalTime = @TypeOf(this.UseLocalTime);
+            if (@sizeOf(T_UseLocalTime) != 1 or @alignOf(T_UseLocalTime) != 1) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'UseLocalTime' to be 1 bytes with 1 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_UseLocalTime),
+                    @alignOf(T_UseLocalTime),
+                }));
+            }
+            const T_UseISO8601 = @TypeOf(this.UseISO8601);
+            if (@sizeOf(T_UseISO8601) != 1 or @alignOf(T_UseISO8601) != 1) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'UseISO8601' to be 1 bytes with 1 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_UseISO8601),
+                    @alignOf(T_UseISO8601),
+                }));
+            }
+            const T_Use24HourClock = @TypeOf(this.Use24HourClock);
+            if (@sizeOf(T_Use24HourClock) != 1 or @alignOf(T_Use24HourClock) != 1) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Use24HourClock' to be 1 bytes with 1 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Use24HourClock),
+                    @alignOf(T_Use24HourClock),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlotInputMap = extern struct {
+    Pan: i32,
+    PanMod: i32,
+    Fit: i32,
+    Select: i32,
+    SelectCancel: i32,
+    SelectMod: i32,
+    SelectHorzMod: i32,
+    SelectVertMod: i32,
+    Menu: i32,
+    OverrideMod: i32,
+    ZoomMod: i32,
+    ZoomRate: f32,
+    comptime {
+        if (@sizeOf(@This()) != 48 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlotInputMap' to be 48 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Pan = @TypeOf(this.Pan);
+            if (@sizeOf(T_Pan) != 4 or @alignOf(T_Pan) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Pan' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Pan),
+                    @alignOf(T_Pan),
+                }));
+            }
+            const T_PanMod = @TypeOf(this.PanMod);
+            if (@sizeOf(T_PanMod) != 4 or @alignOf(T_PanMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PanMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PanMod),
+                    @alignOf(T_PanMod),
+                }));
+            }
+            const T_Fit = @TypeOf(this.Fit);
+            if (@sizeOf(T_Fit) != 4 or @alignOf(T_Fit) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Fit' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Fit),
+                    @alignOf(T_Fit),
+                }));
+            }
+            const T_Select = @TypeOf(this.Select);
+            if (@sizeOf(T_Select) != 4 or @alignOf(T_Select) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Select' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Select),
+                    @alignOf(T_Select),
+                }));
+            }
+            const T_SelectCancel = @TypeOf(this.SelectCancel);
+            if (@sizeOf(T_SelectCancel) != 4 or @alignOf(T_SelectCancel) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'SelectCancel' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_SelectCancel),
+                    @alignOf(T_SelectCancel),
+                }));
+            }
+            const T_SelectMod = @TypeOf(this.SelectMod);
+            if (@sizeOf(T_SelectMod) != 4 or @alignOf(T_SelectMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'SelectMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_SelectMod),
+                    @alignOf(T_SelectMod),
+                }));
+            }
+            const T_SelectHorzMod = @TypeOf(this.SelectHorzMod);
+            if (@sizeOf(T_SelectHorzMod) != 4 or @alignOf(T_SelectHorzMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'SelectHorzMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_SelectHorzMod),
+                    @alignOf(T_SelectHorzMod),
+                }));
+            }
+            const T_SelectVertMod = @TypeOf(this.SelectVertMod);
+            if (@sizeOf(T_SelectVertMod) != 4 or @alignOf(T_SelectVertMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'SelectVertMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_SelectVertMod),
+                    @alignOf(T_SelectVertMod),
+                }));
+            }
+            const T_Menu = @TypeOf(this.Menu);
+            if (@sizeOf(T_Menu) != 4 or @alignOf(T_Menu) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Menu' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Menu),
+                    @alignOf(T_Menu),
+                }));
+            }
+            const T_OverrideMod = @TypeOf(this.OverrideMod);
+            if (@sizeOf(T_OverrideMod) != 4 or @alignOf(T_OverrideMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'OverrideMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_OverrideMod),
+                    @alignOf(T_OverrideMod),
+                }));
+            }
+            const T_ZoomMod = @TypeOf(this.ZoomMod);
+            if (@sizeOf(T_ZoomMod) != 4 or @alignOf(T_ZoomMod) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'ZoomMod' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_ZoomMod),
+                    @alignOf(T_ZoomMod),
+                }));
+            }
+            const T_ZoomRate = @TypeOf(this.ZoomRate);
+            if (@sizeOf(T_ZoomRate) != 4 or @alignOf(T_ZoomRate) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'ZoomRate' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_ZoomRate),
+                    @alignOf(T_ZoomRate),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlotFormatter = [*c]*const fn (f64, [*c]u8, i32, *void) callconv(.c) i32;
+
+pub const ImPlotGetter = [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint;
+
+pub const ImPlotTransform = [*c]*const fn (f64, *void) callconv(.c) f64;
+
+pub const ImPlot = struct {
+    pub const CreateContext = ImPlot_CreateContext__9c317cc3bbd69792;
+    extern fn ImPlot_CreateContext__9c317cc3bbd69792() callconv(.c) [*c]ImPlotContext;
+
+    pub const DestroyContext = ImPlot_DestroyContext__33355240a3c270a1;
+    extern fn ImPlot_DestroyContext__33355240a3c270a1(ctx: [*c]ImPlotContext) callconv(.c) void;
+
+    pub const GetCurrentContext = ImPlot_GetCurrentContext__bfcbdecf32b4f9ee;
+    extern fn ImPlot_GetCurrentContext__bfcbdecf32b4f9ee() callconv(.c) [*c]ImPlotContext;
+
+    pub const SetCurrentContext = ImPlot_SetCurrentContext__cf8edc56a4c808a8;
+    extern fn ImPlot_SetCurrentContext__cf8edc56a4c808a8(ctx: [*c]ImPlotContext) callconv(.c) void;
+
+    pub const SetImGuiContext = ImPlot_SetImGuiContext__785f16c0c76e4d6e;
+    extern fn ImPlot_SetImGuiContext__785f16c0c76e4d6e(ctx: [*c]ImGuiContext) callconv(.c) void;
+
+    pub const BeginPlot = ImPlot_BeginPlot__3c148c203682a42e;
+    extern fn ImPlot_BeginPlot__3c148c203682a42e(title_id: [*c]const u8, size: *const ImVec2, flags: i32) callconv(.c) bool;
+
+    pub const EndPlot = ImPlot_EndPlot__5474b1386037b1fc;
+    extern fn ImPlot_EndPlot__5474b1386037b1fc() callconv(.c) void;
+
+    pub const BeginSubplots = ImPlot_BeginSubplots__c5cd49c4bbb57901;
+    extern fn ImPlot_BeginSubplots__c5cd49c4bbb57901(title_id: [*c]const u8, rows: i32, cols: i32, size: *const ImVec2, flags: i32, row_ratios: [*c]f32, col_ratios: [*c]f32) callconv(.c) bool;
+
+    pub const EndSubplots = ImPlot_EndSubplots__690c76d06d092f32;
+    extern fn ImPlot_EndSubplots__690c76d06d092f32() callconv(.c) void;
+
+    pub const SetupAxis = ImPlot_SetupAxis__a02eada84927addd;
+    extern fn ImPlot_SetupAxis__a02eada84927addd(axis: i32, label: [*c]const u8, flags: i32) callconv(.c) void;
+
+    pub const SetupAxisLimits = ImPlot_SetupAxisLimits__84e65096c4f62943;
+    extern fn ImPlot_SetupAxisLimits__84e65096c4f62943(axis: i32, v_min: f64, v_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetupAxisLinks = ImPlot_SetupAxisLinks__eab604d6fc074af;
+    extern fn ImPlot_SetupAxisLinks__eab604d6fc074af(axis: i32, link_min: [*c]f64, link_max: [*c]f64) callconv(.c) void;
+
+    pub const SetupAxisFormat = ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc;
+    extern fn ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc(axis: i32, fmt: [*c]const u8) callconv(.c) void;
+
+    pub const SetupAxisFormat_1 = ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc_1;
+    extern fn ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc_1(axis: i32, formatter: [*c]*const fn (f64, [*c]u8, i32, *void) callconv(.c) i32, data: *void) callconv(.c) void;
+
+    pub const SetupAxisTicks = ImPlot_SetupAxisTicks__22f262f44079b651;
+    extern fn ImPlot_SetupAxisTicks__22f262f44079b651(axis: i32, values: [*c]const f64, n_ticks: i32, labels: [*]const [*c]const u8, keep_default: bool) callconv(.c) void;
+
+    pub const SetupAxisTicks_1 = ImPlot_SetupAxisTicks__22f262f44079b651_1;
+    extern fn ImPlot_SetupAxisTicks__22f262f44079b651_1(axis: i32, v_min: f64, v_max: f64, n_ticks: i32, labels: [*]const [*c]const u8, keep_default: bool) callconv(.c) void;
+
+    pub const SetupAxisScale = ImPlot_SetupAxisScale__1fd7df07a0ac77d0;
+    extern fn ImPlot_SetupAxisScale__1fd7df07a0ac77d0(axis: i32, scale: i32) callconv(.c) void;
+
+    pub const SetupAxisScale_1 = ImPlot_SetupAxisScale__1fd7df07a0ac77d0_1;
+    extern fn ImPlot_SetupAxisScale__1fd7df07a0ac77d0_1(axis: i32, forward: [*c]*const fn (f64, *void) callconv(.c) f64, inverse: [*c]*const fn (f64, *void) callconv(.c) f64, data: *void) callconv(.c) void;
+
+    pub const SetupAxisLimitsConstraints = ImPlot_SetupAxisLimitsConstraints__88340f102878fca3;
+    extern fn ImPlot_SetupAxisLimitsConstraints__88340f102878fca3(axis: i32, v_min: f64, v_max: f64) callconv(.c) void;
+
+    pub const SetupAxisZoomConstraints = ImPlot_SetupAxisZoomConstraints__1bb8e8936b850bd5;
+    extern fn ImPlot_SetupAxisZoomConstraints__1bb8e8936b850bd5(axis: i32, z_min: f64, z_max: f64) callconv(.c) void;
+
+    pub const SetupAxes = ImPlot_SetupAxes__eb51ea5a6e3c0a15;
+    extern fn ImPlot_SetupAxes__eb51ea5a6e3c0a15(x_label: [*c]const u8, y_label: [*c]const u8, x_flags: i32, y_flags: i32) callconv(.c) void;
+
+    pub const SetupAxesLimits = ImPlot_SetupAxesLimits__e404167bdddae99f;
+    extern fn ImPlot_SetupAxesLimits__e404167bdddae99f(x_min: f64, x_max: f64, y_min: f64, y_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetupLegend = ImPlot_SetupLegend__de4a359eef0ead7;
+    extern fn ImPlot_SetupLegend__de4a359eef0ead7(location: i32, flags: i32) callconv(.c) void;
+
+    pub const SetupMouseText = ImPlot_SetupMouseText__212bf4b75368315a;
+    extern fn ImPlot_SetupMouseText__212bf4b75368315a(location: i32, flags: i32) callconv(.c) void;
+
+    pub const SetupFinish = ImPlot_SetupFinish__66513ab2c6e59fed;
+    extern fn ImPlot_SetupFinish__66513ab2c6e59fed() callconv(.c) void;
+
+    pub const SetNextAxisLimits = ImPlot_SetNextAxisLimits__abc0f92c28eccdac;
+    extern fn ImPlot_SetNextAxisLimits__abc0f92c28eccdac(axis: i32, v_min: f64, v_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetNextAxisLinks = ImPlot_SetNextAxisLinks__33af1df7f6046117;
+    extern fn ImPlot_SetNextAxisLinks__33af1df7f6046117(axis: i32, link_min: [*c]f64, link_max: [*c]f64) callconv(.c) void;
+
+    pub const SetNextAxisToFit = ImPlot_SetNextAxisToFit__f22363c60dff4921;
+    extern fn ImPlot_SetNextAxisToFit__f22363c60dff4921(axis: i32) callconv(.c) void;
+
+    pub const SetNextAxesLimits = ImPlot_SetNextAxesLimits__a267761db217a7a;
+    extern fn ImPlot_SetNextAxesLimits__a267761db217a7a(x_min: f64, x_max: f64, y_min: f64, y_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetNextAxesToFit = ImPlot_SetNextAxesToFit__556b021bfcfbbcc1;
+    extern fn ImPlot_SetNextAxesToFit__556b021bfcfbbcc1() callconv(.c) void;
+
+    pub const PlotLineG = ImPlot_PlotLineG__3717f318a5564776;
+    extern fn ImPlot_PlotLineG__3717f318a5564776(label_id: [*c]const u8, getter: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data: *void, count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotScatterG = ImPlot_PlotScatterG__335a73c53464e50f;
+    extern fn ImPlot_PlotScatterG__335a73c53464e50f(label_id: [*c]const u8, getter: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data: *void, count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotStairsG = ImPlot_PlotStairsG__d72cee8be125fe9b;
+    extern fn ImPlot_PlotStairsG__d72cee8be125fe9b(label_id: [*c]const u8, getter: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data: *void, count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotShadedG = ImPlot_PlotShadedG__3c2ef20c196f86c5;
+    extern fn ImPlot_PlotShadedG__3c2ef20c196f86c5(label_id: [*c]const u8, getter1: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data1: *void, getter2: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data2: *void, count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotBarsG = ImPlot_PlotBarsG__338883cc815c91ff;
+    extern fn ImPlot_PlotBarsG__338883cc815c91ff(label_id: [*c]const u8, getter: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data: *void, count: i32, bar_size: f64, flags: i32) callconv(.c) void;
+
+    pub const PlotDigitalG = ImPlot_PlotDigitalG__b33cc918b169bbdd;
+    extern fn ImPlot_PlotDigitalG__b33cc918b169bbdd(label_id: [*c]const u8, getter: [*c]*const fn (i32, *void) callconv(.c) ImPlotPoint, data: *void, count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotImage = ImPlot_PlotImage__6ca11c45f537402f;
+    extern fn ImPlot_PlotImage__6ca11c45f537402f(label_id: [*c]const u8, tex_ref: ImTextureRef, bounds_min: *const ImPlotPoint, bounds_max: *const ImPlotPoint, uv0: *const ImVec2, uv1: *const ImVec2, tint_col: *const ImVec4, flags: i32) callconv(.c) void;
+
+    pub const PlotText = ImPlot_PlotText__58b23a2e82986d8f;
+    extern fn ImPlot_PlotText__58b23a2e82986d8f(text: [*c]const u8, x: f64, y: f64, pix_offset: *const ImVec2, flags: i32) callconv(.c) void;
+
+    pub const PlotDummy = ImPlot_PlotDummy__533cdfb36e6f6351;
+    extern fn ImPlot_PlotDummy__533cdfb36e6f6351(label_id: [*c]const u8, flags: i32) callconv(.c) void;
+
+    pub const DragPoint = ImPlot_DragPoint__7a3004af8135c87;
+    extern fn ImPlot_DragPoint__7a3004af8135c87(id: i32, x: [*c]f64, y: [*c]f64, col: *const ImVec4, size: f32, flags: i32, out_clicked: [*c]bool, out_hovered: [*c]bool, held: [*c]bool) callconv(.c) bool;
+
+    pub const DragLineX = ImPlot_DragLineX__dda37c29fa7933f;
+    extern fn ImPlot_DragLineX__dda37c29fa7933f(id: i32, x: [*c]f64, col: *const ImVec4, thickness: f32, flags: i32, out_clicked: [*c]bool, out_hovered: [*c]bool, held: [*c]bool) callconv(.c) bool;
+
+    pub const DragLineY = ImPlot_DragLineY__8c6ba9aa0b544876;
+    extern fn ImPlot_DragLineY__8c6ba9aa0b544876(id: i32, y: [*c]f64, col: *const ImVec4, thickness: f32, flags: i32, out_clicked: [*c]bool, out_hovered: [*c]bool, held: [*c]bool) callconv(.c) bool;
+
+    pub const DragRect = ImPlot_DragRect__c2d2491a2a790f20;
+    extern fn ImPlot_DragRect__c2d2491a2a790f20(id: i32, x1: [*c]f64, y1: [*c]f64, x2: [*c]f64, y2: [*c]f64, col: *const ImVec4, flags: i32, out_clicked: [*c]bool, out_hovered: [*c]bool, held: [*c]bool) callconv(.c) bool;
+
+    pub const Annotation = ImPlot_Annotation__8d4c2f12d750cf36;
+    extern fn ImPlot_Annotation__8d4c2f12d750cf36(x: f64, y: f64, col: *const ImVec4, pix_offset: *const ImVec2, clamp: bool, round: bool) callconv(.c) void;
+
+    pub const Annotation_1 = ImPlot_Annotation__8d4c2f12d750cf36_1;
+    extern fn ImPlot_Annotation__8d4c2f12d750cf36_1(x: f64, y: f64, col: *const ImVec4, pix_offset: *const ImVec2, clamp: bool, fmt: [*c]const u8, ...) callconv(.c) void;
+
+    pub const TagX = ImPlot_TagX__a0fc0a92cb5964bd;
+    extern fn ImPlot_TagX__a0fc0a92cb5964bd(x: f64, col: *const ImVec4, round: bool) callconv(.c) void;
+
+    pub const TagX_1 = ImPlot_TagX__a0fc0a92cb5964bd_1;
+    extern fn ImPlot_TagX__a0fc0a92cb5964bd_1(x: f64, col: *const ImVec4, fmt: [*c]const u8, ...) callconv(.c) void;
+
+    pub const TagY = ImPlot_TagY__7fe67fb9536079af;
+    extern fn ImPlot_TagY__7fe67fb9536079af(y: f64, col: *const ImVec4, round: bool) callconv(.c) void;
+
+    pub const TagY_1 = ImPlot_TagY__7fe67fb9536079af_1;
+    extern fn ImPlot_TagY__7fe67fb9536079af_1(y: f64, col: *const ImVec4, fmt: [*c]const u8, ...) callconv(.c) void;
+
+    pub const SetAxis = ImPlot_SetAxis__f7ea7e7a7218e5eb;
+    extern fn ImPlot_SetAxis__f7ea7e7a7218e5eb(axis: i32) callconv(.c) void;
+
+    pub const SetAxes = ImPlot_SetAxes__a1be79da54d322ab;
+    extern fn ImPlot_SetAxes__a1be79da54d322ab(x_axis: i32, y_axis: i32) callconv(.c) void;
+
+    pub const PixelsToPlot = ImPlot_PixelsToPlot__b05e7a8d4420e3aa;
+    extern fn ImPlot_PixelsToPlot__b05e7a8d4420e3aa(pix: *const ImVec2, x_axis: i32, y_axis: i32, zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const PixelsToPlot_1 = ImPlot_PixelsToPlot__b05e7a8d4420e3aa_1;
+    extern fn ImPlot_PixelsToPlot__b05e7a8d4420e3aa_1(x: f32, y: f32, x_axis: i32, y_axis: i32, zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const PlotToPixels = ImPlot_PlotToPixels__51fddf7d64cd221a;
+    extern fn ImPlot_PlotToPixels__51fddf7d64cd221a(plt: *const ImPlotPoint, x_axis: i32, y_axis: i32, zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const PlotToPixels_1 = ImPlot_PlotToPixels__51fddf7d64cd221a_1;
+    extern fn ImPlot_PlotToPixels__51fddf7d64cd221a_1(x: f64, y: f64, x_axis: i32, y_axis: i32, zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const GetPlotPos = ImPlot_GetPlotPos__a56701414e62e920;
+    extern fn ImPlot_GetPlotPos__a56701414e62e920(zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const GetPlotSize = ImPlot_GetPlotSize__73879d6334936fbd;
+    extern fn ImPlot_GetPlotSize__73879d6334936fbd(zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const GetPlotMousePos = ImPlot_GetPlotMousePos__9718e1a28bc711e8;
+    extern fn ImPlot_GetPlotMousePos__9718e1a28bc711e8(x_axis: i32, y_axis: i32, zpp_out: *ImPlotPoint) callconv(.c) void;
+
+    pub const GetPlotLimits = ImPlot_GetPlotLimits__9063402b7003836a;
+    extern fn ImPlot_GetPlotLimits__9063402b7003836a(x_axis: i32, y_axis: i32, zpp_out: *ImPlotRect) callconv(.c) void;
+
+    pub const IsPlotHovered = ImPlot_IsPlotHovered__2d7b4125d037874c;
+    extern fn ImPlot_IsPlotHovered__2d7b4125d037874c() callconv(.c) bool;
+
+    pub const IsAxisHovered = ImPlot_IsAxisHovered__d1de55645e3a179d;
+    extern fn ImPlot_IsAxisHovered__d1de55645e3a179d(axis: i32) callconv(.c) bool;
+
+    pub const IsSubplotsHovered = ImPlot_IsSubplotsHovered__d3001c460eae7e6b;
+    extern fn ImPlot_IsSubplotsHovered__d3001c460eae7e6b() callconv(.c) bool;
+
+    pub const IsPlotSelected = ImPlot_IsPlotSelected__486a2976f68cc8f5;
+    extern fn ImPlot_IsPlotSelected__486a2976f68cc8f5() callconv(.c) bool;
+
+    pub const GetPlotSelection = ImPlot_GetPlotSelection__2e52a5e2a3fc0755;
+    extern fn ImPlot_GetPlotSelection__2e52a5e2a3fc0755(x_axis: i32, y_axis: i32, zpp_out: *ImPlotRect) callconv(.c) void;
+
+    pub const CancelPlotSelection = ImPlot_CancelPlotSelection__8aeac56e53da5714;
+    extern fn ImPlot_CancelPlotSelection__8aeac56e53da5714() callconv(.c) void;
+
+    pub const HideNextItem = ImPlot_HideNextItem__be6c385127ba8dba;
+    extern fn ImPlot_HideNextItem__be6c385127ba8dba(hidden: bool, cond: i32) callconv(.c) void;
+
+    pub const BeginAlignedPlots = ImPlot_BeginAlignedPlots__e8947b885238cece;
+    extern fn ImPlot_BeginAlignedPlots__e8947b885238cece(group_id: [*c]const u8, vertical: bool) callconv(.c) bool;
+
+    pub const EndAlignedPlots = ImPlot_EndAlignedPlots__a12651cae6a90070;
+    extern fn ImPlot_EndAlignedPlots__a12651cae6a90070() callconv(.c) void;
+
+    pub const BeginLegendPopup = ImPlot_BeginLegendPopup__79ac041cc77470f1;
+    extern fn ImPlot_BeginLegendPopup__79ac041cc77470f1(label_id: [*c]const u8, mouse_button: i32) callconv(.c) bool;
+
+    pub const EndLegendPopup = ImPlot_EndLegendPopup__2fa51113211e5671;
+    extern fn ImPlot_EndLegendPopup__2fa51113211e5671() callconv(.c) void;
+
+    pub const IsLegendEntryHovered = ImPlot_IsLegendEntryHovered__5302f981254fb8c6;
+    extern fn ImPlot_IsLegendEntryHovered__5302f981254fb8c6(label_id: [*c]const u8) callconv(.c) bool;
+
+    pub const BeginDragDropTargetPlot = ImPlot_BeginDragDropTargetPlot__bd7934a6b0bbb4b5;
+    extern fn ImPlot_BeginDragDropTargetPlot__bd7934a6b0bbb4b5() callconv(.c) bool;
+
+    pub const BeginDragDropTargetAxis = ImPlot_BeginDragDropTargetAxis__e12b4b00eac8ee2f;
+    extern fn ImPlot_BeginDragDropTargetAxis__e12b4b00eac8ee2f(axis: i32) callconv(.c) bool;
+
+    pub const BeginDragDropTargetLegend = ImPlot_BeginDragDropTargetLegend__16aa52e029d552cb;
+    extern fn ImPlot_BeginDragDropTargetLegend__16aa52e029d552cb() callconv(.c) bool;
+
+    pub const EndDragDropTarget = ImPlot_EndDragDropTarget__9d6f80e5c9874ac2;
+    extern fn ImPlot_EndDragDropTarget__9d6f80e5c9874ac2() callconv(.c) void;
+
+    pub const BeginDragDropSourcePlot = ImPlot_BeginDragDropSourcePlot__66824c249344a5b4;
+    extern fn ImPlot_BeginDragDropSourcePlot__66824c249344a5b4(flags: i32) callconv(.c) bool;
+
+    pub const BeginDragDropSourceAxis = ImPlot_BeginDragDropSourceAxis__5079eb85eebaf418;
+    extern fn ImPlot_BeginDragDropSourceAxis__5079eb85eebaf418(axis: i32, flags: i32) callconv(.c) bool;
+
+    pub const BeginDragDropSourceItem = ImPlot_BeginDragDropSourceItem__6f37b94f2a5bcffc;
+    extern fn ImPlot_BeginDragDropSourceItem__6f37b94f2a5bcffc(label_id: [*c]const u8, flags: i32) callconv(.c) bool;
+
+    pub const EndDragDropSource = ImPlot_EndDragDropSource__216a2f7392882be3;
+    extern fn ImPlot_EndDragDropSource__216a2f7392882be3() callconv(.c) void;
+
+    pub const GetStyle = ImPlot_GetStyle__ce2435ddf1d8bbdc;
+    extern fn ImPlot_GetStyle__ce2435ddf1d8bbdc() callconv(.c) *ImPlotStyle;
+
+    pub const StyleColorsAuto = ImPlot_StyleColorsAuto__e05dde2801e3509c;
+    extern fn ImPlot_StyleColorsAuto__e05dde2801e3509c(dst: [*c]ImPlotStyle) callconv(.c) void;
+
+    pub const StyleColorsClassic = ImPlot_StyleColorsClassic__ec37fdbb560abf49;
+    extern fn ImPlot_StyleColorsClassic__ec37fdbb560abf49(dst: [*c]ImPlotStyle) callconv(.c) void;
+
+    pub const StyleColorsDark = ImPlot_StyleColorsDark__f3026e652fa5a3d4;
+    extern fn ImPlot_StyleColorsDark__f3026e652fa5a3d4(dst: [*c]ImPlotStyle) callconv(.c) void;
+
+    pub const StyleColorsLight = ImPlot_StyleColorsLight__cbe762f272234e68;
+    extern fn ImPlot_StyleColorsLight__cbe762f272234e68(dst: [*c]ImPlotStyle) callconv(.c) void;
+
+    pub const PushStyleColor = ImPlot_PushStyleColor__87b647a88ff97a78;
+    extern fn ImPlot_PushStyleColor__87b647a88ff97a78(idx: i32, col: u32) callconv(.c) void;
+
+    pub const PushStyleColor_1 = ImPlot_PushStyleColor__87b647a88ff97a78_1;
+    extern fn ImPlot_PushStyleColor__87b647a88ff97a78_1(idx: i32, col: *const ImVec4) callconv(.c) void;
+
+    pub const PopStyleColor = ImPlot_PopStyleColor__b8867429a4a3514e;
+    extern fn ImPlot_PopStyleColor__b8867429a4a3514e(count: i32) callconv(.c) void;
+
+    pub const PushStyleVar = ImPlot_PushStyleVar__3d7496da947837c5;
+    extern fn ImPlot_PushStyleVar__3d7496da947837c5(idx: i32, val: f32) callconv(.c) void;
+
+    pub const PushStyleVar_1 = ImPlot_PushStyleVar__3d7496da947837c5_1;
+    extern fn ImPlot_PushStyleVar__3d7496da947837c5_1(idx: i32, val: i32) callconv(.c) void;
+
+    pub const PushStyleVar_2 = ImPlot_PushStyleVar__3d7496da947837c5_2;
+    extern fn ImPlot_PushStyleVar__3d7496da947837c5_2(idx: i32, val: *const ImVec2) callconv(.c) void;
+
+    pub const PopStyleVar = ImPlot_PopStyleVar__133858151c313dfc;
+    extern fn ImPlot_PopStyleVar__133858151c313dfc(count: i32) callconv(.c) void;
+
+    pub const SetNextLineStyle = ImPlot_SetNextLineStyle__cc6fe3e242a28c3f;
+    extern fn ImPlot_SetNextLineStyle__cc6fe3e242a28c3f(col: *const ImVec4, weight: f32) callconv(.c) void;
+
+    pub const SetNextFillStyle = ImPlot_SetNextFillStyle__3d47e35ac95fe9ee;
+    extern fn ImPlot_SetNextFillStyle__3d47e35ac95fe9ee(col: *const ImVec4, alpha_mod: f32) callconv(.c) void;
+
+    pub const SetNextMarkerStyle = ImPlot_SetNextMarkerStyle__e094e7dee8267f6f;
+    extern fn ImPlot_SetNextMarkerStyle__e094e7dee8267f6f(marker: i32, size: f32, fill: *const ImVec4, weight: f32, outline: *const ImVec4) callconv(.c) void;
+
+    pub const SetNextErrorBarStyle = ImPlot_SetNextErrorBarStyle__88942b0ec1d47d13;
+    extern fn ImPlot_SetNextErrorBarStyle__88942b0ec1d47d13(col: *const ImVec4, size: f32, weight: f32) callconv(.c) void;
+
+    pub const GetLastItemColor = ImPlot_GetLastItemColor__b51c56f7f750ac83;
+    extern fn ImPlot_GetLastItemColor__b51c56f7f750ac83(zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const GetStyleColorName = ImPlot_GetStyleColorName__104002e8be53bb1f;
+    extern fn ImPlot_GetStyleColorName__104002e8be53bb1f(idx: i32) callconv(.c) [*c]const u8;
+
+    pub const GetMarkerName = ImPlot_GetMarkerName__fb92cc17b3a33c45;
+    extern fn ImPlot_GetMarkerName__fb92cc17b3a33c45(idx: i32) callconv(.c) [*c]const u8;
+
+    pub const AddColormap = ImPlot_AddColormap__628c4303c5bff7a4;
+    extern fn ImPlot_AddColormap__628c4303c5bff7a4(name: [*c]const u8, cols: [*c]const ImVec4, size: i32, qual: bool) callconv(.c) i32;
+
+    pub const AddColormap_1 = ImPlot_AddColormap__628c4303c5bff7a4_1;
+    extern fn ImPlot_AddColormap__628c4303c5bff7a4_1(name: [*c]const u8, cols: [*c]const u32, size: i32, qual: bool) callconv(.c) i32;
+
+    pub const GetColormapCount = ImPlot_GetColormapCount__bd4c26c12b523d79;
+    extern fn ImPlot_GetColormapCount__bd4c26c12b523d79() callconv(.c) i32;
+
+    pub const GetColormapName = ImPlot_GetColormapName__a7b1d3f1256f7b62;
+    extern fn ImPlot_GetColormapName__a7b1d3f1256f7b62(cmap: i32) callconv(.c) [*c]const u8;
+
+    pub const GetColormapIndex = ImPlot_GetColormapIndex__b531adb3bf9b31cf;
+    extern fn ImPlot_GetColormapIndex__b531adb3bf9b31cf(name: [*c]const u8) callconv(.c) i32;
+
+    pub const PushColormap = ImPlot_PushColormap__b304f8574dbb0701;
+    extern fn ImPlot_PushColormap__b304f8574dbb0701(cmap: i32) callconv(.c) void;
+
+    pub const PushColormap_1 = ImPlot_PushColormap__b304f8574dbb0701_1;
+    extern fn ImPlot_PushColormap__b304f8574dbb0701_1(name: [*c]const u8) callconv(.c) void;
+
+    pub const PopColormap = ImPlot_PopColormap__670d03a0996eea6f;
+    extern fn ImPlot_PopColormap__670d03a0996eea6f(count: i32) callconv(.c) void;
+
+    pub const NextColormapColor = ImPlot_NextColormapColor__99fa1b13b8d80be2;
+    extern fn ImPlot_NextColormapColor__99fa1b13b8d80be2(zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const GetColormapSize = ImPlot_GetColormapSize__d761993c814f422f;
+    extern fn ImPlot_GetColormapSize__d761993c814f422f(cmap: i32) callconv(.c) i32;
+
+    pub const GetColormapColor = ImPlot_GetColormapColor__35b0a68532bb1631;
+    extern fn ImPlot_GetColormapColor__35b0a68532bb1631(idx: i32, cmap: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const SampleColormap = ImPlot_SampleColormap__d4816676b082dd68;
+    extern fn ImPlot_SampleColormap__d4816676b082dd68(t: f32, cmap: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const ColormapScale = ImPlot_ColormapScale__2f4109ba11ba7aa8;
+    extern fn ImPlot_ColormapScale__2f4109ba11ba7aa8(label: [*c]const u8, scale_min: f64, scale_max: f64, size: *const ImVec2, format: [*c]const u8, flags: i32, cmap: i32) callconv(.c) void;
+
+    pub const ColormapSlider = ImPlot_ColormapSlider__740855d5aa85205a;
+    extern fn ImPlot_ColormapSlider__740855d5aa85205a(label: [*c]const u8, t: [*c]f32, out: [*c]ImVec4, format: [*c]const u8, cmap: i32) callconv(.c) bool;
+
+    pub const ColormapButton = ImPlot_ColormapButton__81ad7b305567bdde;
+    extern fn ImPlot_ColormapButton__81ad7b305567bdde(label: [*c]const u8, size: *const ImVec2, cmap: i32) callconv(.c) bool;
+
+    pub const BustColorCache = ImPlot_BustColorCache__887c6a31d5a1051c;
+    extern fn ImPlot_BustColorCache__887c6a31d5a1051c(plot_title_id: [*c]const u8) callconv(.c) void;
+
+    pub const GetInputMap = ImPlot_GetInputMap__798dcec4c35515e5;
+    extern fn ImPlot_GetInputMap__798dcec4c35515e5() callconv(.c) *ImPlotInputMap;
+
+    pub const MapInputDefault = ImPlot_MapInputDefault__8c06b876d036234d;
+    extern fn ImPlot_MapInputDefault__8c06b876d036234d(dst: [*c]ImPlotInputMap) callconv(.c) void;
+
+    pub const MapInputReverse = ImPlot_MapInputReverse__e015805da110d915;
+    extern fn ImPlot_MapInputReverse__e015805da110d915(dst: [*c]ImPlotInputMap) callconv(.c) void;
+
+    pub const ItemIcon = ImPlot_ItemIcon__35dc783e2aa122f0;
+    extern fn ImPlot_ItemIcon__35dc783e2aa122f0(col: *const ImVec4) callconv(.c) void;
+
+    pub const ItemIcon_1 = ImPlot_ItemIcon__35dc783e2aa122f0_1;
+    extern fn ImPlot_ItemIcon__35dc783e2aa122f0_1(col: u32) callconv(.c) void;
+
+    pub const ColormapIcon = ImPlot_ColormapIcon__b9250820688b989b;
+    extern fn ImPlot_ColormapIcon__b9250820688b989b(cmap: i32) callconv(.c) void;
+
+    pub const GetPlotDrawList = ImPlot_GetPlotDrawList__2970ef07638a6cb4;
+    extern fn ImPlot_GetPlotDrawList__2970ef07638a6cb4() callconv(.c) [*c]ImDrawList;
+
+    pub const PushPlotClipRect = ImPlot_PushPlotClipRect__be24b99baed31c69;
+    extern fn ImPlot_PushPlotClipRect__be24b99baed31c69(expand: f32) callconv(.c) void;
+
+    pub const PopPlotClipRect = ImPlot_PopPlotClipRect__a463edd3d14dae4f;
+    extern fn ImPlot_PopPlotClipRect__a463edd3d14dae4f() callconv(.c) void;
+
+    pub const ShowStyleSelector = ImPlot_ShowStyleSelector__15aa917f33eeee46;
+    extern fn ImPlot_ShowStyleSelector__15aa917f33eeee46(label: [*c]const u8) callconv(.c) bool;
+
+    pub const ShowColormapSelector = ImPlot_ShowColormapSelector__a52d44eaff966008;
+    extern fn ImPlot_ShowColormapSelector__a52d44eaff966008(label: [*c]const u8) callconv(.c) bool;
+
+    pub const ShowInputMapSelector = ImPlot_ShowInputMapSelector__9def059f5f964838;
+    extern fn ImPlot_ShowInputMapSelector__9def059f5f964838(label: [*c]const u8) callconv(.c) bool;
+
+    pub const ShowStyleEditor = ImPlot_ShowStyleEditor__9295e9c397962dd9;
+    extern fn ImPlot_ShowStyleEditor__9295e9c397962dd9(ref: [*c]ImPlotStyle) callconv(.c) void;
+
+    pub const ShowUserGuide = ImPlot_ShowUserGuide__b7066157174a867a;
+    extern fn ImPlot_ShowUserGuide__b7066157174a867a() callconv(.c) void;
+
+    pub const ShowMetricsWindow = ImPlot_ShowMetricsWindow__1b1d940fa8fb0d3;
+    extern fn ImPlot_ShowMetricsWindow__1b1d940fa8fb0d3(p_popen: [*c]bool) callconv(.c) void;
+
+    pub const ShowDemoWindow = ImPlot_ShowDemoWindow__bf3697c59b1e3f56;
+    extern fn ImPlot_ShowDemoWindow__bf3697c59b1e3f56(p_open: [*c]bool) callconv(.c) void;
+
+    pub const BeginPlot_1 = ImPlot_BeginPlot__3c148c203682a42e_1;
+    extern fn ImPlot_BeginPlot__3c148c203682a42e_1(title_id: [*c]const u8, x_label: [*c]const u8, y_label: [*c]const u8, size: *const ImVec2, flags: i32, x_flags: i32, y_flags: i32, y2_flags: i32, y3_flags: i32, y2_label: [*c]const u8, y3_label: [*c]const u8) callconv(.c) bool;
+
+    comptime {
+        refAllDecls(@This());
+    }
+};
+
+pub const ImPlotFlagsObsolete_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlotFlags_YAxis2: ImPlotFlagsObsolete_ = .{ .data = 1048576 };
+    pub const ImPlotFlags_YAxis3: ImPlotFlagsObsolete_ = .{ .data = 2097152 };
+};
+
 pub const ImGui_ImplSDL3_InitForOpenGL = ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092;
 extern fn ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092(window: [*c]SDL_Window, sdl_gl_context: *void) callconv(.c) bool;
 
@@ -7314,6 +8635,7 @@ pub const ImNewWrapper = extern struct {};
 pub const SDL_Window = ?*anyopaque;
 pub const ImFontLoader = ?*anyopaque;
 pub const SDL_Gamepad = ?*anyopaque;
+pub const ImPlotContext = ?*anyopaque;
 pub const SDL_Event = ?*anyopaque;
 pub const ImDrawListSharedData = ?*anyopaque;
 pub const ImFontAtlasBuilder = ?*anyopaque;

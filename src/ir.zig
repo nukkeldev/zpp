@@ -157,12 +157,6 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
     try hashed_paths.ensureTotalCapacity(@intCast(paths.len));
     for (paths) |p| hashed_paths.putAssumeCapacity(p, {});
 
-    {
-        log.debug("Paths:", .{});
-        var iter = hashed_paths.keyIterator();
-        while (iter.next()) |p| log.debug("  {s}", .{p.*});
-    }
-
     fz.push(@src(), "clang parsing");
     const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
@@ -276,6 +270,8 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
             }
         }
     }
+
+    // for (ir.instrs.items) |instr| log.debug("{s}: {t}", .{ instr.name, instr.inner });
 
     return ir;
 }

@@ -35,6 +35,16 @@ pub fn build(b: *std.Build) void {
         },
     });
 
+    imgui_mod.addIncludePath(b.path("implot/"));
+    imgui_mod.addCSourceFiles(.{
+        .root = b.path("implot/"),
+        .files = &.{
+            "implot.cpp",
+            "implot_demo.cpp",
+            "implot_items.cpp",
+        },
+    });
+
     mod.addImport("imgui", imgui_mod);
 
     const exe = b.addExecutable(.{
