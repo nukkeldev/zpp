@@ -1,0 +1,11 @@
+.{
+    .name = "basic",
+    .sources = .{
+        .{
+            .name = "basic",
+            .path = ".",
+            .hash = "N-V-__8AAC8GAAAlr4V8FW-JmZc0ccUf-dqy0LNN_jSOwmzE",
+            .files = .{"basic.hpp"},
+        },
+    },
+}

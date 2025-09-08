@@ -11,25 +11,27 @@ const c = ffi.c;
 
 const tracy = @import("util/tracy.zig");
 
+const Input = @import("input.zig").Input;
+
 const log = std.log.scoped(.ir);
 
 // -- IR -- //
 
 pub const IR = struct {
-    paths: []const []const u8,
-    hashed_paths: std.StringHashMap(void),
+    path: []const u8,
+    source: *const Input.Source,
 
     arena: *std.heap.ArenaAllocator,
     instrs: std.array_list.Managed(Instruction),
 
     // --
 
-    pub fn init(allocator: Allocator, paths: []const []const u8, hashed_paths: std.StringHashMap(void)) !IR {
+    pub fn init(allocator: Allocator, source: *const Input.Source, path: []const u8) !IR {
         const arena = try allocator.create(std.heap.ArenaAllocator);
         arena.* = .init(allocator);
         return .{
-            .paths = paths,
-            .hashed_paths = hashed_paths,
+            .path = path,
+            .source = source,
             .arena = arena,
             .instrs = .init(arena.allocator()),
         };
@@ -129,47 +131,25 @@ pub const IRProcessingError = error{
     ParseTUFail,
 };
 
-pub fn processFiles(allocator: Allocator, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
-    var fz = tracy.FnZone.init(@src(), "ir.processFiles");
-    defer fz.end();
-
-    var contents = std.array_list.Managed(u8).init(allocator);
-    for (paths) |path| try contents.print("#include \"{s}\"\n", .{path});
-    log.debug("File Contents:\n{s}", .{contents.items});
-
-    const actual_paths = try allocator.alloc([:0]const u8, paths.len + 1);
-    actual_paths[0] = ROOT_FILE;
-    @memcpy(actual_paths[1..], paths);
-
-    return processBytes(allocator, ROOT_FILE, contents.items, actual_paths, clang_args);
-}
-
-pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []const u8, paths: []const [:0]const u8, clang_args: []const [:0]const u8) !IR {
-    var fz = tracy.FnZone.init(@src(), "ir.processBytes");
+pub fn processFile(allocator: Allocator, source: *const Input.Source, path: [:0]const u8, clang_args: []const [:0]const u8) !IR {
+    var fz = tracy.FnZone.init(@src(), "ir.processFile");
     defer fz.end();
 
     const clang_version = c.clang_getClangVersion();
     defer c.clang_disposeString(clang_version);
 
-    log.debug("Processing IR with {s}...", .{c.clang_getCString(clang_version)});
-
-    var hashed_paths = std.StringHashMap(void).init(allocator);
-    try hashed_paths.ensureTotalCapacity(@intCast(paths.len));
-    for (paths) |p| hashed_paths.putAssumeCapacity(p, {});
+    log.debug("Processing file '{s}' with {s}...", .{ path, c.clang_getCString(clang_version) });
 
     fz.push(@src(), "clang parsing");
     const index = c.clang_createIndex(0, 0);
     defer c.clang_disposeIndex(index);
 
-    var file = c.CXUnsavedFile{ .Filename = root_path, .Contents = contents.ptr, .Length = @intCast(contents.len) };
     const args = try combineArgs(allocator, &.{ REQUIRED_ARGUMENTS, clang_args });
     defer allocator.free(args);
 
-    const translation_unit = c.clang_parseTranslationUnit(index, root_path, @ptrCast(args), @intCast(args.len), &file, 1, TU_FLAGS);
+    const translation_unit = c.clang_parseTranslationUnit(index, path, @ptrCast(args), @intCast(args.len), null, 0, TU_FLAGS);
     // NOTE: Because we store references to cursors and types, we need this for the entire lifetime of the program.
     // defer c.clang_disposeTranslationUnit(translation_unit);
-
-    if (translation_unit == null) return IRProcessingError.ParseTUFail;
 
     fz.replace(@src(), "diagnostic handling");
     const diagnostic_set = c.clang_getDiagnosticSetFromTU(translation_unit);
@@ -180,11 +160,12 @@ pub fn processBytes(allocator: Allocator, root_path: [:0]const u8, contents: []c
         try ffi.printDiagnostic(allocator, diagnostic);
         if (CLANG_CRASH_ON_FATAL_ERROR and severity == c.CXDiagnostic_Fatal) @panic("Fatal error while parsing TU! See above.");
     }
+    if (translation_unit == null) return IRProcessingError.ParseTUFail;
 
     fz.replace(@src(), "visiting");
     const cursor = c.clang_getTranslationUnitCursor(translation_unit);
 
-    var ir: IR = try .init(allocator, paths, hashed_paths);
+    var ir: IR = try .init(allocator, source, path);
     var namespaces: std.StringHashMap(IR) = .init(ir.arena.allocator());
 
     var state = ProcessingState{
@@ -283,8 +264,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
     var state: *ProcessingState = @ptrCast(@alignCast(client_data_opaque));
 
     const raw_location = c.clang_getCursorLocation(current_cursor);
-    const location = ffi.SourceLocation.fromCXSourceLocation(state.ir.arena.allocator(), raw_location) catch @panic("OOM");
-    if (!state.ir.hashed_paths.contains(location.file)) return c.CXChildVisit_Continue;
+    if (c.clang_Location_isFromMainFile(raw_location) == 0) return c.CXChildVisit_Continue;
 
     const instr_opt = visitor(state.allocator, current_cursor) catch |e| {
         state.err = e;
@@ -301,7 +281,7 @@ fn outerVisitor(current_cursor: c.CXCursor, _: c.CXCursor, client_data_opaque: c
             .Namespace => {
                 const ns = state.namespaces.getOrPut(instr.name) catch @panic("OOM");
                 if (!ns.found_existing) {
-                    ns.value_ptr.* = IR.init(state.allocator, state.ir.paths, state.ir.hashed_paths) catch @panic("OOM");
+                    ns.value_ptr.* = IR.init(state.allocator, state.ir.source, state.ir.path) catch @panic("OOM");
                 }
 
                 const prev = state.ir;

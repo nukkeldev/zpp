@@ -1,0 +1,13 @@
+.{
+    .name = "default",
+    .sources = .{
+        .{
+            .name = "foo",
+            .path = "/path/to/source/",
+            .hash = "foohash",
+            .files = .{
+                "foo.hpp",
+            },
+        },
+    },
+}

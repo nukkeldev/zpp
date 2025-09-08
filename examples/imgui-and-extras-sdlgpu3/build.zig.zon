@@ -1,6 +1,7 @@
 .{
     .name = .imgui_sdl3_gpu_test,
     .version = "0.0.1",
+    .dependencies = .{},
     .minimum_zig_version = "0.15.1",
     .paths = .{""},
     .fingerprint = 0xbe664937048b7fe6,

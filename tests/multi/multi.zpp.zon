@@ -1,0 +1,25 @@
+.{
+    .name = "multi",
+    .sources = .{
+        .{
+            .name = "root",
+            .path = ".",
+            .files = .{ "root1.hpp", "root2.hpp", "root3.hpp" },
+        },
+        .{
+            .name = "A",
+            .path = "A",
+            .files = .{ "a1.hpp", "a2.hpp", "a3.hpp" },
+        },
+        .{
+            .name = "B",
+            .path = "B",
+            .files = .{ "b1.hpp", "b2.hpp", "b3.hpp" },
+        },
+        .{
+            .name = "C",
+            .path = "C",
+            .files = .{ "c1.hpp", "c2.hpp", "c3.hpp" },
+        },
+    },
+}

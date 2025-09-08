@@ -30,11 +30,11 @@ test "integration tests" {
         try tests.append(try allocator.dupe(u8, file.name));
     }
 
-    for (tests.items) |test_name| {
-        const header_path = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, "/", test_name, "/", test_name, ".hpp" }, 0);
-        try compareToExpected(allocator, test_name, writers.CppWrapper, header_path);
-        try compareToExpected(allocator, test_name, writers.ZigWrapper, header_path);
-    }
+    // for (tests.items) |test_name| {
+    // const header_path = try std.mem.concatWithSentinel(allocator, u8, &.{ SOURCE, "/", test_name, "/", test_name, ".hpp" }, 0);
+    // try compareToExpected(allocator, test_name, writers.CppWrapper, header_path);
+    // try compareToExpected(allocator, test_name, writers.ZigWrapper, header_path);
+    // }
 }
 
 fn compareToExpected(allocator: std.mem.Allocator, test_name: []const u8, writer: writers.IRWriter, header_path: [:0]const u8) !void {

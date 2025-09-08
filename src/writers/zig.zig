@@ -123,7 +123,7 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
                 } else {
                     try writer.print("{s}: ", .{instr.name});
                     try formatType(m, allocator, writer, .{
-                        .hashed_paths = &ir.hashed_paths,
+                        .includes = &ctx.includes,
                         .annotate_with_alignment = !in_bitfield and parent.inner != .function,
                         .erase_array_size = parent.inner == .function,
                     });
@@ -139,7 +139,9 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
             },
             .Value => |v| {
                 try writer.print("pub const {s}: ", .{instr.name});
-                try formatType(v.type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                try formatType(v.type, allocator, writer, .{
+                    .includes = &ctx.includes,
+                });
                 try writer.print(" = .{{.data={f}}};\n", .{v});
 
                 try ctx.member_stack.getLast().append(i);
@@ -177,9 +179,13 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
 
                 const @"type" = c.clang_getEnumDeclIntegerType(instr.cursor);
                 try writer.print("pub const {s} = packed struct(", .{instr.name});
-                try formatType(@"type", allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                try formatType(@"type", allocator, writer, .{
+                    .includes = &ctx.includes,
+                });
                 try writer.writeAll(") {\ndata: ");
-                try formatType(@"type", allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                try formatType(@"type", allocator, writer, .{
+                    .includes = &ctx.includes,
+                });
                 try writer.writeAll(",\n");
 
                 partial_new_parent.inner = .@"enum";
@@ -217,7 +223,9 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
                 if (std.mem.eql(u8, spelling, instr.name)) return;
 
                 try writer.print("pub const {s} = ", .{instr.name});
-                try formatType(t, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                try formatType(t, allocator, writer, .{
+                    .includes = &ctx.includes,
+                });
                 try writer.writeAll(";\n\n");
             },
         }
@@ -246,7 +254,9 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
                     // TODO: Avoid name collisions.
                     if (ctx.member_stack.getLast().items.len > 0) try writer.writeAll(", ");
                     try writer.writeAll("zpp_out: *");
-                    try formatType(return_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths });
+                    try formatType(return_type, allocator, writer, .{
+                        .includes = &ctx.includes,
+                    });
                 }
 
                 if (variadic) {
@@ -257,7 +267,9 @@ pub fn writeInstruction(ir: *const IR, i: usize, ctx: *writers.Context, writer: 
                 try writer.writeAll(") callconv(.c) ");
                 switch (return_type.kind) {
                     c.CXType_Record => try writer.writeAll("void"),
-                    else => try formatType(return_type, allocator, writer, .{ .hashed_paths = &ir.hashed_paths }),
+                    else => try formatType(return_type, allocator, writer, .{
+                        .includes = &ctx.includes,
+                    }),
                 }
                 try writer.writeAll(";\n\n");
 
@@ -335,6 +347,16 @@ pub fn writeFileSuffix(ir: *const IR, ctx: *writers.Context, writer: *std.Io.Wri
             },
             else => unreachable,
         } });
+    }
+
+    var includes_iter = ctx.includes.keyIterator();
+    while (includes_iter.next()) |include| {
+        const import_name = std.fs.path.basename(include.*);
+        try writer.print("pub const @\"{s}\" = @import(\"{s}#{s}\")\n", .{
+            import_name,
+            ir.source.name,
+            import_name,
+        });
     }
 
     try writer.writeAll(
@@ -422,7 +444,7 @@ fn writeSizeAndAlignmentChecks(
 // -- Member & Type Formatting -- //
 
 const FormatTypeArgs = struct {
-    hashed_paths: *const std.StringHashMap(void),
+    includes: *std.StringHashMap(void),
 
     ignore_const: bool = false,
     erase_array_size: bool = false,
@@ -492,14 +514,22 @@ fn formatType(
         c.CXType_Record,
         => {
             const decl = c.clang_getTypeDeclaration(@"type");
-            const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, c.clang_getCursorLocation(decl));
+            const raw_location = c.clang_getCursorLocation(decl);
+            const location = try ffi.SourceLocation.fromCXSourceLocation(allocator, raw_location);
 
             if (!std.fs.path.isAbsolute(location.file)) log.err("Type declaration location refers to a relative path! This is a bug.", .{});
+            if (c.clang_Location_isFromMainFile(raw_location) == 0 and !args.includes.contains(location.file)) try args.includes.put(location.file, {});
 
-            if (c.clang_Type_getNumTemplateArguments(@"type") > 0 or !args.hashed_paths.contains(location.file)) {
+            if (c.clang_Type_getNumTemplateArguments(@"type") > 0) {
                 continue :inner -2;
             } else {
-                break :inner spelling;
+                if (c.clang_Location_isFromMainFile(raw_location) == 0) {
+                    const import_name = std.fs.path.basename(location.file);
+                    try writer.print("@\"{s}\".", .{import_name});
+                }
+
+                const qualified = try std.mem.replaceOwned(u8, allocator, spelling, "::", ".");
+                break :inner qualified;
             }
         },
 
@@ -551,13 +581,17 @@ fn formatType(
             const n_params = c.clang_getNumArgTypes(@"type");
             const variadic = c.clang_isFunctionTypeVariadic(@"type") != 0;
             for (0..@intCast(n_params)) |i| {
-                try formatType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+                try formatType(c.clang_getArgType(@"type", @intCast(i)), allocator, writer, .{
+                    .includes = args.includes,
+                });
                 if (i < n_params - 1 or variadic) try writer.writeAll(", ");
             }
             if (variadic) try writer.writeAll("...");
             try writer.writeAll(") callconv(.c) ");
 
-            try formatType(c.clang_getResultType(@"type"), allocator, writer, .{ .hashed_paths = args.hashed_paths });
+            try formatType(c.clang_getResultType(@"type"), allocator, writer, .{
+                .includes = args.includes,
+            });
 
             return;
         },

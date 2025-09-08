@@ -1,0 +1,11 @@
+.{
+    .name = "tinyobjloader",
+    .sources = .{
+        .{
+            .name = "tinyobjloader",
+            .url = "git+https://github.com/tinyobjloader/tinyobjloader",
+            .hash = "N-V-__8AAGf9JADZxYkJ4yYEG-hdjC9RxCwOG3hNXYurYg12",
+            .files = .{"tiny_obj_loader.h"},
+        },
+    },
+}

@@ -34,7 +34,7 @@ pub fn writeFilePrefix(ir: *const IR, _: *writers.Context, writer: *std.Io.Write
         \\
         \\
     );
-    for (ir.paths) |path| if (!std.mem.eql(u8, path, ir_mod.ROOT_FILE)) try writer.print("#include \"{s}\"\n", .{std.fs.path.basename(path)});
+    try writer.print("#include \"{s}\"\n", .{std.fs.path.basename(ir.path)});
     try writer.writeByte('\n');
 }
 

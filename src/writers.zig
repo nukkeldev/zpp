@@ -19,6 +19,7 @@ pub const Context = struct {
     ns_stack: std.array_list.Managed([]const u8),
     member_stack: std.array_list.Managed(*std.array_list.Managed(usize)),
     parent_stack: std.array_list.Managed(Parent),
+    includes: std.StringHashMap(void),
     unwind_to_parent: bool = false,
 
     pub const Parent = struct {
@@ -48,6 +49,7 @@ pub const Context = struct {
             .ns_stack = .init(allocator),
             .member_stack = .init(allocator),
             .parent_stack = .init(allocator),
+            .includes = .init(allocator),
         };
 
         try ctx.parent_stack.append(.{
