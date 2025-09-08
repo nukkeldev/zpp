@@ -7,6 +7,7 @@
 
 #include "imgui.h"
 #include "implot.h"
+#include "implot3d.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
 
@@ -2374,6 +2375,282 @@ extern "C" void ImPlot_ShowDemoWindow__bf3697c59b1e3f56(bool* p_open) {
 }
 extern "C" bool ImPlot_BeginPlot__3c148c203682a42e_1(const char* title_id, const char* x_label, const char* y_label, const ImVec2* size, int flags, int x_flags, int y_flags, int y2_flags, int y3_flags, const char* y2_label, const char* y3_label) {
 	return ImPlot::BeginPlot(title_id, x_label, y_label, *size, flags, x_flags, y_flags, y2_flags, y3_flags, y2_label, y3_label);
+}
+extern "C" ImPlot3DContext* ImPlot3D_CreateContext__9c317cc3bbd69792() {
+	return ImPlot3D::CreateContext();
+}
+extern "C" void ImPlot3D_DestroyContext__33355240a3c270a1(ImPlot3DContext* ctx) {
+	ImPlot3D::DestroyContext(ctx);
+}
+extern "C" ImPlot3DContext* ImPlot3D_GetCurrentContext__bfcbdecf32b4f9ee() {
+	return ImPlot3D::GetCurrentContext();
+}
+extern "C" void ImPlot3D_SetCurrentContext__cf8edc56a4c808a8(ImPlot3DContext* ctx) {
+	ImPlot3D::SetCurrentContext(ctx);
+}
+extern "C" bool ImPlot3D_BeginPlot__3c148c203682a42e(const char* title_id, const ImVec2* size, int flags) {
+	return ImPlot3D::BeginPlot(title_id, *size, flags);
+}
+extern "C" void ImPlot3D_EndPlot__5474b1386037b1fc() {
+	ImPlot3D::EndPlot();
+}
+extern "C" void ImPlot3D_SetupAxis__a02eada84927addd(int axis, const char* label, int flags) {
+	ImPlot3D::SetupAxis(axis, label, flags);
+}
+extern "C" void ImPlot3D_SetupAxisLimits__84e65096c4f62943(int axis, double v_min, double v_max, int cond) {
+	ImPlot3D::SetupAxisLimits(axis, v_min, v_max, cond);
+}
+extern "C" void ImPlot3D_SetupAxisFormat__9dcf8fb9b955f5dc(int axis, int (*formatter)(float, char*, int, void*), void* data) {
+	ImPlot3D::SetupAxisFormat(axis, formatter, data);
+}
+extern "C" void ImPlot3D_SetupAxisTicks__22f262f44079b651(int axis, const double* values, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot3D::SetupAxisTicks(axis, values, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot3D_SetupAxisTicks__22f262f44079b651_1(int axis, double v_min, double v_max, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot3D::SetupAxisTicks(axis, v_min, v_max, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot3D_SetupAxisLimitsConstraints__88340f102878fca3(int axis, double v_min, double v_max) {
+	ImPlot3D::SetupAxisLimitsConstraints(axis, v_min, v_max);
+}
+extern "C" void ImPlot3D_SetupAxisZoomConstraints__1bb8e8936b850bd5(int axis, double z_min, double z_max) {
+	ImPlot3D::SetupAxisZoomConstraints(axis, z_min, z_max);
+}
+extern "C" void ImPlot3D_SetupAxes__eb51ea5a6e3c0a15(const char* x_label, const char* y_label, const char* z_label, int x_flags, int y_flags, int z_flags) {
+	ImPlot3D::SetupAxes(x_label, y_label, z_label, x_flags, y_flags, z_flags);
+}
+extern "C" void ImPlot3D_SetupAxesLimits__e404167bdddae99f(double x_min, double x_max, double y_min, double y_max, double z_min, double z_max, int cond) {
+	ImPlot3D::SetupAxesLimits(x_min, x_max, y_min, y_max, z_min, z_max, cond);
+}
+extern "C" void ImPlot3D_SetupBoxRotation__af2c659462aebcde(float elevation, float azimuth, bool animate, int cond) {
+	ImPlot3D::SetupBoxRotation(elevation, azimuth, animate, cond);
+}
+extern "C" void ImPlot3D_SetupBoxRotation__af2c659462aebcde_1(ImPlot3DQuat rotation, bool animate, int cond) {
+	ImPlot3D::SetupBoxRotation(rotation, animate, cond);
+}
+extern "C" void ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c(float elevation, float azimuth) {
+	ImPlot3D::SetupBoxInitialRotation(elevation, azimuth);
+}
+extern "C" void ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c_1(ImPlot3DQuat rotation) {
+	ImPlot3D::SetupBoxInitialRotation(rotation);
+}
+extern "C" void ImPlot3D_SetupBoxScale__81bc9ffe28f56c81(float x, float y, float z) {
+	ImPlot3D::SetupBoxScale(x, y, z);
+}
+extern "C" void ImPlot3D_SetupLegend__de4a359eef0ead7(int location, int flags) {
+	ImPlot3D::SetupLegend(location, flags);
+}
+extern "C" void ImPlot3D_PlotMesh__750cf6bcb3772ed3(const char* label_id, const ImPlot3DPoint* vtx, const unsigned int* idx, int vtx_count, int idx_count, int flags) {
+	ImPlot3D::PlotMesh(label_id, vtx, idx, vtx_count, idx_count, flags);
+}
+extern "C" void ImPlot3D_PlotImage__6ca11c45f537402f(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint* center, const ImPlot3DPoint* axis_u, const ImPlot3DPoint* axis_v, const ImVec2* uv0, const ImVec2* uv1, const ImVec4* tint_col, int flags) {
+	ImPlot3D::PlotImage(label_id, tex_ref, *center, *axis_u, *axis_v, *uv0, *uv1, *tint_col, flags);
+}
+extern "C" void ImPlot3D_PlotImage__6ca11c45f537402f_1(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint* p0, const ImPlot3DPoint* p1, const ImPlot3DPoint* p2, const ImPlot3DPoint* p3, const ImVec2* uv0, const ImVec2* uv1, const ImVec2* uv2, const ImVec2* uv3, const ImVec4* tint_col, int flags) {
+	ImPlot3D::PlotImage(label_id, tex_ref, *p0, *p1, *p2, *p3, *uv0, *uv1, *uv2, *uv3, *tint_col, flags);
+}
+extern "C" void ImPlot3D_PlotText__58b23a2e82986d8f(const char* text, float x, float y, float z, float angle, const ImVec2* pix_offset) {
+	ImPlot3D::PlotText(text, x, y, z, angle, *pix_offset);
+}
+extern "C" void ImPlot3D_PlotToPixels__51fddf7d64cd221a(const ImPlot3DPoint* point, ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::PlotToPixels(*point);
+}
+extern "C" void ImPlot3D_PlotToPixels__51fddf7d64cd221a_1(double x, double y, double z, ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::PlotToPixels(x, y, z);
+}
+extern "C" void ImPlot3D_PixelsToPlotRay__d435544ff7a02006(const ImVec2* pix, ImPlot3DRay* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotRay(*pix);
+}
+extern "C" void ImPlot3D_PixelsToPlotRay__d435544ff7a02006_1(double x, double y, ImPlot3DRay* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotRay(x, y);
+}
+extern "C" void ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6(const ImVec2* pix, int plane, bool mask, ImPlot3DPoint* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotPlane(*pix, plane, mask);
+}
+extern "C" void ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6_1(double x, double y, int plane, bool mask, ImPlot3DPoint* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotPlane(x, y, plane, mask);
+}
+extern "C" void ImPlot3D_GetPlotPos__a56701414e62e920(ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::GetPlotPos();
+}
+extern "C" void ImPlot3D_GetPlotSize__73879d6334936fbd(ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::GetPlotSize();
+}
+extern "C" ImDrawList* ImPlot3D_GetPlotDrawList__2970ef07638a6cb4() {
+	return ImPlot3D::GetPlotDrawList();
+}
+extern "C" ImPlot3DStyle* ImPlot3D_GetStyle__ce2435ddf1d8bbdc() {
+	return &ImPlot3D::GetStyle();
+}
+extern "C" void ImPlot3D_SetStyle__8616d94c146d6be6(const ImPlot3DStyle* style) {
+	ImPlot3D::SetStyle(*style);
+}
+extern "C" void ImPlot3D_StyleColorsAuto__e05dde2801e3509c(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsAuto(dst);
+}
+extern "C" void ImPlot3D_StyleColorsDark__f3026e652fa5a3d4(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsDark(dst);
+}
+extern "C" void ImPlot3D_StyleColorsLight__cbe762f272234e68(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsLight(dst);
+}
+extern "C" void ImPlot3D_StyleColorsClassic__ec37fdbb560abf49(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsClassic(dst);
+}
+extern "C" void ImPlot3D_PushStyleColor__87b647a88ff97a78(int idx, unsigned int col) {
+	ImPlot3D::PushStyleColor(idx, col);
+}
+extern "C" void ImPlot3D_PushStyleColor__87b647a88ff97a78_1(int idx, const ImVec4* col) {
+	ImPlot3D::PushStyleColor(idx, *col);
+}
+extern "C" void ImPlot3D_PopStyleColor__b8867429a4a3514e(int count) {
+	ImPlot3D::PopStyleColor(count);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5(int idx, float val) {
+	ImPlot3D::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5_1(int idx, int val) {
+	ImPlot3D::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5_2(int idx, const ImVec2* val) {
+	ImPlot3D::PushStyleVar(idx, *val);
+}
+extern "C" void ImPlot3D_PopStyleVar__133858151c313dfc(int count) {
+	ImPlot3D::PopStyleVar(count);
+}
+extern "C" void ImPlot3D_SetNextLineStyle__cc6fe3e242a28c3f(const ImVec4* col, float weight) {
+	ImPlot3D::SetNextLineStyle(*col, weight);
+}
+extern "C" void ImPlot3D_SetNextFillStyle__3d47e35ac95fe9ee(const ImVec4* col, float alpha_mod) {
+	ImPlot3D::SetNextFillStyle(*col, alpha_mod);
+}
+extern "C" void ImPlot3D_SetNextMarkerStyle__e094e7dee8267f6f(int marker, float size, const ImVec4* fill, float weight, const ImVec4* outline) {
+	ImPlot3D::SetNextMarkerStyle(marker, size, *fill, weight, *outline);
+}
+extern "C" void ImPlot3D_GetStyleColorVec4__5c8f7f462421a3ef(int idx, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::GetStyleColorVec4(idx);
+}
+extern "C" unsigned int ImPlot3D_GetStyleColorU32__98fa1a0d9e2bc7e6(int idx) {
+	return ImPlot3D::GetStyleColorU32(idx);
+}
+extern "C" int ImPlot3D_AddColormap__628c4303c5bff7a4(const char* name, const ImVec4* cols, int size, bool qual) {
+	return ImPlot3D::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot3D_AddColormap__628c4303c5bff7a4_1(const char* name, const unsigned int* cols, int size, bool qual) {
+	return ImPlot3D::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot3D_GetColormapCount__bd4c26c12b523d79() {
+	return ImPlot3D::GetColormapCount();
+}
+extern "C" const char* ImPlot3D_GetColormapName__a7b1d3f1256f7b62(int cmap) {
+	return ImPlot3D::GetColormapName(cmap);
+}
+extern "C" int ImPlot3D_GetColormapIndex__b531adb3bf9b31cf(const char* name) {
+	return ImPlot3D::GetColormapIndex(name);
+}
+extern "C" void ImPlot3D_PushColormap__b304f8574dbb0701(int cmap) {
+	ImPlot3D::PushColormap(cmap);
+}
+extern "C" void ImPlot3D_PushColormap__b304f8574dbb0701_1(const char* name) {
+	ImPlot3D::PushColormap(name);
+}
+extern "C" void ImPlot3D_PopColormap__670d03a0996eea6f(int count) {
+	ImPlot3D::PopColormap(count);
+}
+extern "C" void ImPlot3D_NextColormapColor__99fa1b13b8d80be2(ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::NextColormapColor();
+}
+extern "C" int ImPlot3D_GetColormapSize__d761993c814f422f(int cmap) {
+	return ImPlot3D::GetColormapSize(cmap);
+}
+extern "C" void ImPlot3D_GetColormapColor__35b0a68532bb1631(int idx, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::GetColormapColor(idx, cmap);
+}
+extern "C" void ImPlot3D_SampleColormap__d4816676b082dd68(float t, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::SampleColormap(t, cmap);
+}
+extern "C" void ImPlot3D_ShowDemoWindow__bf3697c59b1e3f56(bool* p_open) {
+	ImPlot3D::ShowDemoWindow(p_open);
+}
+extern "C" void ImPlot3D_ShowAllDemos__bc2b87d0b1d588c2() {
+	ImPlot3D::ShowAllDemos();
+}
+extern "C" void ImPlot3D_ShowStyleEditor__9295e9c397962dd9(ImPlot3DStyle* ref) {
+	ImPlot3D::ShowStyleEditor(ref);
+}
+extern "C" void ImPlot3D_ShowMetricsWindow__1b1d940fa8fb0d3(bool* p_popen) {
+	ImPlot3D::ShowMetricsWindow(p_popen);
+}
+extern "C" float ImPlot3DPoint_Dot__24e819d28113157f(ImPlot3DPoint* obj, const ImPlot3DPoint* rhs) {
+	return obj->Dot(*rhs);
+}
+extern "C" void ImPlot3DPoint_Cross__6b5106cb676283a3(ImPlot3DPoint* obj, const ImPlot3DPoint* rhs, ImPlot3DPoint* zpp_out) {
+	*zpp_out = obj->Cross(*rhs);
+}
+extern "C" float ImPlot3DPoint_Length__84530b083cf7c420(ImPlot3DPoint* obj) {
+	return obj->Length();
+}
+extern "C" float ImPlot3DPoint_LengthSquared__fa31373669e085ac(ImPlot3DPoint* obj) {
+	return obj->LengthSquared();
+}
+extern "C" void ImPlot3DPoint_Normalize__c41aa7c75f892b85(ImPlot3DPoint* obj) {
+	obj->Normalize();
+}
+extern "C" void ImPlot3DPoint_Normalized__7b19c5b9c5891b5d(ImPlot3DPoint* obj, ImPlot3DPoint* zpp_out) {
+	*zpp_out = obj->Normalized();
+}
+extern "C" bool ImPlot3DPoint_IsNaN__7fccb2f1ded9f9fe(ImPlot3DPoint* obj) {
+	return obj->IsNaN();
+}
+extern "C" void ImPlot3DBox_Expand__17f9d0b67635db0(ImPlot3DBox* obj, const ImPlot3DPoint* point) {
+	obj->Expand(*point);
+}
+extern "C" bool ImPlot3DBox_Contains__70c9d2abcdd2a6c9(ImPlot3DBox* obj, const ImPlot3DPoint* point) {
+	return obj->Contains(*point);
+}
+extern "C" bool ImPlot3DBox_ClipLineSegment__7337faf65ef618b3(ImPlot3DBox* obj, const ImPlot3DPoint* p0, const ImPlot3DPoint* p1, ImPlot3DPoint* p0_clipped, ImPlot3DPoint* p1_clipped) {
+	return obj->ClipLineSegment(*p0, *p1, *p0_clipped, *p1_clipped);
+}
+extern "C" void ImPlot3DRange_Expand__17f9d0b67635db0(ImPlot3DRange* obj, float value) {
+	obj->Expand(value);
+}
+extern "C" bool ImPlot3DRange_Contains__70c9d2abcdd2a6c9(ImPlot3DRange* obj, float value) {
+	return obj->Contains(value);
+}
+extern "C" float ImPlot3DRange_Size__48afdcdc06b831dd(ImPlot3DRange* obj) {
+	return obj->Size();
+}
+extern "C" void ImPlot3DQuat_FromTwoVectors__c3565f573bfa0033(ImPlot3DQuat* obj, const ImPlot3DPoint* v0, const ImPlot3DPoint* v1, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->FromTwoVectors(*v0, *v1);
+}
+extern "C" void ImPlot3DQuat_FromElAz__685499e7aa35ea6a(ImPlot3DQuat* obj, float elevation, float azimuth, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->FromElAz(elevation, azimuth);
+}
+extern "C" float ImPlot3DQuat_Length__84530b083cf7c420(ImPlot3DQuat* obj) {
+	return obj->Length();
+}
+extern "C" void ImPlot3DQuat_Normalized__7b19c5b9c5891b5d(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Normalized();
+}
+extern "C" void ImPlot3DQuat_Conjugate__7969b91c6374e535(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Conjugate();
+}
+extern "C" void ImPlot3DQuat_Inverse__800226e9aca291f0(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Inverse();
+}
+extern "C" ImPlot3DQuat* ImPlot3DQuat_Normalize__c41aa7c75f892b85(ImPlot3DQuat* obj) {
+	return &obj->Normalize();
+}
+extern "C" void ImPlot3DQuat_Slerp__14e3b092406ef28d(ImPlot3DQuat* obj, const ImPlot3DQuat* q1, const ImPlot3DQuat* q2, float t, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Slerp(*q1, *q2, t);
+}
+extern "C" float ImPlot3DQuat_Dot__24e819d28113157f(ImPlot3DQuat* obj, const ImPlot3DQuat* rhs) {
+	return obj->Dot(*rhs);
+}
+extern "C" void ImPlot3DStyle_GetColor__4989362d62e3a10b(ImPlot3DStyle* obj, int idx, ImVec4* zpp_out) {
+	*zpp_out = obj->GetColor(idx);
+}
+extern "C" void ImPlot3DStyle_SetColor__d8c86ac2bfab4142(ImPlot3DStyle* obj, int idx, const ImVec4* col) {
+	obj->SetColor(idx, *col);
 }
 extern "C" bool ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092(SDL_Window* window, void* sdl_gl_context) {
 	return ImGui_ImplSDL3_InitForOpenGL(window, sdl_gl_context);

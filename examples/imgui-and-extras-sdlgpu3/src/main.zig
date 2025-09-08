@@ -8,6 +8,7 @@ const c = @cImport({
 
 const ImGui = imgui.ImGui;
 const ImPlot = imgui.ImPlot;
+const ImPlot3D = imgui.ImPlot3D;
 
 pub fn main() void {
     // Setup SDL
@@ -59,6 +60,9 @@ pub fn main() void {
 
     _ = ImPlot.CreateContext();
     defer ImPlot.DestroyContext(null);
+
+    _ = ImPlot3D.CreateContext();
+    defer ImPlot3D.DestroyContext(null);
 
     const io = ImGui.GetIO();
     io.ConfigFlags |= imgui.ImGuiConfigFlags_.ImGuiConfigFlags_NavEnableKeyboard.data;
@@ -125,6 +129,7 @@ pub fn main() void {
         if (show_demo_window) {
             ImGui.ShowDemoWindow(&show_demo_window);
             ImPlot.ShowDemoWindow(&show_demo_window);
+            ImPlot3D.ShowDemoWindow(&show_demo_window);
         }
 
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.

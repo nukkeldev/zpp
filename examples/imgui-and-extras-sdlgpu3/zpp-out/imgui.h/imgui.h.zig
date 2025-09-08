@@ -8473,6 +8473,873 @@ pub const ImPlotFlagsObsolete_ = packed struct(u32) {
     pub const ImPlotFlags_YAxis3: ImPlotFlagsObsolete_ = .{ .data = 2097152 };
 };
 
+pub const ImPlot3DCond = i32;
+
+pub const ImPlot3DCol = i32;
+
+pub const ImPlot3DStyleVar = i32;
+
+pub const ImPlot3DMarker = i32;
+
+pub const ImPlot3DLocation = i32;
+
+pub const ImAxis3D = i32;
+
+pub const ImPlane3D = i32;
+
+pub const ImPlot3DColormap = i32;
+
+pub const ImPlot3DFlags = i32;
+
+pub const ImPlot3DItemFlags = i32;
+
+pub const ImPlot3DScatterFlags = i32;
+
+pub const ImPlot3DLineFlags = i32;
+
+pub const ImPlot3DTriangleFlags = i32;
+
+pub const ImPlot3DQuadFlags = i32;
+
+pub const ImPlot3DSurfaceFlags = i32;
+
+pub const ImPlot3DMeshFlags = i32;
+
+pub const ImPlot3DImageFlags = i32;
+
+pub const ImPlot3DLegendFlags = i32;
+
+pub const ImPlot3DAxisFlags = i32;
+
+pub const ImPlot3DFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DFlags_None: ImPlot3DFlags_ = .{ .data = 0 };
+    pub const ImPlot3DFlags_NoTitle: ImPlot3DFlags_ = .{ .data = 1 };
+    pub const ImPlot3DFlags_NoLegend: ImPlot3DFlags_ = .{ .data = 2 };
+    pub const ImPlot3DFlags_NoMouseText: ImPlot3DFlags_ = .{ .data = 4 };
+    pub const ImPlot3DFlags_NoClip: ImPlot3DFlags_ = .{ .data = 8 };
+    pub const ImPlot3DFlags_NoMenus: ImPlot3DFlags_ = .{ .data = 16 };
+    pub const ImPlot3DFlags_CanvasOnly: ImPlot3DFlags_ = .{ .data = 7 };
+};
+
+pub const ImPlot3DCond_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DCond_None: ImPlot3DCond_ = .{ .data = 0 };
+    pub const ImPlot3DCond_Always: ImPlot3DCond_ = .{ .data = 1 };
+    pub const ImPlot3DCond_Once: ImPlot3DCond_ = .{ .data = 2 };
+};
+
+pub const ImPlot3DCol_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DCol_Line: ImPlot3DCol_ = .{ .data = 0 };
+    pub const ImPlot3DCol_Fill: ImPlot3DCol_ = .{ .data = 1 };
+    pub const ImPlot3DCol_MarkerOutline: ImPlot3DCol_ = .{ .data = 2 };
+    pub const ImPlot3DCol_MarkerFill: ImPlot3DCol_ = .{ .data = 3 };
+    pub const ImPlot3DCol_TitleText: ImPlot3DCol_ = .{ .data = 4 };
+    pub const ImPlot3DCol_InlayText: ImPlot3DCol_ = .{ .data = 5 };
+    pub const ImPlot3DCol_FrameBg: ImPlot3DCol_ = .{ .data = 6 };
+    pub const ImPlot3DCol_PlotBg: ImPlot3DCol_ = .{ .data = 7 };
+    pub const ImPlot3DCol_PlotBorder: ImPlot3DCol_ = .{ .data = 8 };
+    pub const ImPlot3DCol_LegendBg: ImPlot3DCol_ = .{ .data = 9 };
+    pub const ImPlot3DCol_LegendBorder: ImPlot3DCol_ = .{ .data = 10 };
+    pub const ImPlot3DCol_LegendText: ImPlot3DCol_ = .{ .data = 11 };
+    pub const ImPlot3DCol_AxisText: ImPlot3DCol_ = .{ .data = 12 };
+    pub const ImPlot3DCol_AxisGrid: ImPlot3DCol_ = .{ .data = 13 };
+    pub const ImPlot3DCol_AxisTick: ImPlot3DCol_ = .{ .data = 14 };
+    pub const ImPlot3DCol_COUNT: ImPlot3DCol_ = .{ .data = 15 };
+};
+
+pub const ImPlot3DStyleVar_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DStyleVar_LineWeight: ImPlot3DStyleVar_ = .{ .data = 0 };
+    pub const ImPlot3DStyleVar_Marker: ImPlot3DStyleVar_ = .{ .data = 1 };
+    pub const ImPlot3DStyleVar_MarkerSize: ImPlot3DStyleVar_ = .{ .data = 2 };
+    pub const ImPlot3DStyleVar_MarkerWeight: ImPlot3DStyleVar_ = .{ .data = 3 };
+    pub const ImPlot3DStyleVar_FillAlpha: ImPlot3DStyleVar_ = .{ .data = 4 };
+    pub const ImPlot3DStyleVar_PlotDefaultSize: ImPlot3DStyleVar_ = .{ .data = 5 };
+    pub const ImPlot3DStyleVar_PlotMinSize: ImPlot3DStyleVar_ = .{ .data = 6 };
+    pub const ImPlot3DStyleVar_PlotPadding: ImPlot3DStyleVar_ = .{ .data = 7 };
+    pub const ImPlot3DStyleVar_LabelPadding: ImPlot3DStyleVar_ = .{ .data = 8 };
+    pub const ImPlot3DStyleVar_LegendPadding: ImPlot3DStyleVar_ = .{ .data = 9 };
+    pub const ImPlot3DStyleVar_LegendInnerPadding: ImPlot3DStyleVar_ = .{ .data = 10 };
+    pub const ImPlot3DStyleVar_LegendSpacing: ImPlot3DStyleVar_ = .{ .data = 11 };
+    pub const ImPlot3DStyleVar_COUNT: ImPlot3DStyleVar_ = .{ .data = 12 };
+};
+
+pub const ImPlot3DMarker_ = packed struct(i32) {
+    data: i32,
+    pub const ImPlot3DMarker_None: ImPlot3DMarker_ = .{ .data = -1 };
+    pub const ImPlot3DMarker_Circle: ImPlot3DMarker_ = .{ .data = 0 };
+    pub const ImPlot3DMarker_Square: ImPlot3DMarker_ = .{ .data = 1 };
+    pub const ImPlot3DMarker_Diamond: ImPlot3DMarker_ = .{ .data = 2 };
+    pub const ImPlot3DMarker_Up: ImPlot3DMarker_ = .{ .data = 3 };
+    pub const ImPlot3DMarker_Down: ImPlot3DMarker_ = .{ .data = 4 };
+    pub const ImPlot3DMarker_Left: ImPlot3DMarker_ = .{ .data = 5 };
+    pub const ImPlot3DMarker_Right: ImPlot3DMarker_ = .{ .data = 6 };
+    pub const ImPlot3DMarker_Cross: ImPlot3DMarker_ = .{ .data = 7 };
+    pub const ImPlot3DMarker_Plus: ImPlot3DMarker_ = .{ .data = 8 };
+    pub const ImPlot3DMarker_Asterisk: ImPlot3DMarker_ = .{ .data = 9 };
+    pub const ImPlot3DMarker_COUNT: ImPlot3DMarker_ = .{ .data = 10 };
+};
+
+pub const ImPlot3DItemFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DItemFlags_None: ImPlot3DItemFlags_ = .{ .data = 0 };
+    pub const ImPlot3DItemFlags_NoLegend: ImPlot3DItemFlags_ = .{ .data = 1 };
+    pub const ImPlot3DItemFlags_NoFit: ImPlot3DItemFlags_ = .{ .data = 2 };
+};
+
+pub const ImPlot3DScatterFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DScatterFlags_None: ImPlot3DScatterFlags_ = .{ .data = 0 };
+    pub const ImPlot3DScatterFlags_NoLegend: ImPlot3DScatterFlags_ = .{ .data = 1 };
+    pub const ImPlot3DScatterFlags_NoFit: ImPlot3DScatterFlags_ = .{ .data = 2 };
+};
+
+pub const ImPlot3DLineFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DLineFlags_None: ImPlot3DLineFlags_ = .{ .data = 0 };
+    pub const ImPlot3DLineFlags_NoLegend: ImPlot3DLineFlags_ = .{ .data = 1 };
+    pub const ImPlot3DLineFlags_NoFit: ImPlot3DLineFlags_ = .{ .data = 2 };
+    pub const ImPlot3DLineFlags_Segments: ImPlot3DLineFlags_ = .{ .data = 1024 };
+    pub const ImPlot3DLineFlags_Loop: ImPlot3DLineFlags_ = .{ .data = 2048 };
+    pub const ImPlot3DLineFlags_SkipNaN: ImPlot3DLineFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlot3DTriangleFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DTriangleFlags_None: ImPlot3DTriangleFlags_ = .{ .data = 0 };
+    pub const ImPlot3DTriangleFlags_NoLegend: ImPlot3DTriangleFlags_ = .{ .data = 1 };
+    pub const ImPlot3DTriangleFlags_NoFit: ImPlot3DTriangleFlags_ = .{ .data = 2 };
+    pub const ImPlot3DTriangleFlags_NoLines: ImPlot3DTriangleFlags_ = .{ .data = 1024 };
+    pub const ImPlot3DTriangleFlags_NoFill: ImPlot3DTriangleFlags_ = .{ .data = 2048 };
+    pub const ImPlot3DTriangleFlags_NoMarkers: ImPlot3DTriangleFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlot3DQuadFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DQuadFlags_None: ImPlot3DQuadFlags_ = .{ .data = 0 };
+    pub const ImPlot3DQuadFlags_NoLegend: ImPlot3DQuadFlags_ = .{ .data = 1 };
+    pub const ImPlot3DQuadFlags_NoFit: ImPlot3DQuadFlags_ = .{ .data = 2 };
+    pub const ImPlot3DQuadFlags_NoLines: ImPlot3DQuadFlags_ = .{ .data = 1024 };
+    pub const ImPlot3DQuadFlags_NoFill: ImPlot3DQuadFlags_ = .{ .data = 2048 };
+    pub const ImPlot3DQuadFlags_NoMarkers: ImPlot3DQuadFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlot3DSurfaceFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DSurfaceFlags_None: ImPlot3DSurfaceFlags_ = .{ .data = 0 };
+    pub const ImPlot3DSurfaceFlags_NoLegend: ImPlot3DSurfaceFlags_ = .{ .data = 1 };
+    pub const ImPlot3DSurfaceFlags_NoFit: ImPlot3DSurfaceFlags_ = .{ .data = 2 };
+    pub const ImPlot3DSurfaceFlags_NoLines: ImPlot3DSurfaceFlags_ = .{ .data = 1024 };
+    pub const ImPlot3DSurfaceFlags_NoFill: ImPlot3DSurfaceFlags_ = .{ .data = 2048 };
+    pub const ImPlot3DSurfaceFlags_NoMarkers: ImPlot3DSurfaceFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlot3DMeshFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DMeshFlags_None: ImPlot3DMeshFlags_ = .{ .data = 0 };
+    pub const ImPlot3DMeshFlags_NoLegend: ImPlot3DMeshFlags_ = .{ .data = 1 };
+    pub const ImPlot3DMeshFlags_NoFit: ImPlot3DMeshFlags_ = .{ .data = 2 };
+    pub const ImPlot3DMeshFlags_NoLines: ImPlot3DMeshFlags_ = .{ .data = 1024 };
+    pub const ImPlot3DMeshFlags_NoFill: ImPlot3DMeshFlags_ = .{ .data = 2048 };
+    pub const ImPlot3DMeshFlags_NoMarkers: ImPlot3DMeshFlags_ = .{ .data = 4096 };
+};
+
+pub const ImPlot3DImageFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DImageFlags_None: ImPlot3DImageFlags_ = .{ .data = 0 };
+    pub const ImPlot3DImageFlags_NoLegend: ImPlot3DImageFlags_ = .{ .data = 1 };
+    pub const ImPlot3DImageFlags_NoFit: ImPlot3DImageFlags_ = .{ .data = 2 };
+};
+
+pub const ImPlot3DLegendFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DLegendFlags_None: ImPlot3DLegendFlags_ = .{ .data = 0 };
+    pub const ImPlot3DLegendFlags_NoButtons: ImPlot3DLegendFlags_ = .{ .data = 1 };
+    pub const ImPlot3DLegendFlags_NoHighlightItem: ImPlot3DLegendFlags_ = .{ .data = 2 };
+    pub const ImPlot3DLegendFlags_Horizontal: ImPlot3DLegendFlags_ = .{ .data = 4 };
+};
+
+pub const ImPlot3DLocation_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DLocation_Center: ImPlot3DLocation_ = .{ .data = 0 };
+    pub const ImPlot3DLocation_North: ImPlot3DLocation_ = .{ .data = 1 };
+    pub const ImPlot3DLocation_South: ImPlot3DLocation_ = .{ .data = 2 };
+    pub const ImPlot3DLocation_West: ImPlot3DLocation_ = .{ .data = 4 };
+    pub const ImPlot3DLocation_East: ImPlot3DLocation_ = .{ .data = 8 };
+    pub const ImPlot3DLocation_NorthWest: ImPlot3DLocation_ = .{ .data = 5 };
+    pub const ImPlot3DLocation_NorthEast: ImPlot3DLocation_ = .{ .data = 9 };
+    pub const ImPlot3DLocation_SouthWest: ImPlot3DLocation_ = .{ .data = 6 };
+    pub const ImPlot3DLocation_SouthEast: ImPlot3DLocation_ = .{ .data = 10 };
+};
+
+pub const ImPlot3DAxisFlags_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DAxisFlags_None: ImPlot3DAxisFlags_ = .{ .data = 0 };
+    pub const ImPlot3DAxisFlags_NoLabel: ImPlot3DAxisFlags_ = .{ .data = 1 };
+    pub const ImPlot3DAxisFlags_NoGridLines: ImPlot3DAxisFlags_ = .{ .data = 2 };
+    pub const ImPlot3DAxisFlags_NoTickMarks: ImPlot3DAxisFlags_ = .{ .data = 4 };
+    pub const ImPlot3DAxisFlags_NoTickLabels: ImPlot3DAxisFlags_ = .{ .data = 8 };
+    pub const ImPlot3DAxisFlags_LockMin: ImPlot3DAxisFlags_ = .{ .data = 16 };
+    pub const ImPlot3DAxisFlags_LockMax: ImPlot3DAxisFlags_ = .{ .data = 32 };
+    pub const ImPlot3DAxisFlags_AutoFit: ImPlot3DAxisFlags_ = .{ .data = 64 };
+    pub const ImPlot3DAxisFlags_Invert: ImPlot3DAxisFlags_ = .{ .data = 128 };
+    pub const ImPlot3DAxisFlags_PanStretch: ImPlot3DAxisFlags_ = .{ .data = 256 };
+    pub const ImPlot3DAxisFlags_Lock: ImPlot3DAxisFlags_ = .{ .data = 48 };
+    pub const ImPlot3DAxisFlags_NoDecorations: ImPlot3DAxisFlags_ = .{ .data = 11 };
+};
+
+pub const ImAxis3D_ = packed struct(u32) {
+    data: u32,
+    pub const ImAxis3D_X: ImAxis3D_ = .{ .data = 0 };
+    pub const ImAxis3D_Y: ImAxis3D_ = .{ .data = 1 };
+    pub const ImAxis3D_Z: ImAxis3D_ = .{ .data = 2 };
+    pub const ImAxis3D_COUNT: ImAxis3D_ = .{ .data = 3 };
+};
+
+pub const ImPlane3D_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlane3D_YZ: ImPlane3D_ = .{ .data = 0 };
+    pub const ImPlane3D_XZ: ImPlane3D_ = .{ .data = 1 };
+    pub const ImPlane3D_XY: ImPlane3D_ = .{ .data = 2 };
+    pub const ImPlane3D_COUNT: ImPlane3D_ = .{ .data = 3 };
+};
+
+pub const ImPlot3DColormap_ = packed struct(u32) {
+    data: u32,
+    pub const ImPlot3DColormap_Deep: ImPlot3DColormap_ = .{ .data = 0 };
+    pub const ImPlot3DColormap_Dark: ImPlot3DColormap_ = .{ .data = 1 };
+    pub const ImPlot3DColormap_Pastel: ImPlot3DColormap_ = .{ .data = 2 };
+    pub const ImPlot3DColormap_Paired: ImPlot3DColormap_ = .{ .data = 3 };
+    pub const ImPlot3DColormap_Viridis: ImPlot3DColormap_ = .{ .data = 4 };
+    pub const ImPlot3DColormap_Plasma: ImPlot3DColormap_ = .{ .data = 5 };
+    pub const ImPlot3DColormap_Hot: ImPlot3DColormap_ = .{ .data = 6 };
+    pub const ImPlot3DColormap_Cool: ImPlot3DColormap_ = .{ .data = 7 };
+    pub const ImPlot3DColormap_Pink: ImPlot3DColormap_ = .{ .data = 8 };
+    pub const ImPlot3DColormap_Jet: ImPlot3DColormap_ = .{ .data = 9 };
+    pub const ImPlot3DColormap_Twilight: ImPlot3DColormap_ = .{ .data = 10 };
+    pub const ImPlot3DColormap_RdBu: ImPlot3DColormap_ = .{ .data = 11 };
+    pub const ImPlot3DColormap_BrBG: ImPlot3DColormap_ = .{ .data = 12 };
+    pub const ImPlot3DColormap_PiYG: ImPlot3DColormap_ = .{ .data = 13 };
+    pub const ImPlot3DColormap_Spectral: ImPlot3DColormap_ = .{ .data = 14 };
+    pub const ImPlot3DColormap_Greys: ImPlot3DColormap_ = .{ .data = 15 };
+};
+
+pub const ImPlot3DFormatter = [*c]*const fn (f32, [*c]u8, i32, *void) callconv(.c) i32;
+
+pub const ImPlot3D = struct {
+    pub const CreateContext = ImPlot3D_CreateContext__9c317cc3bbd69792;
+    extern fn ImPlot3D_CreateContext__9c317cc3bbd69792() callconv(.c) [*c]ImPlot3DContext;
+
+    pub const DestroyContext = ImPlot3D_DestroyContext__33355240a3c270a1;
+    extern fn ImPlot3D_DestroyContext__33355240a3c270a1(ctx: [*c]ImPlot3DContext) callconv(.c) void;
+
+    pub const GetCurrentContext = ImPlot3D_GetCurrentContext__bfcbdecf32b4f9ee;
+    extern fn ImPlot3D_GetCurrentContext__bfcbdecf32b4f9ee() callconv(.c) [*c]ImPlot3DContext;
+
+    pub const SetCurrentContext = ImPlot3D_SetCurrentContext__cf8edc56a4c808a8;
+    extern fn ImPlot3D_SetCurrentContext__cf8edc56a4c808a8(ctx: [*c]ImPlot3DContext) callconv(.c) void;
+
+    pub const BeginPlot = ImPlot3D_BeginPlot__3c148c203682a42e;
+    extern fn ImPlot3D_BeginPlot__3c148c203682a42e(title_id: [*c]const u8, size: *const ImVec2, flags: i32) callconv(.c) bool;
+
+    pub const EndPlot = ImPlot3D_EndPlot__5474b1386037b1fc;
+    extern fn ImPlot3D_EndPlot__5474b1386037b1fc() callconv(.c) void;
+
+    pub const SetupAxis = ImPlot3D_SetupAxis__a02eada84927addd;
+    extern fn ImPlot3D_SetupAxis__a02eada84927addd(axis: i32, label: [*c]const u8, flags: i32) callconv(.c) void;
+
+    pub const SetupAxisLimits = ImPlot3D_SetupAxisLimits__84e65096c4f62943;
+    extern fn ImPlot3D_SetupAxisLimits__84e65096c4f62943(axis: i32, v_min: f64, v_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetupAxisFormat = ImPlot3D_SetupAxisFormat__9dcf8fb9b955f5dc;
+    extern fn ImPlot3D_SetupAxisFormat__9dcf8fb9b955f5dc(axis: i32, formatter: [*c]*const fn (f32, [*c]u8, i32, *void) callconv(.c) i32, data: *void) callconv(.c) void;
+
+    pub const SetupAxisTicks = ImPlot3D_SetupAxisTicks__22f262f44079b651;
+    extern fn ImPlot3D_SetupAxisTicks__22f262f44079b651(axis: i32, values: [*c]const f64, n_ticks: i32, labels: [*]const [*c]const u8, keep_default: bool) callconv(.c) void;
+
+    pub const SetupAxisTicks_1 = ImPlot3D_SetupAxisTicks__22f262f44079b651_1;
+    extern fn ImPlot3D_SetupAxisTicks__22f262f44079b651_1(axis: i32, v_min: f64, v_max: f64, n_ticks: i32, labels: [*]const [*c]const u8, keep_default: bool) callconv(.c) void;
+
+    pub const SetupAxisLimitsConstraints = ImPlot3D_SetupAxisLimitsConstraints__88340f102878fca3;
+    extern fn ImPlot3D_SetupAxisLimitsConstraints__88340f102878fca3(axis: i32, v_min: f64, v_max: f64) callconv(.c) void;
+
+    pub const SetupAxisZoomConstraints = ImPlot3D_SetupAxisZoomConstraints__1bb8e8936b850bd5;
+    extern fn ImPlot3D_SetupAxisZoomConstraints__1bb8e8936b850bd5(axis: i32, z_min: f64, z_max: f64) callconv(.c) void;
+
+    pub const SetupAxes = ImPlot3D_SetupAxes__eb51ea5a6e3c0a15;
+    extern fn ImPlot3D_SetupAxes__eb51ea5a6e3c0a15(x_label: [*c]const u8, y_label: [*c]const u8, z_label: [*c]const u8, x_flags: i32, y_flags: i32, z_flags: i32) callconv(.c) void;
+
+    pub const SetupAxesLimits = ImPlot3D_SetupAxesLimits__e404167bdddae99f;
+    extern fn ImPlot3D_SetupAxesLimits__e404167bdddae99f(x_min: f64, x_max: f64, y_min: f64, y_max: f64, z_min: f64, z_max: f64, cond: i32) callconv(.c) void;
+
+    pub const SetupBoxRotation = ImPlot3D_SetupBoxRotation__af2c659462aebcde;
+    extern fn ImPlot3D_SetupBoxRotation__af2c659462aebcde(elevation: f32, azimuth: f32, animate: bool, cond: i32) callconv(.c) void;
+
+    pub const SetupBoxRotation_1 = ImPlot3D_SetupBoxRotation__af2c659462aebcde_1;
+    extern fn ImPlot3D_SetupBoxRotation__af2c659462aebcde_1(rotation: ImPlot3DQuat, animate: bool, cond: i32) callconv(.c) void;
+
+    pub const SetupBoxInitialRotation = ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c;
+    extern fn ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c(elevation: f32, azimuth: f32) callconv(.c) void;
+
+    pub const SetupBoxInitialRotation_1 = ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c_1;
+    extern fn ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c_1(rotation: ImPlot3DQuat) callconv(.c) void;
+
+    pub const SetupBoxScale = ImPlot3D_SetupBoxScale__81bc9ffe28f56c81;
+    extern fn ImPlot3D_SetupBoxScale__81bc9ffe28f56c81(x: f32, y: f32, z: f32) callconv(.c) void;
+
+    pub const SetupLegend = ImPlot3D_SetupLegend__de4a359eef0ead7;
+    extern fn ImPlot3D_SetupLegend__de4a359eef0ead7(location: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotMesh = ImPlot3D_PlotMesh__750cf6bcb3772ed3;
+    extern fn ImPlot3D_PlotMesh__750cf6bcb3772ed3(label_id: [*c]const u8, vtx: [*c]const ImPlot3DPoint, idx: [*c]const u32, vtx_count: i32, idx_count: i32, flags: i32) callconv(.c) void;
+
+    pub const PlotImage = ImPlot3D_PlotImage__6ca11c45f537402f;
+    extern fn ImPlot3D_PlotImage__6ca11c45f537402f(label_id: [*c]const u8, tex_ref: ImTextureRef, center: *const ImPlot3DPoint, axis_u: *const ImPlot3DPoint, axis_v: *const ImPlot3DPoint, uv0: *const ImVec2, uv1: *const ImVec2, tint_col: *const ImVec4, flags: i32) callconv(.c) void;
+
+    pub const PlotImage_1 = ImPlot3D_PlotImage__6ca11c45f537402f_1;
+    extern fn ImPlot3D_PlotImage__6ca11c45f537402f_1(label_id: [*c]const u8, tex_ref: ImTextureRef, p0: *const ImPlot3DPoint, p1: *const ImPlot3DPoint, p2: *const ImPlot3DPoint, p3: *const ImPlot3DPoint, uv0: *const ImVec2, uv1: *const ImVec2, uv2: *const ImVec2, uv3: *const ImVec2, tint_col: *const ImVec4, flags: i32) callconv(.c) void;
+
+    pub const PlotText = ImPlot3D_PlotText__58b23a2e82986d8f;
+    extern fn ImPlot3D_PlotText__58b23a2e82986d8f(text: [*c]const u8, x: f32, y: f32, z: f32, angle: f32, pix_offset: *const ImVec2) callconv(.c) void;
+
+    pub const PlotToPixels = ImPlot3D_PlotToPixels__51fddf7d64cd221a;
+    extern fn ImPlot3D_PlotToPixels__51fddf7d64cd221a(point: *const ImPlot3DPoint, zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const PlotToPixels_1 = ImPlot3D_PlotToPixels__51fddf7d64cd221a_1;
+    extern fn ImPlot3D_PlotToPixels__51fddf7d64cd221a_1(x: f64, y: f64, z: f64, zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const PixelsToPlotRay = ImPlot3D_PixelsToPlotRay__d435544ff7a02006;
+    extern fn ImPlot3D_PixelsToPlotRay__d435544ff7a02006(pix: *const ImVec2, zpp_out: *ImPlot3DRay) callconv(.c) void;
+
+    pub const PixelsToPlotRay_1 = ImPlot3D_PixelsToPlotRay__d435544ff7a02006_1;
+    extern fn ImPlot3D_PixelsToPlotRay__d435544ff7a02006_1(x: f64, y: f64, zpp_out: *ImPlot3DRay) callconv(.c) void;
+
+    pub const PixelsToPlotPlane = ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6;
+    extern fn ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6(pix: *const ImVec2, plane: i32, mask: bool, zpp_out: *ImPlot3DPoint) callconv(.c) void;
+
+    pub const PixelsToPlotPlane_1 = ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6_1;
+    extern fn ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6_1(x: f64, y: f64, plane: i32, mask: bool, zpp_out: *ImPlot3DPoint) callconv(.c) void;
+
+    pub const GetPlotPos = ImPlot3D_GetPlotPos__a56701414e62e920;
+    extern fn ImPlot3D_GetPlotPos__a56701414e62e920(zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const GetPlotSize = ImPlot3D_GetPlotSize__73879d6334936fbd;
+    extern fn ImPlot3D_GetPlotSize__73879d6334936fbd(zpp_out: *ImVec2) callconv(.c) void;
+
+    pub const GetPlotDrawList = ImPlot3D_GetPlotDrawList__2970ef07638a6cb4;
+    extern fn ImPlot3D_GetPlotDrawList__2970ef07638a6cb4() callconv(.c) [*c]ImDrawList;
+
+    pub const GetStyle = ImPlot3D_GetStyle__ce2435ddf1d8bbdc;
+    extern fn ImPlot3D_GetStyle__ce2435ddf1d8bbdc() callconv(.c) *ImPlot3DStyle;
+
+    pub const SetStyle = ImPlot3D_SetStyle__8616d94c146d6be6;
+    extern fn ImPlot3D_SetStyle__8616d94c146d6be6(style: *const ImPlot3DStyle) callconv(.c) void;
+
+    pub const StyleColorsAuto = ImPlot3D_StyleColorsAuto__e05dde2801e3509c;
+    extern fn ImPlot3D_StyleColorsAuto__e05dde2801e3509c(dst: [*c]ImPlot3DStyle) callconv(.c) void;
+
+    pub const StyleColorsDark = ImPlot3D_StyleColorsDark__f3026e652fa5a3d4;
+    extern fn ImPlot3D_StyleColorsDark__f3026e652fa5a3d4(dst: [*c]ImPlot3DStyle) callconv(.c) void;
+
+    pub const StyleColorsLight = ImPlot3D_StyleColorsLight__cbe762f272234e68;
+    extern fn ImPlot3D_StyleColorsLight__cbe762f272234e68(dst: [*c]ImPlot3DStyle) callconv(.c) void;
+
+    pub const StyleColorsClassic = ImPlot3D_StyleColorsClassic__ec37fdbb560abf49;
+    extern fn ImPlot3D_StyleColorsClassic__ec37fdbb560abf49(dst: [*c]ImPlot3DStyle) callconv(.c) void;
+
+    pub const PushStyleColor = ImPlot3D_PushStyleColor__87b647a88ff97a78;
+    extern fn ImPlot3D_PushStyleColor__87b647a88ff97a78(idx: i32, col: u32) callconv(.c) void;
+
+    pub const PushStyleColor_1 = ImPlot3D_PushStyleColor__87b647a88ff97a78_1;
+    extern fn ImPlot3D_PushStyleColor__87b647a88ff97a78_1(idx: i32, col: *const ImVec4) callconv(.c) void;
+
+    pub const PopStyleColor = ImPlot3D_PopStyleColor__b8867429a4a3514e;
+    extern fn ImPlot3D_PopStyleColor__b8867429a4a3514e(count: i32) callconv(.c) void;
+
+    pub const PushStyleVar = ImPlot3D_PushStyleVar__3d7496da947837c5;
+    extern fn ImPlot3D_PushStyleVar__3d7496da947837c5(idx: i32, val: f32) callconv(.c) void;
+
+    pub const PushStyleVar_1 = ImPlot3D_PushStyleVar__3d7496da947837c5_1;
+    extern fn ImPlot3D_PushStyleVar__3d7496da947837c5_1(idx: i32, val: i32) callconv(.c) void;
+
+    pub const PushStyleVar_2 = ImPlot3D_PushStyleVar__3d7496da947837c5_2;
+    extern fn ImPlot3D_PushStyleVar__3d7496da947837c5_2(idx: i32, val: *const ImVec2) callconv(.c) void;
+
+    pub const PopStyleVar = ImPlot3D_PopStyleVar__133858151c313dfc;
+    extern fn ImPlot3D_PopStyleVar__133858151c313dfc(count: i32) callconv(.c) void;
+
+    pub const SetNextLineStyle = ImPlot3D_SetNextLineStyle__cc6fe3e242a28c3f;
+    extern fn ImPlot3D_SetNextLineStyle__cc6fe3e242a28c3f(col: *const ImVec4, weight: f32) callconv(.c) void;
+
+    pub const SetNextFillStyle = ImPlot3D_SetNextFillStyle__3d47e35ac95fe9ee;
+    extern fn ImPlot3D_SetNextFillStyle__3d47e35ac95fe9ee(col: *const ImVec4, alpha_mod: f32) callconv(.c) void;
+
+    pub const SetNextMarkerStyle = ImPlot3D_SetNextMarkerStyle__e094e7dee8267f6f;
+    extern fn ImPlot3D_SetNextMarkerStyle__e094e7dee8267f6f(marker: i32, size: f32, fill: *const ImVec4, weight: f32, outline: *const ImVec4) callconv(.c) void;
+
+    pub const GetStyleColorVec4 = ImPlot3D_GetStyleColorVec4__5c8f7f462421a3ef;
+    extern fn ImPlot3D_GetStyleColorVec4__5c8f7f462421a3ef(idx: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const GetStyleColorU32 = ImPlot3D_GetStyleColorU32__98fa1a0d9e2bc7e6;
+    extern fn ImPlot3D_GetStyleColorU32__98fa1a0d9e2bc7e6(idx: i32) callconv(.c) u32;
+
+    pub const AddColormap = ImPlot3D_AddColormap__628c4303c5bff7a4;
+    extern fn ImPlot3D_AddColormap__628c4303c5bff7a4(name: [*c]const u8, cols: [*c]const ImVec4, size: i32, qual: bool) callconv(.c) i32;
+
+    pub const AddColormap_1 = ImPlot3D_AddColormap__628c4303c5bff7a4_1;
+    extern fn ImPlot3D_AddColormap__628c4303c5bff7a4_1(name: [*c]const u8, cols: [*c]const u32, size: i32, qual: bool) callconv(.c) i32;
+
+    pub const GetColormapCount = ImPlot3D_GetColormapCount__bd4c26c12b523d79;
+    extern fn ImPlot3D_GetColormapCount__bd4c26c12b523d79() callconv(.c) i32;
+
+    pub const GetColormapName = ImPlot3D_GetColormapName__a7b1d3f1256f7b62;
+    extern fn ImPlot3D_GetColormapName__a7b1d3f1256f7b62(cmap: i32) callconv(.c) [*c]const u8;
+
+    pub const GetColormapIndex = ImPlot3D_GetColormapIndex__b531adb3bf9b31cf;
+    extern fn ImPlot3D_GetColormapIndex__b531adb3bf9b31cf(name: [*c]const u8) callconv(.c) i32;
+
+    pub const PushColormap = ImPlot3D_PushColormap__b304f8574dbb0701;
+    extern fn ImPlot3D_PushColormap__b304f8574dbb0701(cmap: i32) callconv(.c) void;
+
+    pub const PushColormap_1 = ImPlot3D_PushColormap__b304f8574dbb0701_1;
+    extern fn ImPlot3D_PushColormap__b304f8574dbb0701_1(name: [*c]const u8) callconv(.c) void;
+
+    pub const PopColormap = ImPlot3D_PopColormap__670d03a0996eea6f;
+    extern fn ImPlot3D_PopColormap__670d03a0996eea6f(count: i32) callconv(.c) void;
+
+    pub const NextColormapColor = ImPlot3D_NextColormapColor__99fa1b13b8d80be2;
+    extern fn ImPlot3D_NextColormapColor__99fa1b13b8d80be2(zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const GetColormapSize = ImPlot3D_GetColormapSize__d761993c814f422f;
+    extern fn ImPlot3D_GetColormapSize__d761993c814f422f(cmap: i32) callconv(.c) i32;
+
+    pub const GetColormapColor = ImPlot3D_GetColormapColor__35b0a68532bb1631;
+    extern fn ImPlot3D_GetColormapColor__35b0a68532bb1631(idx: i32, cmap: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const SampleColormap = ImPlot3D_SampleColormap__d4816676b082dd68;
+    extern fn ImPlot3D_SampleColormap__d4816676b082dd68(t: f32, cmap: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const ShowDemoWindow = ImPlot3D_ShowDemoWindow__bf3697c59b1e3f56;
+    extern fn ImPlot3D_ShowDemoWindow__bf3697c59b1e3f56(p_open: [*c]bool) callconv(.c) void;
+
+    pub const ShowAllDemos = ImPlot3D_ShowAllDemos__bc2b87d0b1d588c2;
+    extern fn ImPlot3D_ShowAllDemos__bc2b87d0b1d588c2() callconv(.c) void;
+
+    pub const ShowStyleEditor = ImPlot3D_ShowStyleEditor__9295e9c397962dd9;
+    extern fn ImPlot3D_ShowStyleEditor__9295e9c397962dd9(ref: [*c]ImPlot3DStyle) callconv(.c) void;
+
+    pub const ShowMetricsWindow = ImPlot3D_ShowMetricsWindow__1b1d940fa8fb0d3;
+    extern fn ImPlot3D_ShowMetricsWindow__1b1d940fa8fb0d3(p_popen: [*c]bool) callconv(.c) void;
+
+    comptime {
+        refAllDecls(@This());
+    }
+};
+
+pub const ImPlot3DPoint = extern struct {
+    x: f32,
+    y: f32,
+    z: f32,
+    pub const Dot = ImPlot3DPoint_Dot__24e819d28113157f;
+    extern fn ImPlot3DPoint_Dot__24e819d28113157f(self: *@This(), rhs: *const ImPlot3DPoint) callconv(.c) f32;
+
+    pub const Cross = ImPlot3DPoint_Cross__6b5106cb676283a3;
+    extern fn ImPlot3DPoint_Cross__6b5106cb676283a3(rhs: *const ImPlot3DPoint, zpp_out: *ImPlot3DPoint) callconv(.c) void;
+
+    pub const Length = ImPlot3DPoint_Length__84530b083cf7c420;
+    extern fn ImPlot3DPoint_Length__84530b083cf7c420() callconv(.c) f32;
+
+    pub const LengthSquared = ImPlot3DPoint_LengthSquared__fa31373669e085ac;
+    extern fn ImPlot3DPoint_LengthSquared__fa31373669e085ac() callconv(.c) f32;
+
+    pub const Normalize = ImPlot3DPoint_Normalize__c41aa7c75f892b85;
+    extern fn ImPlot3DPoint_Normalize__c41aa7c75f892b85() callconv(.c) void;
+
+    pub const Normalized = ImPlot3DPoint_Normalized__7b19c5b9c5891b5d;
+    extern fn ImPlot3DPoint_Normalized__7b19c5b9c5891b5d(zpp_out: *ImPlot3DPoint) callconv(.c) void;
+
+    pub const IsNaN = ImPlot3DPoint_IsNaN__7fccb2f1ded9f9fe;
+    extern fn ImPlot3DPoint_IsNaN__7fccb2f1ded9f9fe() callconv(.c) bool;
+
+    comptime {
+        if (@sizeOf(@This()) != 12 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DPoint' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_x = @TypeOf(this.x);
+            if (@sizeOf(T_x) != 4 or @alignOf(T_x) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'x' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_x),
+                    @alignOf(T_x),
+                }));
+            }
+            const T_y = @TypeOf(this.y);
+            if (@sizeOf(T_y) != 4 or @alignOf(T_y) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'y' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_y),
+                    @alignOf(T_y),
+                }));
+            }
+            const T_z = @TypeOf(this.z);
+            if (@sizeOf(T_z) != 4 or @alignOf(T_z) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'z' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_z),
+                    @alignOf(T_z),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DRay = extern struct {
+    Origin: ImPlot3DPoint,
+    Direction: ImPlot3DPoint,
+    comptime {
+        if (@sizeOf(@This()) != 24 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DRay' to be 24 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Origin = @TypeOf(this.Origin);
+            if (@sizeOf(T_Origin) != 12 or @alignOf(T_Origin) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Origin' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Origin),
+                    @alignOf(T_Origin),
+                }));
+            }
+            const T_Direction = @TypeOf(this.Direction);
+            if (@sizeOf(T_Direction) != 12 or @alignOf(T_Direction) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Direction' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Direction),
+                    @alignOf(T_Direction),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DPlane = extern struct {
+    Point: ImPlot3DPoint,
+    Normal: ImPlot3DPoint,
+    comptime {
+        if (@sizeOf(@This()) != 24 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DPlane' to be 24 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Point = @TypeOf(this.Point);
+            if (@sizeOf(T_Point) != 12 or @alignOf(T_Point) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Point' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Point),
+                    @alignOf(T_Point),
+                }));
+            }
+            const T_Normal = @TypeOf(this.Normal);
+            if (@sizeOf(T_Normal) != 12 or @alignOf(T_Normal) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Normal' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Normal),
+                    @alignOf(T_Normal),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DBox = extern struct {
+    Min: ImPlot3DPoint,
+    Max: ImPlot3DPoint,
+    pub const Expand = ImPlot3DBox_Expand__17f9d0b67635db0;
+    extern fn ImPlot3DBox_Expand__17f9d0b67635db0(self: *@This(), point: *const ImPlot3DPoint) callconv(.c) void;
+
+    pub const Contains = ImPlot3DBox_Contains__70c9d2abcdd2a6c9;
+    extern fn ImPlot3DBox_Contains__70c9d2abcdd2a6c9(point: *const ImPlot3DPoint) callconv(.c) bool;
+
+    pub const ClipLineSegment = ImPlot3DBox_ClipLineSegment__7337faf65ef618b3;
+    extern fn ImPlot3DBox_ClipLineSegment__7337faf65ef618b3(p0: *const ImPlot3DPoint, p1: *const ImPlot3DPoint, p0_clipped: *ImPlot3DPoint, p1_clipped: *ImPlot3DPoint) callconv(.c) bool;
+
+    comptime {
+        if (@sizeOf(@This()) != 24 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DBox' to be 24 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Min = @TypeOf(this.Min);
+            if (@sizeOf(T_Min) != 12 or @alignOf(T_Min) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Min' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Min),
+                    @alignOf(T_Min),
+                }));
+            }
+            const T_Max = @TypeOf(this.Max);
+            if (@sizeOf(T_Max) != 12 or @alignOf(T_Max) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Max' to be 12 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Max),
+                    @alignOf(T_Max),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DRange = extern struct {
+    Min: f32,
+    Max: f32,
+    pub const Expand = ImPlot3DRange_Expand__17f9d0b67635db0;
+    extern fn ImPlot3DRange_Expand__17f9d0b67635db0(self: *@This(), value: f32) callconv(.c) void;
+
+    pub const Contains = ImPlot3DRange_Contains__70c9d2abcdd2a6c9;
+    extern fn ImPlot3DRange_Contains__70c9d2abcdd2a6c9(value: f32) callconv(.c) bool;
+
+    pub const Size = ImPlot3DRange_Size__48afdcdc06b831dd;
+    extern fn ImPlot3DRange_Size__48afdcdc06b831dd() callconv(.c) f32;
+
+    comptime {
+        if (@sizeOf(@This()) != 8 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DRange' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_Min = @TypeOf(this.Min);
+            if (@sizeOf(T_Min) != 4 or @alignOf(T_Min) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Min' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Min),
+                    @alignOf(T_Min),
+                }));
+            }
+            const T_Max = @TypeOf(this.Max);
+            if (@sizeOf(T_Max) != 4 or @alignOf(T_Max) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Max' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Max),
+                    @alignOf(T_Max),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DQuat = extern struct {
+    x: f32,
+    y: f32,
+    z: f32,
+    w: f32,
+    pub const FromTwoVectors = ImPlot3DQuat_FromTwoVectors__c3565f573bfa0033;
+    extern fn ImPlot3DQuat_FromTwoVectors__c3565f573bfa0033(self: *@This(), v0: *const ImPlot3DPoint, v1: *const ImPlot3DPoint, zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const FromElAz = ImPlot3DQuat_FromElAz__685499e7aa35ea6a;
+    extern fn ImPlot3DQuat_FromElAz__685499e7aa35ea6a(elevation: f32, azimuth: f32, zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const Length = ImPlot3DQuat_Length__84530b083cf7c420;
+    extern fn ImPlot3DQuat_Length__84530b083cf7c420() callconv(.c) f32;
+
+    pub const Normalized = ImPlot3DQuat_Normalized__7b19c5b9c5891b5d;
+    extern fn ImPlot3DQuat_Normalized__7b19c5b9c5891b5d(zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const Conjugate = ImPlot3DQuat_Conjugate__7969b91c6374e535;
+    extern fn ImPlot3DQuat_Conjugate__7969b91c6374e535(zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const Inverse = ImPlot3DQuat_Inverse__800226e9aca291f0;
+    extern fn ImPlot3DQuat_Inverse__800226e9aca291f0(zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const Normalize = ImPlot3DQuat_Normalize__c41aa7c75f892b85;
+    extern fn ImPlot3DQuat_Normalize__c41aa7c75f892b85() callconv(.c) *ImPlot3DQuat;
+
+    pub const Slerp = ImPlot3DQuat_Slerp__14e3b092406ef28d;
+    extern fn ImPlot3DQuat_Slerp__14e3b092406ef28d(q1: *const ImPlot3DQuat, q2: *const ImPlot3DQuat, t: f32, zpp_out: *ImPlot3DQuat) callconv(.c) void;
+
+    pub const Dot = ImPlot3DQuat_Dot__24e819d28113157f;
+    extern fn ImPlot3DQuat_Dot__24e819d28113157f(rhs: *const ImPlot3DQuat) callconv(.c) f32;
+
+    comptime {
+        if (@sizeOf(@This()) != 16 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DQuat' to be 16 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_x = @TypeOf(this.x);
+            if (@sizeOf(T_x) != 4 or @alignOf(T_x) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'x' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_x),
+                    @alignOf(T_x),
+                }));
+            }
+            const T_y = @TypeOf(this.y);
+            if (@sizeOf(T_y) != 4 or @alignOf(T_y) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'y' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_y),
+                    @alignOf(T_y),
+                }));
+            }
+            const T_z = @TypeOf(this.z);
+            if (@sizeOf(T_z) != 4 or @alignOf(T_z) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'z' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_z),
+                    @alignOf(T_z),
+                }));
+            }
+            const T_w = @TypeOf(this.w);
+            if (@sizeOf(T_w) != 4 or @alignOf(T_w) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'w' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_w),
+                    @alignOf(T_w),
+                }));
+            }
+        }
+    }
+};
+
+pub const ImPlot3DStyle = extern struct {
+    LineWeight: f32,
+    Marker: i32,
+    MarkerSize: f32,
+    MarkerWeight: f32,
+    FillAlpha: f32,
+    PlotDefaultSize: ImVec2,
+    PlotMinSize: ImVec2,
+    PlotPadding: ImVec2,
+    LabelPadding: ImVec2,
+    LegendPadding: ImVec2,
+    LegendInnerPadding: ImVec2,
+    LegendSpacing: ImVec2,
+    Colors: [15]ImVec4,
+    Colormap: i32,
+    pub const GetColor = ImPlot3DStyle_GetColor__4989362d62e3a10b;
+    extern fn ImPlot3DStyle_GetColor__4989362d62e3a10b(self: *@This(), idx: i32, zpp_out: *ImVec4) callconv(.c) void;
+
+    pub const SetColor = ImPlot3DStyle_SetColor__d8c86ac2bfab4142;
+    extern fn ImPlot3DStyle_SetColor__d8c86ac2bfab4142(idx: i32, col: *const ImVec4) callconv(.c) void;
+
+    comptime {
+        if (@sizeOf(@This()) != 320 or @alignOf(@This()) != 4) {
+            @compileLog(@import("std").fmt.comptimePrint("Expected type 'ImPlot3DStyle' to be 320 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                @sizeOf(@This()),
+                @alignOf(@This()),
+            }));
+
+            const this: @This() = undefined;
+
+            const T_LineWeight = @TypeOf(this.LineWeight);
+            if (@sizeOf(T_LineWeight) != 4 or @alignOf(T_LineWeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LineWeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LineWeight),
+                    @alignOf(T_LineWeight),
+                }));
+            }
+            const T_Marker = @TypeOf(this.Marker);
+            if (@sizeOf(T_Marker) != 4 or @alignOf(T_Marker) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Marker' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Marker),
+                    @alignOf(T_Marker),
+                }));
+            }
+            const T_MarkerSize = @TypeOf(this.MarkerSize);
+            if (@sizeOf(T_MarkerSize) != 4 or @alignOf(T_MarkerSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MarkerSize' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MarkerSize),
+                    @alignOf(T_MarkerSize),
+                }));
+            }
+            const T_MarkerWeight = @TypeOf(this.MarkerWeight);
+            if (@sizeOf(T_MarkerWeight) != 4 or @alignOf(T_MarkerWeight) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'MarkerWeight' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_MarkerWeight),
+                    @alignOf(T_MarkerWeight),
+                }));
+            }
+            const T_FillAlpha = @TypeOf(this.FillAlpha);
+            if (@sizeOf(T_FillAlpha) != 4 or @alignOf(T_FillAlpha) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'FillAlpha' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_FillAlpha),
+                    @alignOf(T_FillAlpha),
+                }));
+            }
+            const T_PlotDefaultSize = @TypeOf(this.PlotDefaultSize);
+            if (@sizeOf(T_PlotDefaultSize) != 8 or @alignOf(T_PlotDefaultSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotDefaultSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotDefaultSize),
+                    @alignOf(T_PlotDefaultSize),
+                }));
+            }
+            const T_PlotMinSize = @TypeOf(this.PlotMinSize);
+            if (@sizeOf(T_PlotMinSize) != 8 or @alignOf(T_PlotMinSize) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotMinSize' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotMinSize),
+                    @alignOf(T_PlotMinSize),
+                }));
+            }
+            const T_PlotPadding = @TypeOf(this.PlotPadding);
+            if (@sizeOf(T_PlotPadding) != 8 or @alignOf(T_PlotPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'PlotPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_PlotPadding),
+                    @alignOf(T_PlotPadding),
+                }));
+            }
+            const T_LabelPadding = @TypeOf(this.LabelPadding);
+            if (@sizeOf(T_LabelPadding) != 8 or @alignOf(T_LabelPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LabelPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LabelPadding),
+                    @alignOf(T_LabelPadding),
+                }));
+            }
+            const T_LegendPadding = @TypeOf(this.LegendPadding);
+            if (@sizeOf(T_LegendPadding) != 8 or @alignOf(T_LegendPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendPadding),
+                    @alignOf(T_LegendPadding),
+                }));
+            }
+            const T_LegendInnerPadding = @TypeOf(this.LegendInnerPadding);
+            if (@sizeOf(T_LegendInnerPadding) != 8 or @alignOf(T_LegendInnerPadding) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendInnerPadding' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendInnerPadding),
+                    @alignOf(T_LegendInnerPadding),
+                }));
+            }
+            const T_LegendSpacing = @TypeOf(this.LegendSpacing);
+            if (@sizeOf(T_LegendSpacing) != 8 or @alignOf(T_LegendSpacing) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'LegendSpacing' to be 8 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_LegendSpacing),
+                    @alignOf(T_LegendSpacing),
+                }));
+            }
+            const T_Colors = @TypeOf(this.Colors);
+            if (@sizeOf(T_Colors) != 240 or @alignOf(T_Colors) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Colors' to be 240 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Colors),
+                    @alignOf(T_Colors),
+                }));
+            }
+            const T_Colormap = @TypeOf(this.Colormap);
+            if (@sizeOf(T_Colormap) != 4 or @alignOf(T_Colormap) != 4) {
+                @compileLog(@import("std").fmt.comptimePrint("Expected field 'Colormap' to be 4 bytes with 4 byte alignment, but was {} bytes with {} byte alignment instead!", .{
+                    @sizeOf(T_Colormap),
+                    @alignOf(T_Colormap),
+                }));
+            }
+        }
+    }
+};
+
 pub const ImGui_ImplSDL3_InitForOpenGL = ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092;
 extern fn ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092(window: [*c]SDL_Window, sdl_gl_context: *void) callconv(.c) bool;
 
@@ -8635,6 +9502,7 @@ pub const ImNewWrapper = extern struct {};
 pub const SDL_Window = ?*anyopaque;
 pub const ImFontLoader = ?*anyopaque;
 pub const SDL_Gamepad = ?*anyopaque;
+pub const ImPlot3DContext = ?*anyopaque;
 pub const ImPlotContext = ?*anyopaque;
 pub const SDL_Event = ?*anyopaque;
 pub const ImDrawListSharedData = ?*anyopaque;
