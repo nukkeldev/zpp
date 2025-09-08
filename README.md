@@ -17,15 +17,13 @@ Supported features include:
 - `comptime` ABI Verification
 - Member Functions
 
-See and compile [supported.hpp](src/embed/testing/supported.hpp) for a more complete list.
+See `examples/` and `tests/` for a more complete list of supported features.
 
-Planned features include:
-- Default Function Parameters
-- Default Struct Field Values
-- Programmatic Configuration In `build.zig`
-- Classes
-- Templates
-  - Probably not for quite a while, but I have implementation ideas.
+## Tested Against
+
+- [ImGui](https://github.com/ocornut/imgui/tree/b7cb3d93a419ffa9c37c2150eda695f3f43c221f)
+- [ImPlot](https://github.com/epezent/implot/tree/3da8bd34299965d3b0ab124df743fe3e076fa222)
+- [ImPlot3D](https://github.com/brenocq/implot3d/tree/c3af49c930f09a10a0e460d64189e7733939fe51)
 
 ## Usage
 

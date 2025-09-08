@@ -6,6 +6,8 @@
 #pragma clang diagnostic ignored "-Wformat-security"
 
 #include "imgui.h"
+#include "implot.h"
+#include "implot3d.h"
 #include "imgui_impl_sdl3.h"
 #include "imgui_impl_sdlgpu3.h"
 
@@ -1941,6 +1943,714 @@ extern "C" void ImGuiViewport_GetCenter__44e6a1ebdf9ac158(ImGuiViewport* obj, Im
 }
 extern "C" void ImGuiViewport_GetWorkCenter__2b750b38a4cf3594(ImGuiViewport* obj, ImVec2* zpp_out) {
 	*zpp_out = obj->GetWorkCenter();
+}
+extern "C" bool ImPlotRange_Contains__70c9d2abcdd2a6c9(ImPlotRange* obj, double value) {
+	return obj->Contains(value);
+}
+extern "C" double ImPlotRange_Size__48afdcdc06b831dd(ImPlotRange* obj) {
+	return obj->Size();
+}
+extern "C" double ImPlotRange_Clamp__e322bcc86982e601(ImPlotRange* obj, double value) {
+	return obj->Clamp(value);
+}
+extern "C" bool ImPlotRect_Contains__70c9d2abcdd2a6c9(ImPlotRect* obj, const ImPlotPoint* p) {
+	return obj->Contains(*p);
+}
+extern "C" bool ImPlotRect_Contains__70c9d2abcdd2a6c9_1(ImPlotRect* obj, double x, double y) {
+	return obj->Contains(x, y);
+}
+extern "C" void ImPlotRect_Size__48afdcdc06b831dd(ImPlotRect* obj, ImPlotPoint* zpp_out) {
+	*zpp_out = obj->Size();
+}
+extern "C" void ImPlotRect_Clamp__e322bcc86982e601(ImPlotRect* obj, const ImPlotPoint* p, ImPlotPoint* zpp_out) {
+	*zpp_out = obj->Clamp(*p);
+}
+extern "C" void ImPlotRect_Clamp__e322bcc86982e601_1(ImPlotRect* obj, double x, double y, ImPlotPoint* zpp_out) {
+	*zpp_out = obj->Clamp(x, y);
+}
+extern "C" void ImPlotRect_Min__56bb671e995cd4e4(ImPlotRect* obj, ImPlotPoint* zpp_out) {
+	*zpp_out = obj->Min();
+}
+extern "C" void ImPlotRect_Max__167ad4910c2d2713(ImPlotRect* obj, ImPlotPoint* zpp_out) {
+	*zpp_out = obj->Max();
+}
+extern "C" ImPlotContext* ImPlot_CreateContext__9c317cc3bbd69792() {
+	return ImPlot::CreateContext();
+}
+extern "C" void ImPlot_DestroyContext__33355240a3c270a1(ImPlotContext* ctx) {
+	ImPlot::DestroyContext(ctx);
+}
+extern "C" ImPlotContext* ImPlot_GetCurrentContext__bfcbdecf32b4f9ee() {
+	return ImPlot::GetCurrentContext();
+}
+extern "C" void ImPlot_SetCurrentContext__cf8edc56a4c808a8(ImPlotContext* ctx) {
+	ImPlot::SetCurrentContext(ctx);
+}
+extern "C" void ImPlot_SetImGuiContext__785f16c0c76e4d6e(ImGuiContext* ctx) {
+	ImPlot::SetImGuiContext(ctx);
+}
+extern "C" bool ImPlot_BeginPlot__3c148c203682a42e(const char* title_id, const ImVec2* size, int flags) {
+	return ImPlot::BeginPlot(title_id, *size, flags);
+}
+extern "C" void ImPlot_EndPlot__5474b1386037b1fc() {
+	ImPlot::EndPlot();
+}
+extern "C" bool ImPlot_BeginSubplots__c5cd49c4bbb57901(const char* title_id, int rows, int cols, const ImVec2* size, int flags, float* row_ratios, float* col_ratios) {
+	return ImPlot::BeginSubplots(title_id, rows, cols, *size, flags, row_ratios, col_ratios);
+}
+extern "C" void ImPlot_EndSubplots__690c76d06d092f32() {
+	ImPlot::EndSubplots();
+}
+extern "C" void ImPlot_SetupAxis__a02eada84927addd(int axis, const char* label, int flags) {
+	ImPlot::SetupAxis(axis, label, flags);
+}
+extern "C" void ImPlot_SetupAxisLimits__84e65096c4f62943(int axis, double v_min, double v_max, int cond) {
+	ImPlot::SetupAxisLimits(axis, v_min, v_max, cond);
+}
+extern "C" void ImPlot_SetupAxisLinks__eab604d6fc074af(int axis, double* link_min, double* link_max) {
+	ImPlot::SetupAxisLinks(axis, link_min, link_max);
+}
+extern "C" void ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc(int axis, const char* fmt) {
+	ImPlot::SetupAxisFormat(axis, fmt);
+}
+extern "C" void ImPlot_SetupAxisFormat__9dcf8fb9b955f5dc_1(int axis, int (*formatter)(double, char*, int, void*), void* data) {
+	ImPlot::SetupAxisFormat(axis, formatter, data);
+}
+extern "C" void ImPlot_SetupAxisTicks__22f262f44079b651(int axis, const double* values, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot::SetupAxisTicks(axis, values, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot_SetupAxisTicks__22f262f44079b651_1(int axis, double v_min, double v_max, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot::SetupAxisTicks(axis, v_min, v_max, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot_SetupAxisScale__1fd7df07a0ac77d0(int axis, int scale) {
+	ImPlot::SetupAxisScale(axis, scale);
+}
+extern "C" void ImPlot_SetupAxisScale__1fd7df07a0ac77d0_1(int axis, double (*forward)(double, void*), double (*inverse)(double, void*), void* data) {
+	ImPlot::SetupAxisScale(axis, forward, inverse, data);
+}
+extern "C" void ImPlot_SetupAxisLimitsConstraints__88340f102878fca3(int axis, double v_min, double v_max) {
+	ImPlot::SetupAxisLimitsConstraints(axis, v_min, v_max);
+}
+extern "C" void ImPlot_SetupAxisZoomConstraints__1bb8e8936b850bd5(int axis, double z_min, double z_max) {
+	ImPlot::SetupAxisZoomConstraints(axis, z_min, z_max);
+}
+extern "C" void ImPlot_SetupAxes__eb51ea5a6e3c0a15(const char* x_label, const char* y_label, int x_flags, int y_flags) {
+	ImPlot::SetupAxes(x_label, y_label, x_flags, y_flags);
+}
+extern "C" void ImPlot_SetupAxesLimits__e404167bdddae99f(double x_min, double x_max, double y_min, double y_max, int cond) {
+	ImPlot::SetupAxesLimits(x_min, x_max, y_min, y_max, cond);
+}
+extern "C" void ImPlot_SetupLegend__de4a359eef0ead7(int location, int flags) {
+	ImPlot::SetupLegend(location, flags);
+}
+extern "C" void ImPlot_SetupMouseText__212bf4b75368315a(int location, int flags) {
+	ImPlot::SetupMouseText(location, flags);
+}
+extern "C" void ImPlot_SetupFinish__66513ab2c6e59fed() {
+	ImPlot::SetupFinish();
+}
+extern "C" void ImPlot_SetNextAxisLimits__abc0f92c28eccdac(int axis, double v_min, double v_max, int cond) {
+	ImPlot::SetNextAxisLimits(axis, v_min, v_max, cond);
+}
+extern "C" void ImPlot_SetNextAxisLinks__33af1df7f6046117(int axis, double* link_min, double* link_max) {
+	ImPlot::SetNextAxisLinks(axis, link_min, link_max);
+}
+extern "C" void ImPlot_SetNextAxisToFit__f22363c60dff4921(int axis) {
+	ImPlot::SetNextAxisToFit(axis);
+}
+extern "C" void ImPlot_SetNextAxesLimits__a267761db217a7a(double x_min, double x_max, double y_min, double y_max, int cond) {
+	ImPlot::SetNextAxesLimits(x_min, x_max, y_min, y_max, cond);
+}
+extern "C" void ImPlot_SetNextAxesToFit__556b021bfcfbbcc1() {
+	ImPlot::SetNextAxesToFit();
+}
+extern "C" void ImPlot_PlotLineG__3717f318a5564776(const char* label_id, ImPlotPoint (*getter)(int, void*), void* data, int count, int flags) {
+	ImPlot::PlotLineG(label_id, getter, data, count, flags);
+}
+extern "C" void ImPlot_PlotScatterG__335a73c53464e50f(const char* label_id, ImPlotPoint (*getter)(int, void*), void* data, int count, int flags) {
+	ImPlot::PlotScatterG(label_id, getter, data, count, flags);
+}
+extern "C" void ImPlot_PlotStairsG__d72cee8be125fe9b(const char* label_id, ImPlotPoint (*getter)(int, void*), void* data, int count, int flags) {
+	ImPlot::PlotStairsG(label_id, getter, data, count, flags);
+}
+extern "C" void ImPlot_PlotShadedG__3c2ef20c196f86c5(const char* label_id, ImPlotPoint (*getter1)(int, void*), void* data1, ImPlotPoint (*getter2)(int, void*), void* data2, int count, int flags) {
+	ImPlot::PlotShadedG(label_id, getter1, data1, getter2, data2, count, flags);
+}
+extern "C" void ImPlot_PlotBarsG__338883cc815c91ff(const char* label_id, ImPlotPoint (*getter)(int, void*), void* data, int count, double bar_size, int flags) {
+	ImPlot::PlotBarsG(label_id, getter, data, count, bar_size, flags);
+}
+extern "C" void ImPlot_PlotDigitalG__b33cc918b169bbdd(const char* label_id, ImPlotPoint (*getter)(int, void*), void* data, int count, int flags) {
+	ImPlot::PlotDigitalG(label_id, getter, data, count, flags);
+}
+extern "C" void ImPlot_PlotImage__6ca11c45f537402f(const char* label_id, ImTextureRef tex_ref, const ImPlotPoint* bounds_min, const ImPlotPoint* bounds_max, const ImVec2* uv0, const ImVec2* uv1, const ImVec4* tint_col, int flags) {
+	ImPlot::PlotImage(label_id, tex_ref, *bounds_min, *bounds_max, *uv0, *uv1, *tint_col, flags);
+}
+extern "C" void ImPlot_PlotText__58b23a2e82986d8f(const char* text, double x, double y, const ImVec2* pix_offset, int flags) {
+	ImPlot::PlotText(text, x, y, *pix_offset, flags);
+}
+extern "C" void ImPlot_PlotDummy__533cdfb36e6f6351(const char* label_id, int flags) {
+	ImPlot::PlotDummy(label_id, flags);
+}
+extern "C" bool ImPlot_DragPoint__7a3004af8135c87(int id, double* x, double* y, const ImVec4* col, float size, int flags, bool* out_clicked, bool* out_hovered, bool* held) {
+	return ImPlot::DragPoint(id, x, y, *col, size, flags, out_clicked, out_hovered, held);
+}
+extern "C" bool ImPlot_DragLineX__dda37c29fa7933f(int id, double* x, const ImVec4* col, float thickness, int flags, bool* out_clicked, bool* out_hovered, bool* held) {
+	return ImPlot::DragLineX(id, x, *col, thickness, flags, out_clicked, out_hovered, held);
+}
+extern "C" bool ImPlot_DragLineY__8c6ba9aa0b544876(int id, double* y, const ImVec4* col, float thickness, int flags, bool* out_clicked, bool* out_hovered, bool* held) {
+	return ImPlot::DragLineY(id, y, *col, thickness, flags, out_clicked, out_hovered, held);
+}
+extern "C" bool ImPlot_DragRect__c2d2491a2a790f20(int id, double* x1, double* y1, double* x2, double* y2, const ImVec4* col, int flags, bool* out_clicked, bool* out_hovered, bool* held) {
+	return ImPlot::DragRect(id, x1, y1, x2, y2, *col, flags, out_clicked, out_hovered, held);
+}
+extern "C" void ImPlot_Annotation__8d4c2f12d750cf36(double x, double y, const ImVec4* col, const ImVec2* pix_offset, bool clamp, bool round) {
+	ImPlot::Annotation(x, y, *col, *pix_offset, clamp, round);
+}
+extern "C" void ImPlot_Annotation__8d4c2f12d750cf36_1(double x, double y, const ImVec4* col, const ImVec2* pix_offset, bool clamp, const char* fmt, ...) {
+	va_list __ZPP_args;
+	va_start(__ZPP_args, fmt);
+	ImPlot::Annotation(x, y, *col, *pix_offset, clamp, fmt);
+	va_end(__ZPP_args);
+}
+extern "C" void ImPlot_TagX__a0fc0a92cb5964bd(double x, const ImVec4* col, bool round) {
+	ImPlot::TagX(x, *col, round);
+}
+extern "C" void ImPlot_TagX__a0fc0a92cb5964bd_1(double x, const ImVec4* col, const char* fmt, ...) {
+	va_list __ZPP_args;
+	va_start(__ZPP_args, fmt);
+	ImPlot::TagX(x, *col, fmt);
+	va_end(__ZPP_args);
+}
+extern "C" void ImPlot_TagY__7fe67fb9536079af(double y, const ImVec4* col, bool round) {
+	ImPlot::TagY(y, *col, round);
+}
+extern "C" void ImPlot_TagY__7fe67fb9536079af_1(double y, const ImVec4* col, const char* fmt, ...) {
+	va_list __ZPP_args;
+	va_start(__ZPP_args, fmt);
+	ImPlot::TagY(y, *col, fmt);
+	va_end(__ZPP_args);
+}
+extern "C" void ImPlot_SetAxis__f7ea7e7a7218e5eb(int axis) {
+	ImPlot::SetAxis(axis);
+}
+extern "C" void ImPlot_SetAxes__a1be79da54d322ab(int x_axis, int y_axis) {
+	ImPlot::SetAxes(x_axis, y_axis);
+}
+extern "C" void ImPlot_PixelsToPlot__b05e7a8d4420e3aa(const ImVec2* pix, int x_axis, int y_axis, ImPlotPoint* zpp_out) {
+	*zpp_out = ImPlot::PixelsToPlot(*pix, x_axis, y_axis);
+}
+extern "C" void ImPlot_PixelsToPlot__b05e7a8d4420e3aa_1(float x, float y, int x_axis, int y_axis, ImPlotPoint* zpp_out) {
+	*zpp_out = ImPlot::PixelsToPlot(x, y, x_axis, y_axis);
+}
+extern "C" void ImPlot_PlotToPixels__51fddf7d64cd221a(const ImPlotPoint* plt, int x_axis, int y_axis, ImVec2* zpp_out) {
+	*zpp_out = ImPlot::PlotToPixels(*plt, x_axis, y_axis);
+}
+extern "C" void ImPlot_PlotToPixels__51fddf7d64cd221a_1(double x, double y, int x_axis, int y_axis, ImVec2* zpp_out) {
+	*zpp_out = ImPlot::PlotToPixels(x, y, x_axis, y_axis);
+}
+extern "C" void ImPlot_GetPlotPos__a56701414e62e920(ImVec2* zpp_out) {
+	*zpp_out = ImPlot::GetPlotPos();
+}
+extern "C" void ImPlot_GetPlotSize__73879d6334936fbd(ImVec2* zpp_out) {
+	*zpp_out = ImPlot::GetPlotSize();
+}
+extern "C" void ImPlot_GetPlotMousePos__9718e1a28bc711e8(int x_axis, int y_axis, ImPlotPoint* zpp_out) {
+	*zpp_out = ImPlot::GetPlotMousePos(x_axis, y_axis);
+}
+extern "C" void ImPlot_GetPlotLimits__9063402b7003836a(int x_axis, int y_axis, ImPlotRect* zpp_out) {
+	*zpp_out = ImPlot::GetPlotLimits(x_axis, y_axis);
+}
+extern "C" bool ImPlot_IsPlotHovered__2d7b4125d037874c() {
+	return ImPlot::IsPlotHovered();
+}
+extern "C" bool ImPlot_IsAxisHovered__d1de55645e3a179d(int axis) {
+	return ImPlot::IsAxisHovered(axis);
+}
+extern "C" bool ImPlot_IsSubplotsHovered__d3001c460eae7e6b() {
+	return ImPlot::IsSubplotsHovered();
+}
+extern "C" bool ImPlot_IsPlotSelected__486a2976f68cc8f5() {
+	return ImPlot::IsPlotSelected();
+}
+extern "C" void ImPlot_GetPlotSelection__2e52a5e2a3fc0755(int x_axis, int y_axis, ImPlotRect* zpp_out) {
+	*zpp_out = ImPlot::GetPlotSelection(x_axis, y_axis);
+}
+extern "C" void ImPlot_CancelPlotSelection__8aeac56e53da5714() {
+	ImPlot::CancelPlotSelection();
+}
+extern "C" void ImPlot_HideNextItem__be6c385127ba8dba(bool hidden, int cond) {
+	ImPlot::HideNextItem(hidden, cond);
+}
+extern "C" bool ImPlot_BeginAlignedPlots__e8947b885238cece(const char* group_id, bool vertical) {
+	return ImPlot::BeginAlignedPlots(group_id, vertical);
+}
+extern "C" void ImPlot_EndAlignedPlots__a12651cae6a90070() {
+	ImPlot::EndAlignedPlots();
+}
+extern "C" bool ImPlot_BeginLegendPopup__79ac041cc77470f1(const char* label_id, int mouse_button) {
+	return ImPlot::BeginLegendPopup(label_id, mouse_button);
+}
+extern "C" void ImPlot_EndLegendPopup__2fa51113211e5671() {
+	ImPlot::EndLegendPopup();
+}
+extern "C" bool ImPlot_IsLegendEntryHovered__5302f981254fb8c6(const char* label_id) {
+	return ImPlot::IsLegendEntryHovered(label_id);
+}
+extern "C" bool ImPlot_BeginDragDropTargetPlot__bd7934a6b0bbb4b5() {
+	return ImPlot::BeginDragDropTargetPlot();
+}
+extern "C" bool ImPlot_BeginDragDropTargetAxis__e12b4b00eac8ee2f(int axis) {
+	return ImPlot::BeginDragDropTargetAxis(axis);
+}
+extern "C" bool ImPlot_BeginDragDropTargetLegend__16aa52e029d552cb() {
+	return ImPlot::BeginDragDropTargetLegend();
+}
+extern "C" void ImPlot_EndDragDropTarget__9d6f80e5c9874ac2() {
+	ImPlot::EndDragDropTarget();
+}
+extern "C" bool ImPlot_BeginDragDropSourcePlot__66824c249344a5b4(int flags) {
+	return ImPlot::BeginDragDropSourcePlot(flags);
+}
+extern "C" bool ImPlot_BeginDragDropSourceAxis__5079eb85eebaf418(int axis, int flags) {
+	return ImPlot::BeginDragDropSourceAxis(axis, flags);
+}
+extern "C" bool ImPlot_BeginDragDropSourceItem__6f37b94f2a5bcffc(const char* label_id, int flags) {
+	return ImPlot::BeginDragDropSourceItem(label_id, flags);
+}
+extern "C" void ImPlot_EndDragDropSource__216a2f7392882be3() {
+	ImPlot::EndDragDropSource();
+}
+extern "C" ImPlotStyle* ImPlot_GetStyle__ce2435ddf1d8bbdc() {
+	return &ImPlot::GetStyle();
+}
+extern "C" void ImPlot_StyleColorsAuto__e05dde2801e3509c(ImPlotStyle* dst) {
+	ImPlot::StyleColorsAuto(dst);
+}
+extern "C" void ImPlot_StyleColorsClassic__ec37fdbb560abf49(ImPlotStyle* dst) {
+	ImPlot::StyleColorsClassic(dst);
+}
+extern "C" void ImPlot_StyleColorsDark__f3026e652fa5a3d4(ImPlotStyle* dst) {
+	ImPlot::StyleColorsDark(dst);
+}
+extern "C" void ImPlot_StyleColorsLight__cbe762f272234e68(ImPlotStyle* dst) {
+	ImPlot::StyleColorsLight(dst);
+}
+extern "C" void ImPlot_PushStyleColor__87b647a88ff97a78(int idx, unsigned int col) {
+	ImPlot::PushStyleColor(idx, col);
+}
+extern "C" void ImPlot_PushStyleColor__87b647a88ff97a78_1(int idx, const ImVec4* col) {
+	ImPlot::PushStyleColor(idx, *col);
+}
+extern "C" void ImPlot_PopStyleColor__b8867429a4a3514e(int count) {
+	ImPlot::PopStyleColor(count);
+}
+extern "C" void ImPlot_PushStyleVar__3d7496da947837c5(int idx, float val) {
+	ImPlot::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot_PushStyleVar__3d7496da947837c5_1(int idx, int val) {
+	ImPlot::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot_PushStyleVar__3d7496da947837c5_2(int idx, const ImVec2* val) {
+	ImPlot::PushStyleVar(idx, *val);
+}
+extern "C" void ImPlot_PopStyleVar__133858151c313dfc(int count) {
+	ImPlot::PopStyleVar(count);
+}
+extern "C" void ImPlot_SetNextLineStyle__cc6fe3e242a28c3f(const ImVec4* col, float weight) {
+	ImPlot::SetNextLineStyle(*col, weight);
+}
+extern "C" void ImPlot_SetNextFillStyle__3d47e35ac95fe9ee(const ImVec4* col, float alpha_mod) {
+	ImPlot::SetNextFillStyle(*col, alpha_mod);
+}
+extern "C" void ImPlot_SetNextMarkerStyle__e094e7dee8267f6f(int marker, float size, const ImVec4* fill, float weight, const ImVec4* outline) {
+	ImPlot::SetNextMarkerStyle(marker, size, *fill, weight, *outline);
+}
+extern "C" void ImPlot_SetNextErrorBarStyle__88942b0ec1d47d13(const ImVec4* col, float size, float weight) {
+	ImPlot::SetNextErrorBarStyle(*col, size, weight);
+}
+extern "C" void ImPlot_GetLastItemColor__b51c56f7f750ac83(ImVec4* zpp_out) {
+	*zpp_out = ImPlot::GetLastItemColor();
+}
+extern "C" const char* ImPlot_GetStyleColorName__104002e8be53bb1f(int idx) {
+	return ImPlot::GetStyleColorName(idx);
+}
+extern "C" const char* ImPlot_GetMarkerName__fb92cc17b3a33c45(int idx) {
+	return ImPlot::GetMarkerName(idx);
+}
+extern "C" int ImPlot_AddColormap__628c4303c5bff7a4(const char* name, const ImVec4* cols, int size, bool qual) {
+	return ImPlot::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot_AddColormap__628c4303c5bff7a4_1(const char* name, const unsigned int* cols, int size, bool qual) {
+	return ImPlot::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot_GetColormapCount__bd4c26c12b523d79() {
+	return ImPlot::GetColormapCount();
+}
+extern "C" const char* ImPlot_GetColormapName__a7b1d3f1256f7b62(int cmap) {
+	return ImPlot::GetColormapName(cmap);
+}
+extern "C" int ImPlot_GetColormapIndex__b531adb3bf9b31cf(const char* name) {
+	return ImPlot::GetColormapIndex(name);
+}
+extern "C" void ImPlot_PushColormap__b304f8574dbb0701(int cmap) {
+	ImPlot::PushColormap(cmap);
+}
+extern "C" void ImPlot_PushColormap__b304f8574dbb0701_1(const char* name) {
+	ImPlot::PushColormap(name);
+}
+extern "C" void ImPlot_PopColormap__670d03a0996eea6f(int count) {
+	ImPlot::PopColormap(count);
+}
+extern "C" void ImPlot_NextColormapColor__99fa1b13b8d80be2(ImVec4* zpp_out) {
+	*zpp_out = ImPlot::NextColormapColor();
+}
+extern "C" int ImPlot_GetColormapSize__d761993c814f422f(int cmap) {
+	return ImPlot::GetColormapSize(cmap);
+}
+extern "C" void ImPlot_GetColormapColor__35b0a68532bb1631(int idx, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot::GetColormapColor(idx, cmap);
+}
+extern "C" void ImPlot_SampleColormap__d4816676b082dd68(float t, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot::SampleColormap(t, cmap);
+}
+extern "C" void ImPlot_ColormapScale__2f4109ba11ba7aa8(const char* label, double scale_min, double scale_max, const ImVec2* size, const char* format, int flags, int cmap) {
+	ImPlot::ColormapScale(label, scale_min, scale_max, *size, format, flags, cmap);
+}
+extern "C" bool ImPlot_ColormapSlider__740855d5aa85205a(const char* label, float* t, ImVec4* out, const char* format, int cmap) {
+	return ImPlot::ColormapSlider(label, t, out, format, cmap);
+}
+extern "C" bool ImPlot_ColormapButton__81ad7b305567bdde(const char* label, const ImVec2* size, int cmap) {
+	return ImPlot::ColormapButton(label, *size, cmap);
+}
+extern "C" void ImPlot_BustColorCache__887c6a31d5a1051c(const char* plot_title_id) {
+	ImPlot::BustColorCache(plot_title_id);
+}
+extern "C" ImPlotInputMap* ImPlot_GetInputMap__798dcec4c35515e5() {
+	return &ImPlot::GetInputMap();
+}
+extern "C" void ImPlot_MapInputDefault__8c06b876d036234d(ImPlotInputMap* dst) {
+	ImPlot::MapInputDefault(dst);
+}
+extern "C" void ImPlot_MapInputReverse__e015805da110d915(ImPlotInputMap* dst) {
+	ImPlot::MapInputReverse(dst);
+}
+extern "C" void ImPlot_ItemIcon__35dc783e2aa122f0(const ImVec4* col) {
+	ImPlot::ItemIcon(*col);
+}
+extern "C" void ImPlot_ItemIcon__35dc783e2aa122f0_1(unsigned int col) {
+	ImPlot::ItemIcon(col);
+}
+extern "C" void ImPlot_ColormapIcon__b9250820688b989b(int cmap) {
+	ImPlot::ColormapIcon(cmap);
+}
+extern "C" ImDrawList* ImPlot_GetPlotDrawList__2970ef07638a6cb4() {
+	return ImPlot::GetPlotDrawList();
+}
+extern "C" void ImPlot_PushPlotClipRect__be24b99baed31c69(float expand) {
+	ImPlot::PushPlotClipRect(expand);
+}
+extern "C" void ImPlot_PopPlotClipRect__a463edd3d14dae4f() {
+	ImPlot::PopPlotClipRect();
+}
+extern "C" bool ImPlot_ShowStyleSelector__15aa917f33eeee46(const char* label) {
+	return ImPlot::ShowStyleSelector(label);
+}
+extern "C" bool ImPlot_ShowColormapSelector__a52d44eaff966008(const char* label) {
+	return ImPlot::ShowColormapSelector(label);
+}
+extern "C" bool ImPlot_ShowInputMapSelector__9def059f5f964838(const char* label) {
+	return ImPlot::ShowInputMapSelector(label);
+}
+extern "C" void ImPlot_ShowStyleEditor__9295e9c397962dd9(ImPlotStyle* ref) {
+	ImPlot::ShowStyleEditor(ref);
+}
+extern "C" void ImPlot_ShowUserGuide__b7066157174a867a() {
+	ImPlot::ShowUserGuide();
+}
+extern "C" void ImPlot_ShowMetricsWindow__1b1d940fa8fb0d3(bool* p_popen) {
+	ImPlot::ShowMetricsWindow(p_popen);
+}
+extern "C" void ImPlot_ShowDemoWindow__bf3697c59b1e3f56(bool* p_open) {
+	ImPlot::ShowDemoWindow(p_open);
+}
+extern "C" bool ImPlot_BeginPlot__3c148c203682a42e_1(const char* title_id, const char* x_label, const char* y_label, const ImVec2* size, int flags, int x_flags, int y_flags, int y2_flags, int y3_flags, const char* y2_label, const char* y3_label) {
+	return ImPlot::BeginPlot(title_id, x_label, y_label, *size, flags, x_flags, y_flags, y2_flags, y3_flags, y2_label, y3_label);
+}
+extern "C" ImPlot3DContext* ImPlot3D_CreateContext__9c317cc3bbd69792() {
+	return ImPlot3D::CreateContext();
+}
+extern "C" void ImPlot3D_DestroyContext__33355240a3c270a1(ImPlot3DContext* ctx) {
+	ImPlot3D::DestroyContext(ctx);
+}
+extern "C" ImPlot3DContext* ImPlot3D_GetCurrentContext__bfcbdecf32b4f9ee() {
+	return ImPlot3D::GetCurrentContext();
+}
+extern "C" void ImPlot3D_SetCurrentContext__cf8edc56a4c808a8(ImPlot3DContext* ctx) {
+	ImPlot3D::SetCurrentContext(ctx);
+}
+extern "C" bool ImPlot3D_BeginPlot__3c148c203682a42e(const char* title_id, const ImVec2* size, int flags) {
+	return ImPlot3D::BeginPlot(title_id, *size, flags);
+}
+extern "C" void ImPlot3D_EndPlot__5474b1386037b1fc() {
+	ImPlot3D::EndPlot();
+}
+extern "C" void ImPlot3D_SetupAxis__a02eada84927addd(int axis, const char* label, int flags) {
+	ImPlot3D::SetupAxis(axis, label, flags);
+}
+extern "C" void ImPlot3D_SetupAxisLimits__84e65096c4f62943(int axis, double v_min, double v_max, int cond) {
+	ImPlot3D::SetupAxisLimits(axis, v_min, v_max, cond);
+}
+extern "C" void ImPlot3D_SetupAxisFormat__9dcf8fb9b955f5dc(int axis, int (*formatter)(float, char*, int, void*), void* data) {
+	ImPlot3D::SetupAxisFormat(axis, formatter, data);
+}
+extern "C" void ImPlot3D_SetupAxisTicks__22f262f44079b651(int axis, const double* values, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot3D::SetupAxisTicks(axis, values, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot3D_SetupAxisTicks__22f262f44079b651_1(int axis, double v_min, double v_max, int n_ticks, const char* labels[], bool keep_default) {
+	ImPlot3D::SetupAxisTicks(axis, v_min, v_max, n_ticks, labels, keep_default);
+}
+extern "C" void ImPlot3D_SetupAxisLimitsConstraints__88340f102878fca3(int axis, double v_min, double v_max) {
+	ImPlot3D::SetupAxisLimitsConstraints(axis, v_min, v_max);
+}
+extern "C" void ImPlot3D_SetupAxisZoomConstraints__1bb8e8936b850bd5(int axis, double z_min, double z_max) {
+	ImPlot3D::SetupAxisZoomConstraints(axis, z_min, z_max);
+}
+extern "C" void ImPlot3D_SetupAxes__eb51ea5a6e3c0a15(const char* x_label, const char* y_label, const char* z_label, int x_flags, int y_flags, int z_flags) {
+	ImPlot3D::SetupAxes(x_label, y_label, z_label, x_flags, y_flags, z_flags);
+}
+extern "C" void ImPlot3D_SetupAxesLimits__e404167bdddae99f(double x_min, double x_max, double y_min, double y_max, double z_min, double z_max, int cond) {
+	ImPlot3D::SetupAxesLimits(x_min, x_max, y_min, y_max, z_min, z_max, cond);
+}
+extern "C" void ImPlot3D_SetupBoxRotation__af2c659462aebcde(float elevation, float azimuth, bool animate, int cond) {
+	ImPlot3D::SetupBoxRotation(elevation, azimuth, animate, cond);
+}
+extern "C" void ImPlot3D_SetupBoxRotation__af2c659462aebcde_1(ImPlot3DQuat rotation, bool animate, int cond) {
+	ImPlot3D::SetupBoxRotation(rotation, animate, cond);
+}
+extern "C" void ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c(float elevation, float azimuth) {
+	ImPlot3D::SetupBoxInitialRotation(elevation, azimuth);
+}
+extern "C" void ImPlot3D_SetupBoxInitialRotation__d5bd95d2a325426c_1(ImPlot3DQuat rotation) {
+	ImPlot3D::SetupBoxInitialRotation(rotation);
+}
+extern "C" void ImPlot3D_SetupBoxScale__81bc9ffe28f56c81(float x, float y, float z) {
+	ImPlot3D::SetupBoxScale(x, y, z);
+}
+extern "C" void ImPlot3D_SetupLegend__de4a359eef0ead7(int location, int flags) {
+	ImPlot3D::SetupLegend(location, flags);
+}
+extern "C" void ImPlot3D_PlotMesh__750cf6bcb3772ed3(const char* label_id, const ImPlot3DPoint* vtx, const unsigned int* idx, int vtx_count, int idx_count, int flags) {
+	ImPlot3D::PlotMesh(label_id, vtx, idx, vtx_count, idx_count, flags);
+}
+extern "C" void ImPlot3D_PlotImage__6ca11c45f537402f(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint* center, const ImPlot3DPoint* axis_u, const ImPlot3DPoint* axis_v, const ImVec2* uv0, const ImVec2* uv1, const ImVec4* tint_col, int flags) {
+	ImPlot3D::PlotImage(label_id, tex_ref, *center, *axis_u, *axis_v, *uv0, *uv1, *tint_col, flags);
+}
+extern "C" void ImPlot3D_PlotImage__6ca11c45f537402f_1(const char* label_id, ImTextureRef tex_ref, const ImPlot3DPoint* p0, const ImPlot3DPoint* p1, const ImPlot3DPoint* p2, const ImPlot3DPoint* p3, const ImVec2* uv0, const ImVec2* uv1, const ImVec2* uv2, const ImVec2* uv3, const ImVec4* tint_col, int flags) {
+	ImPlot3D::PlotImage(label_id, tex_ref, *p0, *p1, *p2, *p3, *uv0, *uv1, *uv2, *uv3, *tint_col, flags);
+}
+extern "C" void ImPlot3D_PlotText__58b23a2e82986d8f(const char* text, float x, float y, float z, float angle, const ImVec2* pix_offset) {
+	ImPlot3D::PlotText(text, x, y, z, angle, *pix_offset);
+}
+extern "C" void ImPlot3D_PlotToPixels__51fddf7d64cd221a(const ImPlot3DPoint* point, ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::PlotToPixels(*point);
+}
+extern "C" void ImPlot3D_PlotToPixels__51fddf7d64cd221a_1(double x, double y, double z, ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::PlotToPixels(x, y, z);
+}
+extern "C" void ImPlot3D_PixelsToPlotRay__d435544ff7a02006(const ImVec2* pix, ImPlot3DRay* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotRay(*pix);
+}
+extern "C" void ImPlot3D_PixelsToPlotRay__d435544ff7a02006_1(double x, double y, ImPlot3DRay* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotRay(x, y);
+}
+extern "C" void ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6(const ImVec2* pix, int plane, bool mask, ImPlot3DPoint* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotPlane(*pix, plane, mask);
+}
+extern "C" void ImPlot3D_PixelsToPlotPlane__e89d2208420a2cb6_1(double x, double y, int plane, bool mask, ImPlot3DPoint* zpp_out) {
+	*zpp_out = ImPlot3D::PixelsToPlotPlane(x, y, plane, mask);
+}
+extern "C" void ImPlot3D_GetPlotPos__a56701414e62e920(ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::GetPlotPos();
+}
+extern "C" void ImPlot3D_GetPlotSize__73879d6334936fbd(ImVec2* zpp_out) {
+	*zpp_out = ImPlot3D::GetPlotSize();
+}
+extern "C" ImDrawList* ImPlot3D_GetPlotDrawList__2970ef07638a6cb4() {
+	return ImPlot3D::GetPlotDrawList();
+}
+extern "C" ImPlot3DStyle* ImPlot3D_GetStyle__ce2435ddf1d8bbdc() {
+	return &ImPlot3D::GetStyle();
+}
+extern "C" void ImPlot3D_SetStyle__8616d94c146d6be6(const ImPlot3DStyle* style) {
+	ImPlot3D::SetStyle(*style);
+}
+extern "C" void ImPlot3D_StyleColorsAuto__e05dde2801e3509c(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsAuto(dst);
+}
+extern "C" void ImPlot3D_StyleColorsDark__f3026e652fa5a3d4(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsDark(dst);
+}
+extern "C" void ImPlot3D_StyleColorsLight__cbe762f272234e68(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsLight(dst);
+}
+extern "C" void ImPlot3D_StyleColorsClassic__ec37fdbb560abf49(ImPlot3DStyle* dst) {
+	ImPlot3D::StyleColorsClassic(dst);
+}
+extern "C" void ImPlot3D_PushStyleColor__87b647a88ff97a78(int idx, unsigned int col) {
+	ImPlot3D::PushStyleColor(idx, col);
+}
+extern "C" void ImPlot3D_PushStyleColor__87b647a88ff97a78_1(int idx, const ImVec4* col) {
+	ImPlot3D::PushStyleColor(idx, *col);
+}
+extern "C" void ImPlot3D_PopStyleColor__b8867429a4a3514e(int count) {
+	ImPlot3D::PopStyleColor(count);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5(int idx, float val) {
+	ImPlot3D::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5_1(int idx, int val) {
+	ImPlot3D::PushStyleVar(idx, val);
+}
+extern "C" void ImPlot3D_PushStyleVar__3d7496da947837c5_2(int idx, const ImVec2* val) {
+	ImPlot3D::PushStyleVar(idx, *val);
+}
+extern "C" void ImPlot3D_PopStyleVar__133858151c313dfc(int count) {
+	ImPlot3D::PopStyleVar(count);
+}
+extern "C" void ImPlot3D_SetNextLineStyle__cc6fe3e242a28c3f(const ImVec4* col, float weight) {
+	ImPlot3D::SetNextLineStyle(*col, weight);
+}
+extern "C" void ImPlot3D_SetNextFillStyle__3d47e35ac95fe9ee(const ImVec4* col, float alpha_mod) {
+	ImPlot3D::SetNextFillStyle(*col, alpha_mod);
+}
+extern "C" void ImPlot3D_SetNextMarkerStyle__e094e7dee8267f6f(int marker, float size, const ImVec4* fill, float weight, const ImVec4* outline) {
+	ImPlot3D::SetNextMarkerStyle(marker, size, *fill, weight, *outline);
+}
+extern "C" void ImPlot3D_GetStyleColorVec4__5c8f7f462421a3ef(int idx, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::GetStyleColorVec4(idx);
+}
+extern "C" unsigned int ImPlot3D_GetStyleColorU32__98fa1a0d9e2bc7e6(int idx) {
+	return ImPlot3D::GetStyleColorU32(idx);
+}
+extern "C" int ImPlot3D_AddColormap__628c4303c5bff7a4(const char* name, const ImVec4* cols, int size, bool qual) {
+	return ImPlot3D::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot3D_AddColormap__628c4303c5bff7a4_1(const char* name, const unsigned int* cols, int size, bool qual) {
+	return ImPlot3D::AddColormap(name, cols, size, qual);
+}
+extern "C" int ImPlot3D_GetColormapCount__bd4c26c12b523d79() {
+	return ImPlot3D::GetColormapCount();
+}
+extern "C" const char* ImPlot3D_GetColormapName__a7b1d3f1256f7b62(int cmap) {
+	return ImPlot3D::GetColormapName(cmap);
+}
+extern "C" int ImPlot3D_GetColormapIndex__b531adb3bf9b31cf(const char* name) {
+	return ImPlot3D::GetColormapIndex(name);
+}
+extern "C" void ImPlot3D_PushColormap__b304f8574dbb0701(int cmap) {
+	ImPlot3D::PushColormap(cmap);
+}
+extern "C" void ImPlot3D_PushColormap__b304f8574dbb0701_1(const char* name) {
+	ImPlot3D::PushColormap(name);
+}
+extern "C" void ImPlot3D_PopColormap__670d03a0996eea6f(int count) {
+	ImPlot3D::PopColormap(count);
+}
+extern "C" void ImPlot3D_NextColormapColor__99fa1b13b8d80be2(ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::NextColormapColor();
+}
+extern "C" int ImPlot3D_GetColormapSize__d761993c814f422f(int cmap) {
+	return ImPlot3D::GetColormapSize(cmap);
+}
+extern "C" void ImPlot3D_GetColormapColor__35b0a68532bb1631(int idx, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::GetColormapColor(idx, cmap);
+}
+extern "C" void ImPlot3D_SampleColormap__d4816676b082dd68(float t, int cmap, ImVec4* zpp_out) {
+	*zpp_out = ImPlot3D::SampleColormap(t, cmap);
+}
+extern "C" void ImPlot3D_ShowDemoWindow__bf3697c59b1e3f56(bool* p_open) {
+	ImPlot3D::ShowDemoWindow(p_open);
+}
+extern "C" void ImPlot3D_ShowAllDemos__bc2b87d0b1d588c2() {
+	ImPlot3D::ShowAllDemos();
+}
+extern "C" void ImPlot3D_ShowStyleEditor__9295e9c397962dd9(ImPlot3DStyle* ref) {
+	ImPlot3D::ShowStyleEditor(ref);
+}
+extern "C" void ImPlot3D_ShowMetricsWindow__1b1d940fa8fb0d3(bool* p_popen) {
+	ImPlot3D::ShowMetricsWindow(p_popen);
+}
+extern "C" float ImPlot3DPoint_Dot__24e819d28113157f(ImPlot3DPoint* obj, const ImPlot3DPoint* rhs) {
+	return obj->Dot(*rhs);
+}
+extern "C" void ImPlot3DPoint_Cross__6b5106cb676283a3(ImPlot3DPoint* obj, const ImPlot3DPoint* rhs, ImPlot3DPoint* zpp_out) {
+	*zpp_out = obj->Cross(*rhs);
+}
+extern "C" float ImPlot3DPoint_Length__84530b083cf7c420(ImPlot3DPoint* obj) {
+	return obj->Length();
+}
+extern "C" float ImPlot3DPoint_LengthSquared__fa31373669e085ac(ImPlot3DPoint* obj) {
+	return obj->LengthSquared();
+}
+extern "C" void ImPlot3DPoint_Normalize__c41aa7c75f892b85(ImPlot3DPoint* obj) {
+	obj->Normalize();
+}
+extern "C" void ImPlot3DPoint_Normalized__7b19c5b9c5891b5d(ImPlot3DPoint* obj, ImPlot3DPoint* zpp_out) {
+	*zpp_out = obj->Normalized();
+}
+extern "C" bool ImPlot3DPoint_IsNaN__7fccb2f1ded9f9fe(ImPlot3DPoint* obj) {
+	return obj->IsNaN();
+}
+extern "C" void ImPlot3DBox_Expand__17f9d0b67635db0(ImPlot3DBox* obj, const ImPlot3DPoint* point) {
+	obj->Expand(*point);
+}
+extern "C" bool ImPlot3DBox_Contains__70c9d2abcdd2a6c9(ImPlot3DBox* obj, const ImPlot3DPoint* point) {
+	return obj->Contains(*point);
+}
+extern "C" bool ImPlot3DBox_ClipLineSegment__7337faf65ef618b3(ImPlot3DBox* obj, const ImPlot3DPoint* p0, const ImPlot3DPoint* p1, ImPlot3DPoint* p0_clipped, ImPlot3DPoint* p1_clipped) {
+	return obj->ClipLineSegment(*p0, *p1, *p0_clipped, *p1_clipped);
+}
+extern "C" void ImPlot3DRange_Expand__17f9d0b67635db0(ImPlot3DRange* obj, float value) {
+	obj->Expand(value);
+}
+extern "C" bool ImPlot3DRange_Contains__70c9d2abcdd2a6c9(ImPlot3DRange* obj, float value) {
+	return obj->Contains(value);
+}
+extern "C" float ImPlot3DRange_Size__48afdcdc06b831dd(ImPlot3DRange* obj) {
+	return obj->Size();
+}
+extern "C" void ImPlot3DQuat_FromTwoVectors__c3565f573bfa0033(ImPlot3DQuat* obj, const ImPlot3DPoint* v0, const ImPlot3DPoint* v1, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->FromTwoVectors(*v0, *v1);
+}
+extern "C" void ImPlot3DQuat_FromElAz__685499e7aa35ea6a(ImPlot3DQuat* obj, float elevation, float azimuth, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->FromElAz(elevation, azimuth);
+}
+extern "C" float ImPlot3DQuat_Length__84530b083cf7c420(ImPlot3DQuat* obj) {
+	return obj->Length();
+}
+extern "C" void ImPlot3DQuat_Normalized__7b19c5b9c5891b5d(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Normalized();
+}
+extern "C" void ImPlot3DQuat_Conjugate__7969b91c6374e535(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Conjugate();
+}
+extern "C" void ImPlot3DQuat_Inverse__800226e9aca291f0(ImPlot3DQuat* obj, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Inverse();
+}
+extern "C" ImPlot3DQuat* ImPlot3DQuat_Normalize__c41aa7c75f892b85(ImPlot3DQuat* obj) {
+	return &obj->Normalize();
+}
+extern "C" void ImPlot3DQuat_Slerp__14e3b092406ef28d(ImPlot3DQuat* obj, const ImPlot3DQuat* q1, const ImPlot3DQuat* q2, float t, ImPlot3DQuat* zpp_out) {
+	*zpp_out = obj->Slerp(*q1, *q2, t);
+}
+extern "C" float ImPlot3DQuat_Dot__24e819d28113157f(ImPlot3DQuat* obj, const ImPlot3DQuat* rhs) {
+	return obj->Dot(*rhs);
+}
+extern "C" void ImPlot3DStyle_GetColor__4989362d62e3a10b(ImPlot3DStyle* obj, int idx, ImVec4* zpp_out) {
+	*zpp_out = obj->GetColor(idx);
+}
+extern "C" void ImPlot3DStyle_SetColor__d8c86ac2bfab4142(ImPlot3DStyle* obj, int idx, const ImVec4* col) {
+	obj->SetColor(idx, *col);
 }
 extern "C" bool ImGui_ImplSDL3_InitForOpenGL__e99e10970d5cd092(SDL_Window* window, void* sdl_gl_context) {
 	return ImGui_ImplSDL3_InitForOpenGL(window, sdl_gl_context);

@@ -68,7 +68,16 @@ fn processArgs(allocator: std.mem.Allocator) !Args {
         if (std.mem.eql(u8, args[i], "-x") or std.mem.eql(u8, args[i], "--clang-arg")) {
             i += 1;
             if (i == args.len) printUsageWithErrorAndExit("-x/--clang-arg requires a subsequent argument!", .{});
-            try clang_args.append(try allocator.dupeZ(u8, args[i]));
+
+            var clang_arg = try allocator.dupeZ(u8, args[i]);
+            if (std.mem.startsWith(u8, clang_arg, "-I")) {
+                if (!std.fs.path.isAbsolute(clang_arg[2..])) {
+                    clang_arg = try std.fmt.allocPrintSentinel(allocator, "-I{s}", .{try std.fs.cwd().realpathAlloc(allocator, clang_arg[2..])}, 0);
+                    std.log.debug("Rewrote relative include path '{s}' to '{s}'.", .{ args[i][2..], clang_arg });
+                }
+            }
+
+            try clang_args.append(clang_arg);
         } else if (std.mem.eql(u8, args[i], "-s") or std.mem.eql(u8, args[i], "--sandbox")) {
             out.generate_sandbox = true;
         } else {
